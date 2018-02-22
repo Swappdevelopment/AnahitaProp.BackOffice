@@ -1,43 +1,43 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 
-    string genders = Swapp.Data.Helper.JSonCamelSerializeObject(
-                                (from k in Enum.GetValues(typeof(ThinkBox.Data.Gender)).Cast<ThinkBox.Data.Gender>()
+    string genders = AnahitaProp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(AnahitaProp.Data.Gender)).Cast<AnahitaProp.Data.Gender>()
                                  select new
                                  {
                                      key = (int)k
                                  }).ToArray());
 
-    string titles = Swapp.Data.Helper.JSonCamelSerializeObject(
-                                (from k in Enum.GetValues(typeof(ThinkBox.Data.PersonTitle)).Cast<ThinkBox.Data.PersonTitle>()
+    string titles = AnahitaProp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(AnahitaProp.Data.PersonTitle)).Cast<AnahitaProp.Data.PersonTitle>()
                                  select new
                                  {
                                      key = (int)k
                                  }).ToArray());
 
-    string traineeGrades = Swapp.Data.Helper.JSonCamelSerializeObject(
-                                (from k in Enum.GetValues(typeof(ThinkBox.Data.TraineeGrade)).Cast<ThinkBox.Data.TraineeGrade>()
+    string traineeGrades = AnahitaProp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(AnahitaProp.Data.TraineeGrade)).Cast<AnahitaProp.Data.TraineeGrade>()
                                  select new
                                  {
                                      key = (int)k
                                  }).ToArray());
 
-    string courseTypes = Swapp.Data.Helper.JSonCamelSerializeObject(
-                                (from k in Enum.GetValues(typeof(ThinkBox.Data.CourseType)).Cast<ThinkBox.Data.CourseType>()
+    string courseTypes = AnahitaProp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(AnahitaProp.Data.CourseType)).Cast<AnahitaProp.Data.CourseType>()
                                  select new
                                  {
                                      key = (int)k
                                  }).ToArray());
 
-    string courseApproaches = Swapp.Data.Helper.JSonCamelSerializeObject(
-                                (from k in Enum.GetValues(typeof(ThinkBox.Data.CourseApproach)).Cast<ThinkBox.Data.CourseApproach>()
+    string courseApproaches = AnahitaProp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(AnahitaProp.Data.CourseApproach)).Cast<AnahitaProp.Data.CourseApproach>()
                                  select new
                                  {
                                      key = (int)k
                                  }).ToArray());
 
-    string contactTypes = Swapp.Data.Helper.JSonCamelSerializeObject(
-                                (from k in Enum.GetValues(typeof(ThinkBox.Data.CompanyContactTypeValue)).Cast<ThinkBox.Data.CompanyContactTypeValue>()
+    string contactTypes = AnahitaProp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(AnahitaProp.Data.CompanyContactTypeValue)).Cast<AnahitaProp.Data.CompanyContactTypeValue>()
                                  select new
                                  {
                                      key = (int)k

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class InjectorObjectHolder : IInjectorObjectHolder
     {

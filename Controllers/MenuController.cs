@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
-using ThinkBox.Data;
-using ThinkBox.Data.Models;
+using AnahitaProp.Data;
+using AnahitaProp.Data.Models;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class MenuController : BaseController
     {

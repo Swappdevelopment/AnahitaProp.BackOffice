@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "ThinkBox.Web": {
+    "AnahitaProp.BackOffice": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

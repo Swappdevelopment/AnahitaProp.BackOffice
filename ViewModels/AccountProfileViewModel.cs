@@ -1,4 +1,4 @@
-﻿namespace ThinkBox.Web
+﻿namespace AnahitaProp.BackOffice
 {
     public class AccountProfileViewModel
     {

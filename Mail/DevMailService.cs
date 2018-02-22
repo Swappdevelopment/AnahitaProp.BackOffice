@@ -1,7 +1,7 @@
-﻿using Swapp.Data;
+﻿using AnahitaProp.Data;
 using System.Threading.Tasks;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class DevMailService : BaseMailService
     {

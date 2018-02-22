@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using ThinkBox.Data;
-using ThinkBox.Data.Models;
+using AnahitaProp.Data;
+using AnahitaProp.Data.Models;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class HomeController : BaseController
     {

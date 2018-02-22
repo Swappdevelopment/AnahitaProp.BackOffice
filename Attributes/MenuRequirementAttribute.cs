@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class MenuRequirementAttribute : ActionFilterAttribute
     {

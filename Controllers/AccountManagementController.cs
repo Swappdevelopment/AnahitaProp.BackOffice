@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Swapp.Data;
+using AnahitaProp.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ThinkBox.Data;
-using ThinkBox.Data.Models;
+using AnahitaProp.Data;
+using AnahitaProp.Data.Models;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class AccountManagementController : BaseController
     {

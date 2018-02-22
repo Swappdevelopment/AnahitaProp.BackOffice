@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class ExceptionAccess : Exception
     {

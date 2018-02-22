@@ -4,7 +4,7 @@ using MimeKit;
 using System;
 using System.Threading.Tasks;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class BaseMailService : IMailService
     {

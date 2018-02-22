@@ -6,7 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using System.Text.Encodings.Web;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     [HtmlTargetElement("script", Attributes = VersionCache.CURRENT_ATTRIBUTE_NAME)]
     public class VersionCacheScriptTagHelper : ScriptTagHelper

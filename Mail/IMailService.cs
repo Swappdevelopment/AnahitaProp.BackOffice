@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public interface IMailService : IDisposable
     {

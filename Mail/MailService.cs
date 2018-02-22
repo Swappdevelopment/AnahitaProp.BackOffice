@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class MailService : BaseMailService
     {

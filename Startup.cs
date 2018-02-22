@@ -1,3 +1,4 @@
+using AnahitaProp.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -12,10 +13,8 @@ using Newtonsoft.Json.Serialization;
 using Swapp.Data;
 using System;
 using System.Net;
-using System.Runtime.InteropServices;
-using ThinkBox.Data;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class Startup
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Threading.Tasks;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class CookieAuthenticationEvents : ICookieAuthenticationEvents
     {

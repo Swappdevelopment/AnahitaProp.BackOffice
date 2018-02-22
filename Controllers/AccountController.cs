@@ -2,17 +2,17 @@
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Swapp.Data;
+using AnahitaProp.Data;
 using Swapp.Data.Hashing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ThinkBox.Data;
-using ThinkBox.Data.Models;
+using Swapp.Data;
+using AnahitaProp.Data.Models;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class AccountController : BaseController
     {

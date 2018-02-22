@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
-using Swapp.Data;
+using AnahitaProp.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
-using ThinkBox.Data;
+using AnahitaProp.Data;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class BaseController : Controller
     {

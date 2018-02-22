@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Configuration;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     [HtmlTargetElement("span", Attributes = VersionCache.CURRENT_ATTRIBUTE_NAME)]
     public class VersionCacheSpanTagHelper : TagHelper

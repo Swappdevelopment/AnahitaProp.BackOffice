@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Swapp.Data;
+using AnahitaProp.Data;
 using ThinkBox.Localization.Resources;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class LanguageController : BaseController
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace ThinkBox.Web
+namespace AnahitaProp.BackOffice
 {
     public class AccessRequirement : IAuthorizationRequirement
     {
