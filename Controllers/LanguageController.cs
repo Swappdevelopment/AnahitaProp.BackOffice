@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using AnahitaProp.Data;
-using ThinkBox.Localization.Resources;
+using Swapp.Data;
+using AnahitaProp.BackOffice.Localization.Resources;
 
 namespace AnahitaProp.BackOffice
 {
