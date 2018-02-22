@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1.1</TargetFramework>
-    <RootNamespace>ThinkBox.Localization</RootNamespace>
+    <RootNamespace>AnahitaProp.BackOffice.Localization</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ThinkBox.Localization.Resources {
+namespace AnahitaProp.BackOffice.Localization.Resources {
     using System;
     using System.Reflection;
     
@@ -40,7 +40,7 @@ namespace ThinkBox.Localization.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ThinkBox.Localization.Resources.Resource_Msgs", typeof(Resource_Msgs).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AnahitaProp.BackOffice.Localization.Resources.Resource_Msgs", typeof(Resource_Msgs).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
