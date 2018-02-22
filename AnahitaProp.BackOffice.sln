@@ -7,6 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnahitaProp.BackOffice", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnahitaProp.BackOffice.Localization", "AnahitaProp.BackOffice.Localization\AnahitaProp.BackOffice.Localization.csproj", "{7C1E0703-4939-4B97-8759-663F85BE81B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swapp.Data", "..\..\Frameworks\Swapp.Core\Swapp.Data\Swapp.Data.csproj", "{382DB762-B7BC-4781-8097-E980BC223EFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swapp.Data.Db", "..\..\Frameworks\Swapp.Core\Swapp.Data.Db\Swapp.Data.Db.csproj", "{C54ACF3D-3B7D-4CD4-A3E5-23FD47113269}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnahitaProp.Data", "..\BackEnd\AnahitaProp.Data\AnahitaProp.Data.csproj", "{6526DE7B-F0E3-41DB-84C3-F2276F833B15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnahitaProp.Data.Db", "..\BackEnd\AnahitaProp.Data.Db\AnahitaProp.Data.Db.csproj", "{909D1316-F57A-45FE-8BB0-641627F8802B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnahitaProp.Data.Db.MySQL", "..\BackEnd\AnahitaProp.Data.Db.MySQL\AnahitaProp.Data.Db.MySQL.csproj", "{3F323378-4DEE-42FD-B13A-D40E859DD1C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
