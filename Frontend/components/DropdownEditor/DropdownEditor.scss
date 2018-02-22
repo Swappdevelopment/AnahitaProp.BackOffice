@@ -1,0 +1,19 @@
+@import "../../scss/_variables.scss";
+.dropdown {
+    ul[role=menu].dropdown-menu {
+        li[role=presentation] {
+            &.highlighted {
+                // border: 1px solid $clr-highlight;
+            }
+        }
+    }
+    .dropdown-input-wrapper {
+        position: relative;
+        .caret {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+}

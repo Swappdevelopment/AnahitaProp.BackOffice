@@ -1,0 +1,435 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Anahita Properties Back Office</value>
+  </data>
+  <data name="lbl_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="lbl_Add" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="lbl_Address" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
+  <data name="lbl_Apply" xml:space="preserve">
+    <value>Appliquer</value>
+  </data>
+  <data name="lbl_Back" xml:space="preserve">
+    <value>Retour</value>
+  </data>
+  <data name="lbl_BoValEmail" xml:space="preserve">
+    <value>Confirmation de l'Email</value>
+  </data>
+  <data name="lbl_CantCnfrmEmailAddr" xml:space="preserve">
+    <value>Impossible de Confirmer l'adresse Email</value>
+  </data>
+  <data name="lbl_CfrmNewPsswrd" xml:space="preserve">
+    <value>Confirmez le Mot de Passe</value>
+  </data>
+  <data name="lbl_ChngEmail" xml:space="preserve">
+    <value>Changer le Email</value>
+  </data>
+  <data name="lbl_ChngPsswrd" xml:space="preserve">
+    <value>Changer votre Mot de Passe</value>
+  </data>
+  <data name="lbl_Change" xml:space="preserve">
+    <value>Changer</value>
+  </data>
+  <data name="lbl_Close" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="lbl_CnfrmEmailAddr" xml:space="preserve">
+    <value>Confirmer l'adresse Email</value>
+  </data>
+  <data name="lbl_Continue" xml:space="preserve">
+    <value>Continuer</value>
+  </data>
+  <data name="lbl_CreateNew" xml:space="preserve">
+    <value>Créer Nouveau</value>
+  </data>
+  <data name="lbl_CurPsswrd" xml:space="preserve">
+    <value>Mot de Passe Actuel</value>
+  </data>
+  <data name="lbl_Delete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="lbl_Dob" xml:space="preserve">
+    <value>DDN</value>
+  </data>
+  <data name="lbl_Edit" xml:space="preserve">
+    <value>Modifier</value>
+  </data>
+  <data name="lbl_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="lbl_EmailConfirmed" xml:space="preserve">
+    <value>Adresse email Confirmée</value>
+  </data>
+  <data name="lbl_EndDate" xml:space="preserve">
+    <value>Date de Fin</value>
+  </data>
+  <data name="lbl_Error" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="lbl_ErrWhlSvng" xml:space="preserve">
+    <value>Tentative de sauvegarde échouée</value>
+  </data>
+  <data name="lbl_FName" xml:space="preserve">
+    <value>Prénom</value>
+  </data>
+  <data name="lbl_FrgtPsswrdQm" xml:space="preserve">
+    <value>Mot de passe oublié ?</value>
+  </data>
+  <data name="lbl_Gender" xml:space="preserve">
+    <value>Sex</value>
+  </data>
+  <data name="lbl_Gender_0" xml:space="preserve">
+    <value>Inconnu</value>
+  </data>
+  <data name="lbl_Gender_10" xml:space="preserve">
+    <value>Homme</value>
+  </data>
+  <data name="lbl_Gender_20" xml:space="preserve">
+    <value>Femme</value>
+  </data>
+  <data name="lbl_Langs" xml:space="preserve">
+    <value>Langues</value>
+  </data>
+  <data name="lbl_LName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="lbl_Menu_dashboard" xml:space="preserve">
+    <value>Tableau de Bord</value>
+  </data>
+  <data name="lbl_Menu_emails" xml:space="preserve">
+    <value>Emails</value>
+  </data>
+  <data name="lbl_Menu_notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="lbl_Menu_usermanagement" xml:space="preserve">
+    <value>Gestion des Utilisateurs</value>
+  </data>
+  <data name="lbl_Name" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="lbl_NewPsswrd" xml:space="preserve">
+    <value>Nouveau Mot de Passe</value>
+  </data>
+  <data name="lbl_No" xml:space="preserve">
+    <value>Non</value>
+  </data>
+  <data name="lbl_NoName" xml:space="preserve">
+    <value>Pas de Nom</value>
+  </data>
+  <data name="lbl_Or" xml:space="preserve">
+    <value>Ou</value>
+  </data>
+  <data name="lbl_PhoneNumbers" xml:space="preserve">
+    <value>Téléphone</value>
+  </data>
+  <data name="lbl_Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="lbl_UpdateProfile" xml:space="preserve">
+    <value>Modifier Profile</value>
+  </data>
+  <data name="lbl_Psswrd" xml:space="preserve">
+    <value>Mot de Passe</value>
+  </data>
+  <data name="lbl_Refresh" xml:space="preserve">
+    <value>Rafraichir</value>
+  </data>
+  <data name="lbl_Retry" xml:space="preserve">
+    <value>Réessayer</value>
+  </data>
+  <data name="lbl_Revert" xml:space="preserve">
+    <value>Revenir</value>
+  </data>
+  <data name="lbl_RmbrMe" xml:space="preserve">
+    <value>Se souvenir de moi</value>
+  </data>
+  <data name="lbl_RstPsswrd" xml:space="preserve">
+    <value>Réinitialisation du mot de passe</value>
+  </data>
+  <data name="lbl_Save" xml:space="preserve">
+    <value>Sauvegarder</value>
+  </data>
+  <data name="lbl_SaveLater" xml:space="preserve">
+    <value>Sauvegarder plus tard</value>
+  </data>
+  <data name="lbl_Saving" xml:space="preserve">
+    <value>Sauvegarde</value>
+  </data>
+  <data name="lbl_Sccss" xml:space="preserve">
+    <value>Succès</value>
+  </data>
+  <data name="lbl_Send" xml:space="preserve">
+    <value>Envoyer</value>
+  </data>
+  <data name="lbl_SendEmail" xml:space="preserve">
+    <value>Envoyer un email</value>
+  </data>
+  <data name="lbl_Settings" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
+  <data name="lbl_SignIn" xml:space="preserve">
+    <value>Se Connecter</value>
+  </data>
+  <data name="lbl_SignOut" xml:space="preserve">
+    <value>Se Déconnecter</value>
+  </data>
+  <data name="lbl_SmthngWrng" xml:space="preserve">
+    <value>Quelque chose ne va pas</value>
+  </data>
+  <data name="lbl_Unknown" xml:space="preserve">
+    <value>Inconnu</value>
+  </data>
+  <data name="lbl_UsrNm" xml:space="preserve">
+    <value>Nom Utilisateur</value>
+  </data>
+  <data name="lbl_UsrNmEmail" xml:space="preserve">
+    <value>Nom Utilisateur ou Email</value>
+  </data>
+  <data name="lbl_Verifying" xml:space="preserve">
+    <value>En cours de Verification</value>
+  </data>
+  <data name="lbl_Website" xml:space="preserve">
+    <value>Site Web</value>
+  </data>
+  <data name="lbl_Yes" xml:space="preserve">
+    <value>Oui</value>
+  </data>
+  <data name="lbl_Role" xml:space="preserve">
+    <value>Rôle</value>
+  </data>
+  <data name="lbl_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="lbl_Duration" xml:space="preserve">
+    <value>Durée</value>
+  </data>
+  <data name="lbl_Days" xml:space="preserve">
+    <value>Jours</value>
+  </data>
+  <data name="lbl_Active" xml:space="preserve">
+    <value>Actif</value>
+  </data>
+  <data name="lbl_Inactive" xml:space="preserve">
+    <value>Inactif</value>
+  </data>
+  <data name="lbl_Active_" xml:space="preserve">
+    <value>Tout</value>
+  </data>
+  <data name="lbl_Active_0" xml:space="preserve">
+    <value>Inactifs</value>
+  </data>
+  <data name="lbl_Active_1" xml:space="preserve">
+    <value>Actifs</value>
+  </data>
+  <data name="lbl_Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="lbl_Request" xml:space="preserve">
+    <value>Demande</value>
+  </data>
+  <data name="lbl_Hello" xml:space="preserve">
+    <value>Bonjour</value>
+  </data>
+  <data name="lbl_Confirmed" xml:space="preserve">
+    <value>Confirmé</value>
+  </data>
+  <data name="lbl_NotConfirmed" xml:space="preserve">
+    <value>Non Confirmé</value>
+  </data>
+  <data name="lbl_AddRmvRoles" xml:space="preserve">
+    <value>Ajouter/Retirer Roles</value>
+  </data>
+  <data name="lbl_CreateNwUsr" xml:space="preserve">
+    <value>Nouvel Utilisateur</value>
+  </data>
+  <data name="lbl_Done" xml:space="preserve">
+    <value>Terminer</value>
+  </data>
+  <data name="lbl_EmailNotSent" xml:space="preserve">
+    <value>Email pas envoyé</value>
+  </data>
+  <data name="lbl_EmailSent" xml:space="preserve">
+    <value>Email envoyé</value>
+  </data>
+  <data name="lbl_ResendEmail" xml:space="preserve">
+    <value>Re-envoyer le Email</value>
+  </data>
+  <data name="lbl_EmailSentFailed" xml:space="preserve">
+    <value>Envoi d'Email échoué</value>
+  </data>
+  <data name="lbl_SendingEmail" xml:space="preserve">
+    <value>Envoi d'Email</value>
+  </data>
+  <data name="lbl_CompleteReg" xml:space="preserve">
+    <value>Completer l'Enregistrement</value>
+  </data>
+  <data name="lbl_Search" xml:space="preserve">
+    <value>Recherche</value>
+  </data>
+  <data name="lbl_SaveChanges" xml:space="preserve">
+    <value>Sauvegarder Modifications</value>
+  </data>
+  <data name="lbl_PersonalDetail" xml:space="preserve">
+    <value>Détail Personnel</value>
+  </data>
+  <data name="lbl_Account" xml:space="preserve">
+    <value>Compte</value>
+  </data>
+  <data name="lbl_AccountDetail" xml:space="preserve">
+    <value>Détail du Compte</value>
+  </data>
+  <data name="lbl_Mobile" xml:space="preserve">
+    <value>Mobile</value>
+  </data>
+  <data name="lbl_Country" xml:space="preserve">
+    <value>Pays</value>
+  </data>
+  <data name="lbl_PostCode" xml:space="preserve">
+    <value>Code Postal</value>
+  </data>
+  <data name="lbl_StartDate" xml:space="preserve">
+    <value>Date de Départ</value>
+  </data>
+  <data name="lbl_Administrator" xml:space="preserve">
+    <value>Administrateur</value>
+  </data>
+  <data name="lbl_ManageRoles" xml:space="preserve">
+    <value>Gérer les rôles</value>
+  </data>
+  <data name="lbl_DeleteUser" xml:space="preserve">
+    <value>Effacer Utilisateur</value>
+  </data>
+  <data name="lbl_Warning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
+  <data name="lbl_BoRstPsswrd" xml:space="preserve">
+    <value>Réinitialiser le mot de passe</value>
+  </data>
+  <data name="lbl_UserManagement" xml:space="preserve">
+    <value>Gestion d'Utilisateurs</value>
+  </data>
+</root>

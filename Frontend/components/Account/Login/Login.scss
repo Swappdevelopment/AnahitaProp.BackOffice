@@ -1,0 +1,36 @@
+.s-login {
+  .s-login-header {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .s-login-form {
+    margin-top: 50px;
+
+    &-sub {
+      margin: 20px 0!important;
+
+      .login-form-remember {
+        display: table-cell !important;
+        text-align: left;
+        padding-left: 0 !important;
+      }
+
+      .login-form-forgot {
+        display: table-cell !important;
+        text-align: right;
+        padding-right: 0 !important;
+      }
+    }
+
+    &-alert {
+      margin: 10px 0;
+      height: 25px;
+    }
+
+    &-action {
+      margin: 20px 0;
+      text-align: center;
+    }
+  }
+}

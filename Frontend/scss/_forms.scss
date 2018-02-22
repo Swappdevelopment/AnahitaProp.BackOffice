@@ -1,0 +1,239 @@
+
+@import "../scss/_variables.scss";
+
+.s-form-group{
+    position: relative;
+    margin: 0;
+    padding: 0;
+
+    &.s-form-input{
+        min-height: 90px;
+        margin-bottom: 0 !important;
+    }
+
+    .s-input-empty {
+        border-radius: 0;
+        border: 0;
+        border-bottom: 1px solid $lightgray1;
+        color: $lightgray2;
+        height: 45px;
+        margin-top: 1px;
+        box-shadow: none;
+        padding: 6px 0;
+
+        &-last{
+            border: 0;
+
+            &-invalid{
+            border: 0;
+                
+            &::-webkit-input-placeholder { 
+                color: $red;
+            }
+
+            &::-moz-placeholder { 
+                color: $red;
+            }
+
+            &:-ms-input-placeholder {
+                color: $red;
+            }
+
+            &:-moz-placeholder { 
+                color: $red;
+            }
+
+            &:focus::-webkit-input-placeholder {
+                color: $red;
+            }
+    
+            &:focus:-moz-placeholder {
+                color: $red;
+            }
+    
+            &:focus::-moz-placeholder {
+                color: $red;
+            }
+    
+            &:focus:-ms-input-placeholder {
+                color: $red;
+            }
+            }
+        }
+
+        &:focus::-webkit-input-placeholder {
+            color: $primary;
+        }
+
+        &:focus:-moz-placeholder {
+            color: $primary;
+        }
+
+        &:focus::-moz-placeholder {
+            color: $primary;
+        }
+
+        &:focus:-ms-input-placeholder {
+            color: $primary;
+        }
+
+        &:-webkit-autofill {
+            -webkit-box-shadow: inset 0 0 0px 9999px $white;
+            -webkit-text-fill-color: $black;
+        }
+        &:-webkit-autofill:focus {
+            -webkit-box-shadow: inset 0 0 0px 9999px $white;
+            -webkit-text-fill-color: $black;
+        }
+
+        &:disabled {
+            background: transparent;
+        }
+
+        &-invalid{
+            border-bottom: 1px solid $red !important;
+
+            &::-webkit-input-placeholder { 
+                color: $red;
+            }
+
+            &::-moz-placeholder { 
+                color: $red;
+            }
+
+            &:-ms-input-placeholder {
+                color: $red;
+            }
+
+            &:-moz-placeholder { 
+                color: $red;
+            }
+
+            &:focus::-webkit-input-placeholder {
+                color: $red;
+            }
+    
+            &:focus:-moz-placeholder {
+                color: $red;
+            }
+    
+            &:focus::-moz-placeholder {
+                color: $red;
+            }
+    
+            &:focus:-ms-input-placeholder {
+                color: $red;
+            }
+    
+        }
+
+    }
+
+    .s-input-search{
+        position: relative;
+        width: 200px;
+        height: 40px;
+        margin: 15px 0;
+        padding: 0 40px;
+        border-radius: 60px;
+        background-color: $primaryDark;
+        border: 0;
+        box-shadow: none;
+        transition: width ease 300ms;
+        color: $white;
+
+        &:focus{
+            width: 240px;
+            transition: width ease 300ms;
+        }
+
+        &::-webkit-input-placeholder { 
+            color: $white !important;
+        }
+        &:-moz-placeholder { 
+            color: $white !important;
+           opacity:  1;
+        }
+        &::-moz-placeholder { 
+            color: $white !important;
+           opacity:  1;
+        }
+        &:-ms-input-placeholder {
+            color: $white !important;
+        }
+        &::-ms-input-placeholder { 
+            color: $white !important;
+        }
+        &::placeholder { 
+            color: $white !important;
+        }
+        &:-webkit-autofill {
+            -webkit-box-shadow: inset 0 0 0px 9999px $primaryDark;
+            -webkit-text-fill-color: $white;
+        }
+        &:focus,
+        &:-webkit-autofill:focus {
+            -webkit-box-shadow: inset 0 0 0px 9999px $primaryDark;
+            -webkit-text-fill-color: $white;
+        }
+
+        @media(max-width: 475px){
+            width: 140px;
+    
+            &:focus{
+                width: 180px;
+            }
+        }
+    }
+
+    .s-input{
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        height: 38px;
+        color: $lightgray2;
+        box-shadow: none;
+
+        &:focus{
+            outline: none !important;
+            border:1px solid $primary;
+        }
+
+        &:-webkit-autofill {
+            -webkit-box-shadow: inset 0 0 0px 9999px $white;
+            -webkit-text-fill-color: $lightgray2;
+        }
+
+        &:-webkit-autofill:focus {
+            -webkit-box-shadow: inset 0 0 0px 9999px $white;
+            -webkit-text-fill-color: $lightgray2;
+        }
+
+        &-error{
+            border: 1px solid $redDark;
+            height: 38px;
+            color: $lightgray2;
+            box-shadow: none;
+
+            &:focus{
+                outline: none !important;
+                border: 1px solid $redDark;
+            }
+        }
+
+        &-add{
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            height: 38px;
+            color: $lightgray2;
+            box-shadow: none;
+
+            &:focus{
+                outline: none !important;
+                border: 1px solid $blue;
+            }
+        }
+    }
+
+}
+
+
+
+

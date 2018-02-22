@@ -1,0 +1,87 @@
+@import "../../scss/_variables.scss";
+
+.s-account-content {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    
+
+    &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    .container {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+
+        .row {
+            display: table;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            
+            [class*="col-"] {
+                display: table-cell;
+                float: none;
+                vertical-align: middle;
+
+                @media(max-width: $screen-sm-max){
+                    display: block;
+                }
+            }
+        }
+    }   
+
+    .s-language{
+        position: absolute;
+        top: 5px;
+        left: 5px;
+    }
+
+    .s-account-background {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(rgba(194,215,48, 0.90), rgba(194,215,48, 0.90)), url("~/images/background.png") center center no-repeat scroll;
+        background-size: cover !important;
+
+        @media(max-width: $screen-sm-max){
+            height: 80px;
+        }
+
+    }
+
+    .s-account-wrapper{
+        position: relative;
+        height: 400px;
+        margin: -80px 40px 0 40px;
+
+            .s-logo{
+                text-align: center;
+            }
+           
+        @media(max-width: $screen-xs-max){
+            margin: 80px 20px 0 20px;
+        }
+
+        @media(min-width: $screen-xs-max) and (max-width: $screen-sm-max){
+            margin: 80px 100px 0 100px;
+        }
+
+        @media(min-width: $screen-sm-max) and (max-width: $screen-md-max){
+            margin: -80px 20px 0 20px;
+        }
+    }
+}
+

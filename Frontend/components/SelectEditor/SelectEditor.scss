@@ -1,0 +1,9 @@
+@import "../../scss/_variables.scss";
+.s-select {
+    position: relative;
+    input {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}

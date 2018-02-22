@@ -1,0 +1,87 @@
+@import "../scss/_variables.scss";
+
+.s-tabs{
+
+    .tab-content{
+        padding: 30px 0;
+    }
+
+    .nav-tabs {
+        border-bottom: 1px solid $lightgray1;
+        
+        > li > a {
+            color:$black;
+            font-size: 16px;
+            margin-right: 20px;
+            
+            &:hover,
+            &:active,
+            &:active:focus{
+                color: $primary;
+                background-color: $white;
+                border: 1px solid transparent;
+                border-bottom-color: $primary;
+                outline: none;
+            }
+        }
+    }
+
+    .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+        color: $primary;
+        cursor: default;
+        background-color: $white;
+        border: 1px solid transparent;
+        border-bottom-color: $primary;
+    }
+}
+
+.s-tabs-nb{
+
+    .tab-content{
+        padding: 30px 0;
+    }
+
+    .nav-tabs {
+        border-bottom: none;
+        clear: left;
+
+        > li > a {
+            color:$lightgray3;
+            font-size: 16px;
+            margin-right: 20px;
+            border-bottom: 1px solid $lightgray1;
+
+            &:hover,
+            &:active,
+            &:active:focus{
+                color: $primary;
+                background-color: $white;
+                border: 1px solid transparent;
+                border-bottom-color: $primary;
+                outline: none;
+            }
+        }
+    }
+
+    .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+        color: $primary;
+        cursor: default;
+        background-color: $white;
+        border: 1px solid transparent;
+        border-bottom-color: $primary;
+    }
+}
+
+#tabProfile{
+
+    .tab-content{
+        padding: 0 15px;
+    }
+
+}
+
+#tabCompanies{
+    @media(max-width: $screen-sm-max){
+        clear: left;
+    }
+}

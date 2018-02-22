@@ -1,0 +1,23 @@
+.s-separator {
+    height: 0;
+    overflow: hidden;
+    margin: 15px 0;
+    width: 100%;
+    border-bottom: 1px solid $lightgray6;
+}
+
+.s-separator-dashed{
+    height: 0;
+    overflow: hidden;
+    margin: 15px 0;
+    width: 100%;
+    border-bottom: 1px dashed $lightgray1;
+}
+
+.s-separator-space-2{
+    margin: 30px 0;
+}
+
+.s-separator-top-space-2{
+    margin: 30px 0 0 0;
+}

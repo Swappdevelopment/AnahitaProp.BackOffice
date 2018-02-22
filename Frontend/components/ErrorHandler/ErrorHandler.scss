@@ -1,0 +1,30 @@
+@import "../../scss/_variables.scss";
+
+.modal {
+    z-index: 10050 !important;
+}
+
+.modal-backdrop {
+    z-index: 10040 !important;
+}
+
+.modal-header {
+    padding: 15px;
+
+    .modal-title {
+        font-size: 20px;
+        font-weight: bold;
+        padding-top: 30px;
+    }
+
+    button {
+        color: $primary;
+        opacity: 1 !important;
+
+        &:hover {
+            color: $primaryDark;
+            opacity: 1 !important;
+        }
+    }
+}
+

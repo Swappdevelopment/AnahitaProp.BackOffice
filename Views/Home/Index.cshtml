@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+
+    string genders = Swapp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(ThinkBox.Data.Gender)).Cast<ThinkBox.Data.Gender>()
+                                 select new
+                                 {
+                                     key = (int)k
+                                 }).ToArray());
+
+    string titles = Swapp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(ThinkBox.Data.PersonTitle)).Cast<ThinkBox.Data.PersonTitle>()
+                                 select new
+                                 {
+                                     key = (int)k
+                                 }).ToArray());
+
+    string traineeGrades = Swapp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(ThinkBox.Data.TraineeGrade)).Cast<ThinkBox.Data.TraineeGrade>()
+                                 select new
+                                 {
+                                     key = (int)k
+                                 }).ToArray());
+
+    string courseTypes = Swapp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(ThinkBox.Data.CourseType)).Cast<ThinkBox.Data.CourseType>()
+                                 select new
+                                 {
+                                     key = (int)k
+                                 }).ToArray());
+
+    string courseApproaches = Swapp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(ThinkBox.Data.CourseApproach)).Cast<ThinkBox.Data.CourseApproach>()
+                                 select new
+                                 {
+                                     key = (int)k
+                                 }).ToArray());
+
+    string contactTypes = Swapp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(ThinkBox.Data.CompanyContactTypeValue)).Cast<ThinkBox.Data.CompanyContactTypeValue>()
+                                 select new
+                                 {
+                                     key = (int)k
+                                 }).ToArray());
+}
+
+
+
+@section Styles {
+    <environment names="Development">
+        <link href="~/dist/main.css" rel="stylesheet" swp-cache-version="true" />
+    </environment>
+    <environment names="Staging,Production">
+        <link href="~/dist/main.min.css" rel="stylesheet" swp-cache-version="true" />
+    </environment>
+}
+
+@section Scripts {
+
+    <script>
+
+        var GlobalValues = {
+
+            enumValues: {
+
+                genders: @Html.Raw(genders),
+                titles: @Html.Raw(titles),
+                traineeGrades: @Html.Raw(traineeGrades),
+                courseTypes: @Html.Raw(courseTypes),
+                courseApproaches: @Html.Raw(courseApproaches),
+                contactTypes: @Html.Raw(contactTypes),
+            },
+            versions: {
+
+                langVersion: '@(this.GetViewData<string>("LangVersion"))',
+                cacheVersion: '@(this.GetViewData<string>("CacheVersion"))',
+                dbVersion: '@(this.GetViewData<string>("DbVersion"))',
+                countriesVersion: '@(this.GetViewData<string>("CountriesVersion"))',
+            }
+        };
+
+    </script>
+
+    @foreach (var keyPair in this.GetViewData<KeyValuePair<string, int>[]>("LookupVersions"))
+    {
+        <script>
+            GlobalValues.versions['@keyPair.Key'] = '@keyPair.Value';
+        </script>
+    }
+
+    <environment names="Development">
+        <script src="~/dist/main.js" swp-cache-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/dist/main.min.js" swp-cache-version="true"></script>
+    </environment>
+}
+
+
+@Html.AntiForgeryToken()
+<div id="react-root" style="width:100%;height:100%;"></div>

@@ -1,0 +1,149 @@
+@import "../../scss/_variables.scss";
+
+.s-navbar-wrapper{
+    min-height: 140px;
+
+    .s-navbar-top{
+        position: relative;
+        height: 70px;
+        line-height: 70px;
+
+        .s-brand{
+            text-align: left;
+
+            img{
+                margin-top: 0;
+            }
+        }
+
+        .s-menu {
+            float: right;
+           
+            &-list{
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+
+                &-item{
+                    float: left;
+
+                    a {
+                        text-decoration: none;
+                    }
+
+                    .s-menu-link{
+                        cursor: pointer;
+
+                        &-icon{
+                            color: $primary;
+                            border-radius: 50%;
+                            padding: 10px 16px;
+                            margin-right: 10px;
+                            font-size: 22px;
+
+                            &:hover{
+                                background-color: rgba(194,215,48, 0.1);
+                            }
+                        }
+
+                        .s-menu-welcome{
+                            color: $lightgray3;
+                        }
+
+                        .s-menu-user{
+                            color: $primary;
+                            font-weight: 600;
+                        }
+
+                        .s-menu-avatar{
+
+                            img{
+                            width: 45px;
+                            height: 45px;
+                             border-radius: 50%;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @media(max-width: $screen-sm-max){
+        }
+    }
+        
+    .s-navbar-bottom {
+        position: relative;
+        height: 70px;
+        line-height: 70px;
+        background-color: $primary;
+        box-shadow: 0px 5px 10px 2px rgba(174, 193, 4, 0.2);
+
+        .s-nav{
+            float: left;
+
+            &-list{
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+
+                &-item{
+                    position: relative;
+                    float: left;
+                    padding-right: 40px;
+
+                    a {
+                        text-decoration: none;
+                    }
+
+                    .s-nav-link{
+                        color: $lightgray1;
+                        font-size: 15px;
+
+                        &:hover,
+                        &:focus,
+                        &:active,
+                        &:active:focus{
+                            color: $white;
+                        }
+
+                        &.active{
+                            color: $white;
+                        }
+
+                        &-active{
+                            position: absolute;
+                            color: $primary;
+                            top: 69px;
+                            left: 5px;
+                            font-size: 60px;
+
+                            &:before{
+                                position: relative;
+                                display: inline-block;
+                                font-family: "Metronic";
+                                font-style: normal;
+                                font-weight: normal;
+                                font-variant: normal;
+                                line-height: 0px;
+                                text-decoration: inherit;
+                                text-rendering: optimizeLegibility;
+                                text-transform: none;
+                                -moz-osx-font-smoothing: grayscale;
+                                -webkit-font-smoothing: antialiased;
+                                font-smoothing: antialiased;
+                                content: "";
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.s-search{
+    float: right;
+   
+}

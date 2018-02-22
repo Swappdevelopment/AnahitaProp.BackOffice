@@ -1,0 +1,125 @@
+@import "../../../scss/_variables.scss";
+
+.s-user-role-container{
+  position: relative;
+  width: 100%;
+
+  .s-user-role-name{
+    position: relative;
+    width: 100%;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  .s-user-role-active{
+    position: absolute;
+    width: 50%;
+    left: 0;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .s-user-role-inactive{
+    position: absolute;
+    width: 50%;
+    left: 50%;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .s-user-role-list{
+    padding: 40px 0 0 0;  
+    list-style-type: none;
+    text-align: left;
+    
+    &-item{
+      position: relative;
+      width: 50%;
+      height: 21px;
+      text-align: center;
+      color: $black;
+      background-color: $lightgray1;
+      margin:  0 0 10px 0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transform: translateX(0);
+      transition: all linear 300ms;
+      
+
+      &.selected {
+        color:$white;
+        transform: translateX(100%);
+        background-color: $primaryDark;
+        transition: all linear 300ms;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+//   &-list {
+//     padding: 40px 0 0 0;  
+//     list-style-type: none;
+//     text-align: left;
+  
+    // &-item{
+    //       position: relative;
+    //       width: 15%;
+    //       text-align: center;
+    //       color: $black;
+    //       background-color: $lightgray1;
+    //       padding: 8px 0;
+    //       margin: 8px 0;
+    //       border: none;
+    //       border-radius: 5px;
+    //       cursor: pointer;
+    //       transform: translateX(0);
+    //       transition: all linear 300ms;
+
+    //       &.selected {
+    //         color:$white;
+    //         transform: translateX(100%);
+    //         background-color: $primaryDark;
+    //         transition: all linear 300ms;
+
+    //         span.la{
+    //           &.left{
+    //             opacity: 1;
+    //           }
+    //           &.right{
+    //             opacity: 0;
+    //           }
+    //         }
+    //     }
+    //       span.la {
+    //         position: absolute;
+    //         top: 10px;
+
+    //         &.left {
+    //             left: 8px;
+    //             opacity: 0;
+    //         }
+    //         &.right {
+    //             right: 8px;
+    //         }
+    //     }
+    // }
+// }
+// }
+
+
+
+
+
+      

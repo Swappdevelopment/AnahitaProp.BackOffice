@@ -1,0 +1,22 @@
+@import "../../../scss/_variables.scss";
+
+.s-confirm {
+  .s-confirm-header {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .s-confirm-form {
+    margin-top: 50px;
+
+    &-alert {
+      margin: 10px 0;
+      height: 25px;
+    }
+
+    &-action {
+      margin: 60px 0 20px 0;
+      text-align: center;
+    }
+  }
+}

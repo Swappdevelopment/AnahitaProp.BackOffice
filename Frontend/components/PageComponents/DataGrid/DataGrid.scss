@@ -1,0 +1,114 @@
+@import "../../../scss/_variables.scss";
+
+.s-table{
+    
+    &.table > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+    }
+
+    &.table > tbody > tr > td{
+        height: 40px;
+        color: $lightgray2;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .s-th-cell-name{
+        text-align: left !important;
+    }
+    .s-td-cell-name{
+        text-align: left !important;
+        font-weight: bold;
+        cursor: pointer;
+        color: $primary !important;
+
+        &:hover,
+        &:focus,
+        &:active,
+        &:active:focus{
+            color: $primaryDark !important;
+        }
+    }
+    .s-td-cell-namenl{
+        text-align: left !important;
+        font-weight: bold;
+        color: $primary !important;
+        min-width: 170px;
+    }
+    .s-td-cell-name-short{
+        text-align: left !important;
+        font-weight: bold;
+        cursor: pointer;
+        color: $primary !important;
+        width: 600px;
+
+        &:hover,
+        &:focus,
+        &:active,
+        &:active:focus{
+            color: $primaryDark !important;
+        }
+    }
+
+    .s-td-cell-name-xshort{
+        text-align: left !important;
+        font-weight: bold;
+        cursor: pointer;
+        color: $primary !important;
+        max-width: 300px;
+
+        &:hover,
+        &:focus,
+        &:active,
+        &:active:focus{
+            color: $primaryDark !important;
+        }
+    }
+
+
+    .s-th-cell-status{
+        width: 15px !important;
+        border-bottom: none !important;
+        padding: 0;
+    }
+    .s-td-cell-status{
+        width: 15px !important;
+        padding: 0;
+        border-top: none;
+
+        .s-status-delete {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: $redDark;
+            border-color: $redDark;
+        }
+
+        .s-status-edit {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: $orangeDark;
+            border-color: $orangeDark;
+        }
+
+        .s-status-add {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: $blue;
+            border-color: $blue;
+        }
+    }
+
+    .s-th-cell-controls{
+        border-bottom: none !important;
+    }
+    .s-td-cell-controls{
+        position: relative;
+        border-top: none;
+        width: 70px;
+    }
+}

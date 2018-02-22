@@ -1,0 +1,421 @@
+.s-btn{
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    border-radius: 60px;
+    transition: all ease 300ms;
+
+    &-small{
+        @extend .s-btn;
+
+        &-primary{
+            @extend .s-btn-small;
+            color: $white;
+            background-color: $primary;
+            border-color: $primary;
+            box-shadow: 0px 5px 10px 2px rgba(174, 193, 4, 0.2);
+            
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $primaryDark;
+                border-color: $primaryDark;
+                box-shadow: 0px 5px 10px 2px rgba(132, 141, 47, 0.2);
+                transition: all ease 300ms;
+                outline: none;
+            }
+        }
+
+        &-primary-border{
+            @extend .s-btn-small;
+            color: $primary;
+            background-color: $white;
+            border-color: $primary;
+            box-shadow: none;
+            
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $primary;
+                border-color: $primary;
+                box-shadow: 0px 5px 10px 2px rgba(174, 193, 4, 0.20);
+                transition: all ease 300ms;
+                outline: none;
+            }
+        }
+
+        &-search{
+            @extend .s-btn-small;
+            position: absolute;
+            top: 3px;
+            left: 0;
+            background-color: transparent;
+            border: none;
+            font-size: 18px;
+            color: $white;
+            box-shadow: none;
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: transparent;
+                border: none;
+                outline: none;
+                box-shadow: none;
+            }
+        }
+
+        &-clear{
+            @extend .s-btn-small;
+            position: absolute;
+            top: 3px;
+            right: 0;
+            background-color: transparent;
+            border: none;
+            font-size: 18px;
+            color: $white;
+            box-shadow: none;
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $blue;
+                background-color: transparent;
+                border: none;
+                outline: none;
+                box-shadow: none;
+            }
+        }
+
+        &-edit{
+            @extend .s-btn-small;
+            color: $orange;
+            background-color: transparent;
+            border-color: transparent;
+            box-shadow: none;
+            padding: 0 5px;
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $orangeDark;
+                background-color: transparent;
+                border-color: transparent;
+                box-shadow: none;
+                outline: none;
+            }
+        }
+
+        &-delete{
+            @extend .s-btn-small;
+            color: $red;
+            background-color: transparent;
+            border-color: transparent;
+            box-shadow: none;
+            padding: 0 5px;
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $redDark;
+                background-color: transparent;
+                border-color: transparent;
+                box-shadow: none;
+                outline: none;
+            }
+        }
+
+        &-blue-empty{
+            @extend .s-btn-small;
+            color: $blue;
+            background-color: transparent;
+            border-color: transparent;
+            box-shadow: none;      
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $blueDark;
+                background-color: transparent;
+                border-color: transparent;
+                transition: all ease 300ms;
+                box-shadow: none;      
+                outline: none;
+            }
+
+        }
+
+        &-red{
+            @extend .s-btn-small;
+            color: $white;
+            background-color: $red;
+            border-color: $red;
+            box-shadow: 0px 3px 20px 0px rgba(255,108,96, 0.2) !important;
+            
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $redDark;
+                border-color: $redDark;
+                transition: all ease 300ms;
+                box-shadow: 0px 3px 20px 0px rgba(217,83,79, 0.2) !important;
+                outline: none;
+            }
+        }
+
+        &-redDark{
+            @extend .s-btn-small;
+            color: $white;
+            background-color: $redDark;
+            border-color: $redDark;
+            box-shadow: 0px 3px 20px 0px rgba(217,83,79, 0.2) !important;
+            
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $redDark;
+                border-color: $redDark;
+                transition: all ease 300ms;
+                box-shadow: 0px 3px 20px 0px rgba(217,83,79, 0.2) !important;
+                outline: none;
+            }
+        }
+
+        &-red-empty{
+            @extend .s-btn-small;
+            color: $red;
+            background-color: transparent;
+            border-color: transparent;
+            box-shadow: none;      
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $redDark;
+                background-color: transparent;
+                border-color: transparent;
+                transition: all ease 300ms;
+                box-shadow: none;      
+                outline: none;
+            }
+        }
+
+        &-redDark-empty{
+            @extend .s-btn-small;
+            color: $redDark;
+            background-color: transparent;
+            border-color: transparent;
+            box-shadow: none;      
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $redDark;
+                background-color: transparent;
+                border-color: transparent;
+                transition: all ease 300ms;
+                box-shadow: none;      
+                outline: none;
+            }
+        }
+
+        &-orange-empty{
+            @extend .s-btn-small;
+            color: $orange;
+            background-color: transparent;
+            border-color: transparent;
+            box-shadow: none;      
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $orangeDark;
+                background-color: transparent;
+                border-color: transparent;
+                transition: all ease 300ms;
+                box-shadow: none;      
+                outline: none;
+            }
+        }
+
+        &-popover-add{
+            color: $white;
+            background-color: $blue;
+            border: none;
+            box-shadow: 0px 5px 10px 2px rgba(23, 4, 193, 0.2);
+            margin-left: 5px;
+            height: 38px;
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $blueDark;
+                border: none;
+                box-shadow: 0px 5px 10px 2px rgba(20,3,173, 0.2);
+                transition: all ease 300ms;
+                outline: none;
+            }
+        }
+      
+    }
+
+    &-medium{
+        @extend .s-btn;
+        padding: 12px 24px;
+
+        &-primary{
+            @extend .s-btn-medium;
+            color: $white;
+            background-color: $primary;
+            border-color: $primary;
+            box-shadow: 0px 5px 10px 2px rgba(174, 193, 4, 0.2);
+            
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $primaryDark;
+                border-color: $primaryDark;
+                box-shadow: 0px 5px 10px 2px rgba(132, 141, 47, 0.2);
+                outline: none;
+            }
+        }
+
+        &-primary-border{
+            @extend .s-btn-medium;
+            color: $primary;
+            background-color: $white;
+            border-color: $primary;
+            box-shadow: none;
+            
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $primary;
+                border-color: $primary;
+                box-shadow: 0px 5px 10px 2px rgba(174, 193, 4, 0.20);
+                transition: all ease 300ms;
+                outline: none;
+            }
+        }
+
+        &-blue{
+            @extend .s-btn-medium;
+            color: $white;
+            background-color: $blue;
+            border-color: $blue;
+            box-shadow: 0px 5px 10px 2px rgba(23, 4, 193, 0.2);
+            
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $blueDark;
+                border-color: $blueDark;
+                box-shadow: 0px 5px 10px 2px rgba(20,3,173, 0.2);
+                transition: all ease 300ms;
+                outline: none;
+            }
+        }
+
+        &-gray-empty-blue{
+            @extend .s-btn-medium;
+            color: $lightgray4;
+            background-color: transparent;
+            border-color: transparent;
+            box-shadow: 0px 3px 20px 0px rgba(111, 114, 125, 0.2) !important;
+
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $blue;
+                border-color: $blue;
+                transition: all ease 300ms;
+                box-shadow: 0px 3px 20px 0px rgba(23, 4, 193, 0.2) !important;
+                outline: none;
+            }
+
+        }
+         
+    }
+
+    &-big{
+        @extend .s-btn;
+        padding: 16px 44px;
+
+        &-primary{
+            @extend .s-btn-big;
+            color: $white;
+            background-color: $primary;
+            border-color: $primary;
+            box-shadow: 0px 5px 10px 2px rgba(174, 193, 4, 0.2);
+
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $primaryDark;
+                border-color: $primaryDark;
+                box-shadow: 0px 5px 10px 2px rgba(132, 141, 47, 0.2);
+                transition: all ease 300ms;
+                outline: none;
+            }
+        }
+
+        &-primary-border{
+            @extend .s-btn-big;
+            color: $primary;
+            background-color: $white;
+            border-color: $primary;
+            box-shadow: none;
+            
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $primary;
+                border-color: $primary;
+                box-shadow: 0px 5px 10px 2px rgba(174, 193, 4, 0.20);
+                transition: all ease 300ms;
+                outline: none;
+            }
+        }
+    }
+}
+
+.btn-default.disabled{
+    @extend .s-btn;
+}
+
+.btn-group.open .dropdown-toggle {
+    box-shadow: none !important;
+}

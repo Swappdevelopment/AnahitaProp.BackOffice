@@ -1,0 +1,22 @@
+@import "../../../scss/_variables.scss";
+
+.s-card-profile{
+    margin: 30px 0;
+    text-align: center;
+
+    img{
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+    }
+
+    h4{
+        margin: 30px 0 0 0;
+        font-weight: bold;
+    }
+
+    h5{
+        margin: 10px 0;
+        color: $lightgray7;
+    }
+}

@@ -1,0 +1,296 @@
+@import "../scss/_variables.scss";
+
+/* Checkbox */
+
+.s-checkbox {
+    margin-top: 0;
+    margin-bottom: 0;
+    input[type=checkbox] {
+        cursor: pointer;
+    }
+}
+
+/* Tooltip */
+
+.tooltip-inner {
+    background-color: $blue;
+}
+
+.tooltip.top .tooltip-arrow {
+    border-top-color: $blue;
+}
+
+.tltpDelete {
+    .tooltip-inner {
+        background-color: $redDark !important;
+    }
+    .tooltip-arrow {
+        border-top-color: $redDark !important;
+    }
+}
+
+.tltpEdit {
+    .tooltip-inner {
+        background-color: $orangeDark !important;
+    }
+    .tooltip-arrow {
+        border-top-color: $orangeDark !important;
+    }
+}
+
+.tltpResendNotSent {
+    .tooltip-inner {
+        background-color: $orangeDark !important;
+    }
+    .tooltip-arrow {
+        border-top-color: $orangeDark !important;
+    }
+}
+
+.tltpResendFail {
+    .tooltip-inner {
+        background-color: $redDark !important;
+    }
+    .tooltip-arrow {
+        border-top-color: $redDark !important;
+    }
+}
+
+.tltpSaving {
+    .tooltip-inner {
+        background-color: $primaryDark !important;
+    }
+    .tooltip-arrow {
+        border-top-color: $primaryDark !important;
+    }
+}
+
+.tltpError {
+    .tooltip-inner {
+        background-color: $redDark !important;
+    }
+    .tooltip-arrow {
+        border-top-color: $redDark !important;
+    }
+}
+
+
+/* Alert */
+
+.s-alert {
+    padding: 0 !important;
+    margin: 0 !important;
+    &.alert-info {
+        color: $red;
+        background-color: transparent;
+        border-color: transparent;
+    }
+}
+
+.s-alert-m {
+    margin: 20px 0 !important;
+    padding: 0 !important;
+    &.alert-info {
+        color: $red;
+        background-color: transparent;
+        border-color: transparent;
+    }
+}
+
+/* Popover */
+
+#popDelete {
+    border: none;
+    box-shadow: 0px 0px 15px 1px rgba(217, 83, 79, 0.2);
+    &.popover {
+        max-width: 300px;
+    }
+    .popover-title {
+        color: $white;
+        background-color: $redDark;
+        border-bottom: 1px solid $redDark;
+    }
+    p {
+        padding: 8px 0;
+        margin: 0;
+    }
+    &.popover.left>.arrow {
+        border-left-color: $white !important;
+    }
+}
+
+#popBusinessType {
+    top: 105px !important;
+    left: 313px !important;
+    border: none;
+    box-shadow: 0px 0px 15px 1px rgba(23, 4, 193, 0.2);
+    .popover-content {
+        width: 264px;
+        padding: 12px;
+    }
+    &.popover.bottom>.arrow {
+        border-bottom-color: $white !important;
+    }
+}
+
+#popObjectives {
+    border: none;
+    box-shadow: 0px 0px 15px 1px rgba(23, 4, 193, 0.2);
+    &.popover {
+        max-width: 450px;
+    }
+    .popover-close {
+        position: absolute;
+        right: 6px;
+        top: 6px;
+    }
+    p {
+        margin: 0;
+    }
+    &.popover.top>.arrow {
+        border-top-color: $white !important;
+    }
+}
+
+#popError {
+    border: none;
+    box-shadow: 0px 0px 15px 1px rgba(217, 83, 79, 0.2);
+    &.popover {
+        max-width: 450px;
+    }
+    .popover-title {
+        color: $white;
+        background-color: $redDark;
+        border-bottom: 1px solid $redDark;
+    }
+    p {
+        padding: 8px 14px;
+        margin: 0;
+    }
+    &.popover.left>.arrow {
+        border-left-color: $white !important;
+    }
+}
+
+/* Badge */
+
+.s-badge{
+    padding: 4px 8px;
+
+    &-red{
+        @extend .s-badge;
+        background-color: $red;
+        border-color: $red;
+        transition: all ease 300ms;
+        
+        &:hover,
+        &:focus,
+        &:active,
+        &:active:focus{
+            background-color: $redDark;
+            border-color: $redDark;
+            color: $white;
+            outline: none;
+            box-shadow: none;
+            transition: all ease 300ms;
+        }
+    }
+
+    &-blue{
+        @extend .s-badge;
+        background-color: $blue;
+        border-color: $blue;
+        transition: all ease 300ms;
+        
+        &:hover,
+        &:focus,
+        &:active,
+        &:active:focus{
+            background-color: $blueDark;
+            border-color: $blueDark;
+            color: $white;
+            outline: none;
+            box-shadow: none;
+            transition: all ease 300ms;
+        }
+    }
+
+    &-orange{
+        @extend .s-badge;
+        background-color: $orange;
+        border-color: $orange;
+        transition: all ease 300ms;
+        
+        &:hover,
+        &:focus,
+        &:active,
+        &:active:focus{
+            background-color: $orangeDark;
+            border-color: $orangeDark;
+            color: $white;
+            outline: none;
+            box-shadow: none;
+            transition: all ease 300ms;
+        }
+    }
+
+    &-primary{
+        @extend .s-badge;
+        background-color: $primary;
+        border-color: $primary;
+        transition: all ease 300ms;
+        
+        &:hover,
+        &:focus,
+        &:active,
+        &:active:focus{
+            background-color: $primary;
+            border-color: $primary;
+            color: $white;
+            outline: none;
+            box-shadow: none;
+            transition: all ease 300ms;
+        }
+    }
+
+    &-lightgray{
+        @extend .s-badge;
+        background-color: $lightgray3;
+        border-color: $lightgray3;
+        transition: all ease 300ms;
+        
+        &:hover,
+        &:focus,
+        &:active,
+        &:active:focus{
+            background-color: $lightgray3;
+            border-color: $lightgray3;
+            color: $white;
+            outline: none;
+            box-shadow: none;
+            transition: all ease 300ms;
+        }
+    }
+}
+
+/* Switch */
+
+.s-switch{
+   
+}
+
+/* Label */
+
+.s-label{
+    margin-bottom: 10px;
+
+    span {
+        font-weight: bold;
+        padding-left: 2px;
+    }
+    
+    &-error{
+        padding-left: 2px;
+        color: $redDark;
+    }
+}
