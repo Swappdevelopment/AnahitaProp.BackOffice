@@ -58,7 +58,7 @@ namespace AnahitaProp.BackOffice
 
                 if (_env.IsDevelopment())
                 {
-                    connStr = DevSecrets.GetSecretValue("connectionStrings:thinkBox:local:mysql");
+                    connStr = DevSecrets.GetSecretValue("connectionStrings:anahitaProp:local:mysql");
                }
                 else if (_env.IsStaging())
                 {
