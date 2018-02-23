@@ -2,9 +2,11 @@ import BaseModel from './BaseModel';
 
 export default class ProductItem extends BaseModel {
 
-    constructor(value, genId) {
+    constructor(value, genId, activeLangCode) {
 
         super(genId);
+
+        this.activeLangCode = activeLangCode ? activeLangCode.toLowerCase() : null;
 
         this.sync = this.sync.bind(this);
         this.clearValues = this.clearValues.bind(this);
@@ -32,6 +34,8 @@ export default class ProductItem extends BaseModel {
             binaryValue: 0,
             hideSearch: false,
             isGroup: false,
+            name: '',
+            names: [],
         };
     }
 
@@ -53,6 +57,7 @@ export default class ProductItem extends BaseModel {
 
         if (value) {
 
+            debugger;
             this.id = value.id;
             this.status = value.status;
             this.uid = value.uid ? value.uid : '';
@@ -69,6 +74,34 @@ export default class ProductItem extends BaseModel {
             this.binaryValue = value.binaryValue;
             this.hideSearch = value.hideSearch;
             this.isGroup = value.isGroup;
+
+            this.name = '';
+            this.names.length = 0;
+
+            if (value.names && value.names.length > 0) {
+
+                this.names.push(...value.names.map((v, i) => {
+
+                    const lCode = v.language_Code ? v.language_Code.toLowerCase() : '';
+
+                    if (this.activeLangCode && this.activeLangCode === lCode) {
+
+                        this.name = v.value;
+                    }
+
+                    return this.extendObv(
+                        {
+                            id: v.id,
+                            status: v.status,
+                            language_Id: v.language_Id,
+                            language_Code: lCode
+                        },
+                        {
+                            recordState: 0,
+                            value: v.value
+                        });
+                }));
+            }
         }
         else {
 
@@ -99,13 +132,18 @@ export default class ProductItem extends BaseModel {
         this.binaryValue = 0;
         this.hideSearch = false;
         this.isGroup = false;
+
+        this.name = '';
+        this.names.length = 0;
     }
 
     getValue() {
 
         const temp = Object.assign({}, this);
 
+        delete temp.name;
         delete temp.isSaving;
+        temp.names = this.names.map((v, i) => Object.assign({}, v));
 
         return temp;
     }

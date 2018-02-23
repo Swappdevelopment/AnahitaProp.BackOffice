@@ -53,9 +53,9 @@ export default class ProductsViewModel {
 
     }
 
-    syncProductItem(value) {
+    syncProductItem(value, activeLangCode) {
 
-        return new ProductItem(value, ++this.idGenerator);
+        return new ProductItem(value, ++this.idGenerator, activeLangCode);
     }
 
     getLazyWaitRecord() {

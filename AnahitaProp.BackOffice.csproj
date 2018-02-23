@@ -44,6 +44,10 @@
     <Content Remove="wwwroot\images\company.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove=".DS_Store" />
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+    <None Remove="AnahitaProp.BackOffice.userprefs" />
     <None Remove="Frontend\components\Pages\Companies_\Companies.jsx" />
   </ItemGroup>
 </Project>

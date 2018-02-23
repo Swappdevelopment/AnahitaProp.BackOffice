@@ -90,7 +90,7 @@ const Products = inject("store")(
 
                                 this.viewModel.removeLazyWaitRecord();
 
-                                const temp = [...data.map((v, i) => this.viewModel.syncProductItem(v))];
+                                const temp = [...data.map((v, i) => this.viewModel.syncProductItem(v, this.activeLang.code))];
                                 temp.push(this.viewModel.getLazyWaitRecord());
 
                                 this.viewModel.products.push(...temp);
@@ -163,7 +163,7 @@ const Products = inject("store")(
                                 <div className={statusColor}>
                                 </div>
                             </td>
-                            <td className="s-td-cell-name-short">{value.title}</td>
+                            <td className="s-td-cell-name-short">{value.name}</td>
 
                             <td className="hidden-xs hidden-sm">
                                 {
