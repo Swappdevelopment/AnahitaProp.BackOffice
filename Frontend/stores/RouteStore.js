@@ -12,11 +12,9 @@ export default class RouteStore {
         'changepassword',
         'user-profile',
         'user-management',
-        'trainings',
-        'contacts',
-        'companies',
-        'clubs',
-        'catalogs'
+        'properties',
+        'projects',
+        'products'
     ];
 
     constructor(accessStore, uiStore) {

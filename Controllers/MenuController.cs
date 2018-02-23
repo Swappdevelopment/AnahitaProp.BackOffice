@@ -40,7 +40,7 @@ namespace AnahitaProp.BackOffice
                 {
                     result = result,
                     fullName = fullName,
-                    email = _dbi?.LoginConnectionToken?.Email,
+                    email = (_dbi?.LoginConnectionToken?.Email == _dbi?.LoginConnectionToken?.Uid ? "" : _dbi?.LoginConnectionToken?.Email),
                     gender = _dbi?.LoginConnectionToken?.Gender
                 });
             }

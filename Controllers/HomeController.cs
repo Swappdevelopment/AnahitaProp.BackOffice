@@ -30,7 +30,7 @@ namespace AnahitaProp.BackOffice
 
             try
             {
-                assembly = Assembly.Load(new AssemblyName("ThinkBox.Localization"));
+                assembly = Assembly.Load(new AssemblyName("AnahitaProp.BackOffice.Localization"));
 
                 fileInfo = new FileInfo(assembly.Location);
 

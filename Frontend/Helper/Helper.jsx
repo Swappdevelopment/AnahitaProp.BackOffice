@@ -290,31 +290,6 @@ export default class Helper {
         return GlobalValues.enumValues.genders;
     }
 
-    static getTitles() {
-
-        return GlobalValues.enumValues.titles;
-    }
-
-    static getCourseTypes() {
-
-        return GlobalValues.enumValues.courseTypes;
-    }
-
-    static getCourseApproaches() {
-
-        return GlobalValues.enumValues.courseApproaches;
-    }
-
-    static getContactTypes() {
-
-        return GlobalValues.enumValues.contactTypes;
-    }
-
-    static getTraineeGrades() {
-
-        return GlobalValues.enumValues.traineeGrades;
-    }
-
     static getLangVersion() {
 
         return Helper.getVersion('langVersion');

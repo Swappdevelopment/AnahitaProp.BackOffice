@@ -53,11 +53,10 @@ const AppRoute =
                         <div style={{ display: 'none' }}>
                             <Route exact path="/" render={p => this.processPath(true)} />
                             <Route exact path="/dashboard" render={p => this.processPath(true)} />
-                            <Route exact path="/trainings" render={p => this.processPath(true)} />
-                            <Route exact path="/contacts" render={p => this.processPath(true)} />
-                            <Route exact path="/companies" render={p => this.processPath(true)} />
-                            <Route exact path="/clubs" render={p => this.processPath(true)} />
-                            <Route exact path="/catalogs" render={p => this.processPath(true)} />
+                            
+                            <Route exact path="/properties" render={p => this.processPath(true)} />
+                            <Route exact path="/projects" render={p => this.processPath(true)} />
+                            <Route exact path="/products" render={p => this.processPath(true)} />
 
                             <Route exact path="/user-profile" render={p => this.processPath(true)} />
                             <Route exact path="/user-management" render={p => this.processPath(true)} />

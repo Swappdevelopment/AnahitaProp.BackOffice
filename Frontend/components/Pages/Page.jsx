@@ -7,10 +7,7 @@ import WaitControl from '../WaitControl/WaitControl';
 
 import UserProfile from './UserProfile/UserProfile';
 import UserManagement from './UserManagement/UserManagement';
-import Companies from './Companies/Companies';
-import Clubs from './Clubs/Clubs';
-import Catalogs from './Catalogs/Catalogs';
-import Trainings from './Trainings/Trainings';
+import Products from './Products/Products';
 
 const Page =
     inject('store')(
@@ -36,24 +33,23 @@ const Page =
 
                     switch (this.menuWrapper.slug) {
 
-                        case 'companies':
+                        case 'properties':
                             return (
-                                <Companies pageViewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                <div>
+                                    <h3>{this.activeLang.labels[`lbl_Menu_${this.menuWrapper.slug}`]}</h3>
+                                </div>
                             );
 
-                        case 'clubs':
+                        case 'projects':
                             return (
-                                <Clubs pageViewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                <div>
+                                    <h3>{this.activeLang.labels[`lbl_Menu_${this.menuWrapper.slug}`]}</h3>
+                                </div>
                             );
 
-                        case 'catalogs':
+                        case 'products':
                             return (
-                                <Catalogs pageViewModel={this.viewModel} errorHandler={this.errorHandler} />
-                            );
-
-                        case 'trainings':
-                            return (
-                                <Trainings pageViewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                <Products pageViewModel={this.viewModel} errorHandler={this.errorHandler} />
                             );
 
                         case 'user-profile':

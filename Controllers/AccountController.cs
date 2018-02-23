@@ -117,7 +117,7 @@ namespace AnahitaProp.BackOffice
                 {
                     Ok = true,
                     FullName = fullName,
-                    Email = _dbi?.LoginConnectionToken?.Email,
+                    Email = (_dbi?.LoginConnectionToken?.Email == _dbi?.LoginConnectionToken?.Uid ? "" : _dbi?.LoginConnectionToken?.Email),
                     Gender = _dbi?.LoginConnectionToken?.Gender
                 });
             }

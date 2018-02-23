@@ -429,4 +429,13 @@
   <data name="lbl_Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="lbl_Menu_products" xml:space="preserve">
+    <value>Products</value>
+  </data>
+  <data name="lbl_Menu_projects" xml:space="preserve">
+    <value>Projects</value>
+  </data>
+  <data name="lbl_Menu_properties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
 </root>

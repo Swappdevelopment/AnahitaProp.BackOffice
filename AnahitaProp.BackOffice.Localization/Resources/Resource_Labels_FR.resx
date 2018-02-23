@@ -432,4 +432,13 @@
   <data name="lbl_UserManagement" xml:space="preserve">
     <value>Gestion d'Utilisateurs</value>
   </data>
+  <data name="lbl_Menu_products" xml:space="preserve">
+    <value>Produits</value>
+  </data>
+  <data name="lbl_Menu_projects" xml:space="preserve">
+    <value>Projets</value>
+  </data>
+  <data name="lbl_Menu_properties" xml:space="preserve">
+    <value>Propriétées</value>
+  </data>
 </root>

@@ -17,12 +17,12 @@ import PageComponent from "../../PageComponents/PageComponent";
 import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
-import CatalogViewModel from "./CatalogViewModel";
+import ProductsViewModel from "./ProductsViewModel";
 
 
-const Catalogs = inject("store")(
+const Products = inject("store")(
     observer(
-        class Catalogs extends React.Component {
+        class Products extends React.Component {
 
             constructor(props) {
                 super(props);
@@ -32,14 +32,14 @@ const Catalogs = inject("store")(
                 this.pageViewModel = props.pageViewModel;
                 this.errorHandler = props.errorHandler;
 
-                this.viewModel = new CatalogViewModel();
+                this.viewModel = new ProductsViewModel();
 
                 this.modalHandler = new ModalHandler();
                 this.activeLang = this.props.store.langStore.active;
 
-                this.getCatalogs = this.getCatalogs.bind(this);
-                this.getCatalogRow = this.getCatalogRow.bind(this);
-                this.saveCatalogs = this.saveCatalogs.bind(this);
+                this.getProducts = this.getProducts.bind(this);
+                this.getProductsRow = this.getProductsRow.bind(this);
+                this.saveProducts = this.saveProducts.bind(this);
 
                 this.changeStatus = this.changeStatus.bind(this);
 
@@ -48,16 +48,17 @@ const Catalogs = inject("store")(
             }
 
             componentWillMount() {
-                this.getCatalogs();
+
+                this.getProducts();
             }
 
-            getCatalogs() {
+            getProducts() {
 
                 const isFullRefresh = this.offset === 0;
 
                 if (isFullRefresh) {
 
-                    this.viewModel.catalogs.length = 0;
+                    this.viewModel.products.length = 0;
 
                     this.pageViewModel.pageBlurPixels = 3;
                     this.pageViewModel.showPageWaitControl = true;
@@ -75,24 +76,24 @@ const Catalogs = inject("store")(
 
                 if (this.viewModel.searchText) {
 
-                    params['titleFilter'] = this.viewModel.searchText;
+                    params['nameFilter'] = this.viewModel.searchText;
                 }
 
                 let idCounter = -1;
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromiseGet('/catalog/get/', params),
+                        promise: Helper.FetchPromiseGet('/products/get/', params),
                         success: data => {
 
                             if (data && data.length > 0) {
 
                                 this.viewModel.removeLazyWaitRecord();
 
-                                const temp = [...data.map((v, i) => this.viewModel.syncCatalogItem(v))];
+                                const temp = [...data.map((v, i) => this.viewModel.syncProductItem(v))];
                                 temp.push(this.viewModel.getLazyWaitRecord());
 
-                                this.viewModel.catalogs.push(...temp);
+                                this.viewModel.products.push(...temp);
                             }
                             else {
 
@@ -101,12 +102,12 @@ const Catalogs = inject("store")(
                         },
                         incrementSession: () => {
 
-                            this.getsCatalogsPromiseID = this.getsCatalogsPromiseID ? (this.getsCatalogsPromiseID + 1) : 1;
-                            idCounter = this.getsCatalogsPromiseID;
+                            this.getProductsPromiseID = this.getProductsPromiseID ? (this.getProductsPromiseID + 1) : 1;
+                            idCounter = this.getProductsPromiseID;
                         },
                         sessionValid: () => {
 
-                            return idCounter === this.getsCatalogsPromiseID;
+                            return idCounter === this.getProductsPromiseID;
                         }
                     },
                     error => {
@@ -124,7 +125,7 @@ const Catalogs = inject("store")(
                 );
             }
 
-            getCatalogRow(value, index) {
+            getProductsRow(value, index) {
 
                 let ovtObjectivesTarget = null;
                 let statusColor = null;
@@ -152,8 +153,7 @@ const Catalogs = inject("store")(
                             <RowLazyWait colSpan={7} spin={true} onAppear={() => {
 
                                 this.offset += this.limit;
-                                this.getCatalogs();
-
+                                this.getProducts();
                             }} />
                         </tr>
                         :
@@ -186,7 +186,7 @@ const Catalogs = inject("store")(
                                             <Button
                                                 className="s-btn-small-blue-empty"
                                                 ref={r => ovtObjectivesTarget = ReactDOM.findDOMNode(r)}
-                                                onClick={e => this.getCatalogObjectives(value, () => value.showObjectives = true)}>
+                                                onClick={e => this.getProductsObjectives(value, () => value.showObjectives = true)}>
                                                 <span className={`la ${value.isGettingObjectives ? 'la-circle-o-notch la-spin' : 'la-comment-o'}`}></span>
                                             </Button>
                                         </div>
@@ -232,7 +232,7 @@ const Catalogs = inject("store")(
                                 displayName={value ? value.title : ''}
                                 onEdit={e => {
 
-                                    this.getCatalogObjectives(value);
+                                    this.getProductsObjectives(value);
                                     this.viewModel.selectedValue = value;
                                     this.modalHandler.show();
                                 }}
@@ -240,39 +240,39 @@ const Catalogs = inject("store")(
 
                                     if (value.recordState === 10) {
 
-                                        this.viewModel.removeCatalog(value);
+                                        this.viewModel.removeProducts(value);
                                     }
                                     else {
 
                                         value.recordState = 30;
-                                        this.saveCatalogs();
+                                        this.saveProducts();
                                     }
                                 }}
-                                deleteTitle={this.activeLang.labels["lbl_DeleteCatalog"]} />
+                                deleteTitle={this.activeLang.labels["lbl_DeleteProducts"]} />
                         </tr >
                 );
             }
 
-            saveCatalogs() {
+            saveProducts() {
 
                 let idCounter = -1;
 
                 const savePromises = {
-                    options: this.viewModel.catalogs
+                    options: this.viewModel.products
                         .filter((v, i) => v.recordState && v.recordState !== 0 && !v.isSaving)
                         .map((toSave, index) => {
 
                             toSave.isSaving = true;
 
                             return {
-                                promise: Helper.FetchPromisePost('/catalog/Save', toSave.getValue()),
+                                promise: Helper.FetchPromisePost('/products/Save', toSave.getValue()),
                                 success: data => {
 
                                     if (data) {
 
                                         if (toSave.recordState === 30) {
 
-                                            this.viewModel.removeCatalog(toSave);
+                                            this.viewModel.removeProducts(toSave);
                                         }
                                         else if (!data.ok) {
 
@@ -292,12 +292,12 @@ const Catalogs = inject("store")(
                         }),
                     incrementSession: () => {
 
-                        this.saveCatalogsPromiseID = this.saveCatalogsPromiseID ? (this.saveCatalogsPromiseID + 1) : 1;
-                        idCounter = this.saveCatalogsPromiseID;
+                        this.saveProductsPromiseID = this.saveProductsPromiseID ? (this.saveProductsPromiseID + 1) : 1;
+                        idCounter = this.saveProductsPromiseID;
                     },
                     sessionValid: () => {
 
-                        return idCounter === this.saveCatalogsPromiseID;
+                        return idCounter === this.saveProductsPromiseID;
                     }
                 };
 
@@ -314,7 +314,7 @@ const Catalogs = inject("store")(
 
                     Helper.RunPromise(
                         {
-                            promise: Helper.FetchPromisePost('/catalog/changeStatus', { id: value.id, status: value.status }),
+                            promise: Helper.FetchPromisePost('/products/changeStatus', { id: value.id, status: value.status }),
                             success: data => {
 
 
@@ -348,7 +348,7 @@ const Catalogs = inject("store")(
                 }
             }
 
-            getCatalogObjectives(value, onSuccess) {
+            getProductsObjectives(value, onSuccess) {
 
                 if (value && value.id > 0 && !value.isGettingObjectives) {
 
@@ -366,7 +366,7 @@ const Catalogs = inject("store")(
 
                         Helper.RunPromise(
                             {
-                                promise: Helper.FetchPromiseGet('/catalog/GetObjectives/', { headerID: value.id }),
+                                promise: Helper.FetchPromiseGet('/products/GetObjectives/', { headerID: value.id }),
                                 success: data => {
 
                                     if (data && data.result) {
@@ -385,12 +385,12 @@ const Catalogs = inject("store")(
                                 },
                                 incrementSession: () => {
 
-                                    this.getCatalogObjectivesPromiseID = this.getCatalogObjectivesPromiseID ? (this.getCatalogObjectivesPromiseID + 1) : 1;
-                                    idCounter = this.getCatalogObjectivesPromiseID;
+                                    this.getProductsObjectivesPromiseID = this.getProductsObjectivesPromiseID ? (this.getProductsObjectivesPromiseID + 1) : 1;
+                                    idCounter = this.getProductsObjectivesPromiseID;
                                 },
                                 sessionValid: () => {
 
-                                    return idCounter === this.getCatalogObjectivesPromiseID;
+                                    return idCounter === this.getProductsObjectivesPromiseID;
                                 }
                             },
                             error => {
@@ -429,51 +429,51 @@ const Catalogs = inject("store")(
 
                     <PageComponent
 
-                        paTitle={this.activeLang.labels["lbl_Menu_catalogs"]}
-                        paSearchPlaceholder={this.activeLang.labels["lbl_SearchCatalog"]}
+                        paTitle={this.activeLang.labels["lbl_Menu_products"]}
+                        paSearchPlaceholder={this.activeLang.labels["lbl_SearchProducts"]}
                         paSearchValue={this.viewModel.searchText}
                         paOnSearchValueChange={e => this.viewModel.searchText = e.target.value}
                         paOnSearch={e => {
                             this.offset = 0;
-                            this.getCatalogs();
+                            this.getProducts();
                         }}
                         paClearSearchValue={e => this.viewModel.searchText = ''}
                         paOnAdd={e => {
-                            this.viewModel.selectedValue = this.viewModel.getNewCatalog();
+                            this.viewModel.selectedValue = this.viewModel.getNewProducts();
                             this.modalHandler.show();
                         }}
                         paShowSaveButton={e => {
-                            const temp = this.viewModel.catalogs.find((v, i) => !v.isLazyWait && v.recordState !== 0 && !v.isSaving) ? true : false;
+                            const temp = this.viewModel.products.find((v, i) => !v.isLazyWait && v.recordState !== 0 && !v.isSaving) ? true : false;
 
                             return !this.viewModel.isModalShown && temp;
                         }}
                         paGlobalSaveOnClick={e => {
-                            this.saveCatalogs();
+                            this.saveProducts();
                         }}
                         paRefresh={e => {
 
                             this.offset = 0;
-                            this.getCatalogs();
+                            this.getProducts();
                         }}
                         paStatusAll={e => {
 
                             this.viewModel.statusType = null;
                             this.offset = 0;
-                            this.getCatalogs();
+                            this.getProducts();
 
                         }}
                         paStatusActive={e => {
 
                             this.viewModel.statusType = 1;
                             this.offset = 0;
-                            this.getCatalogs();
+                            this.getProducts();
 
                         }}
                         paStatusInactive={e => {
 
                             this.viewModel.statusType = 0;
                             this.offset = 0;
-                            this.getCatalogs();
+                            this.getProducts();
 
                         }}
 
@@ -495,7 +495,7 @@ const Catalogs = inject("store")(
 
                             );
                         }}
-                        getTableRows={() => this.viewModel.catalogs.map(this.getCatalogRow)}
+                        getTableRows={() => this.viewModel.products.map(this.getProductsRow)}
                         hideNext
                         hidePrev
                         modalHandler={this.modalHandler}
@@ -519,7 +519,7 @@ const Catalogs = inject("store")(
                                     <div>
 
                                         <div className="modal-avatar">
-                                            <img src="../images/catalog.png" />
+                                            <img src="../images/products.png" />
                                         </div>
 
                                         <div className="modal-form">
@@ -728,12 +728,12 @@ const Catalogs = inject("store")(
                                         if (this.viewModel.selectedValue
                                             && this.viewModel.selectedValue.recordState === 10) {
 
-                                            this.viewModel.addNewCatalog(this.viewModel.selectedValue);
+                                            this.viewModel.addNewProducts(this.viewModel.selectedValue);
                                         }
 
                                         if (args.action === 'save') {
 
-                                            this.saveCatalogs();
+                                            this.saveProducts();
                                         }
                                         break;
 
@@ -743,7 +743,7 @@ const Catalogs = inject("store")(
 
                                             if (this.viewModel.selectedValue.recordState === 10) {
 
-                                                this.viewModel.removeCatalog(this.viewModel.selectedValue);
+                                                this.viewModel.removeProducts(this.viewModel.selectedValue);
                                             }
                                             else {
 
@@ -762,4 +762,4 @@ const Catalogs = inject("store")(
     )
 );
 
-export default Catalogs;
+export default Products;

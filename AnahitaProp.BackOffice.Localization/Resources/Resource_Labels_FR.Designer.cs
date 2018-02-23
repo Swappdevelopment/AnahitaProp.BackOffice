@@ -602,6 +602,33 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Produits.
+        /// </summary>
+        public static string lbl_Menu_products {
+            get {
+                return ResourceManager.GetString("lbl_Menu_products", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Projets.
+        /// </summary>
+        public static string lbl_Menu_projects {
+            get {
+                return ResourceManager.GetString("lbl_Menu_projects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Propriétées.
+        /// </summary>
+        public static string lbl_Menu_properties {
+            get {
+                return ResourceManager.GetString("lbl_Menu_properties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gestion des Utilisateurs.
         /// </summary>
         public static string lbl_Menu_usermanagement {
