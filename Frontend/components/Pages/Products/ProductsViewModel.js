@@ -1,79 +1,90 @@
-import { extendObservable } from 'mobx';
+import { types, destroy } from 'mobx-state-tree';
 
-import ProductItem from '../../../Models/ProductItem';
+import BaseModel from '../../../Models/BaseModel';
+import ProductModel from '../../../Models/ProductModel';
 
-export default class ProductsViewModel {
 
-    constructor() {
-
-        this.originalValue = null;
-        this.idGenerator = 0;
-
-        extendObservable(this, {
-            isLazyLoading: false,
-            isModalShown: false,
-            selectedValue: null,
-            searchText: '',
-            products: [],
-            statusType: 1
-        });
-
-        this.syncProductItem = this.syncProductItem.bind(this);
+const ProductsViewModel = types.model(
+    'ProductsViewModel',
+    {
+        isLazyLoading: false,
+        isModalShown: false,
+        selectedValue: types.maybe(types.reference(ProductModel), types.null),
+        searchText: types.optional(types.string, ''),
+        products: types.optional(types.array(ProductModel), [])
     }
+).actions(
+    self => ({
 
-    getNewProduct() {
+        setPropValue: value => {
+            BaseModel.setPropValue(self, value);
+        },
 
-        this.idGenerator += 1;
-        const temp = new ProductItem(ProductItem.getObject(), this.idGenerator);
-        temp.recordState = 10;
+        clearProducts: () => {
 
-        return temp;
-    }
+            self.products.length = 0;
+        },
 
-    addNewProduct(value) {
+        addNewProduct: value => {
 
-        if (value) {
-            this.products.splice(0, 0, value);
-        }
+            if (value) {
 
-        return value;
-    }
+                self.products.splice(0, 0, value);
+            }
 
-    removeProduct(product) {
+            return value;
+        },
 
-        if (product && this.products) {
+        pushProduct: (...product) => {
 
-            const index = this.products.indexOf(product);
+            if (product) {
 
-            if (index >= 0) {
+                self.products.push(...product);
+            }
+        },
 
-                this.clubs.splice(index, 1);
+        removeProduct: product => {
+
+            if (product) {
+
+                destroy(product);
+            }
+        },
+
+        removeLazyWaitRecord: () => {
+
+            if (self.products
+                && self.products.length > 0
+                && self.products[self.products.length - 1].isLazyWait) {
+
+                destroy(self.products[self.products.length - 1]);
             }
         }
+    }));
 
-    }
 
-    syncProductItem(value, activeLangCode) {
 
-        return new ProductItem(value, ++this.idGenerator, activeLangCode);
-    }
+ProductsViewModel.init = () => {
 
-    getLazyWaitRecord() {
+    const self = ProductsViewModel.create({});
+    self.idGenerator = 0;
+    self.statusType = 1;
 
-        return {
-            isLazyWait: true,
-            genId: ++this.idGenerator
-        };
-    }
+    self.syncProduct = (value, activeLangCode) => ProductModel.init(value, ++self.idGenerator, activeLangCode);
 
-    removeLazyWaitRecord() {
+    self.getNewProduct = () => {
 
-        if (this.products
-            && this.products.length > 0
-            && this.products[this.products.length - 1].isLazyWait) {
+        const newProd = ProductModel.init(ProductModel.getObject(), ++self.idGenerator);
+        newProd.setRecordState(10);
 
-            this.products.splice(this.products.length - 1, 1);
-        }
-    }
+        return newProd;
+    };
 
-}
+    self.getLazyWaitRecord = () => ProductModel.init({ id: -1, isLazyWait: true }, ++self.genId);
+
+
+    return self;
+};
+
+
+export default ProductsViewModel;

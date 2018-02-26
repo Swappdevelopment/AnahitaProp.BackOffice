@@ -23,14 +23,14 @@ namespace AnahitaProp.BackOffice
         [HttpGet]
         [Access]
         [MenuRequirement("products>crud")]
-        public IActionResult Get(long productID = 0, int offset = 0, int limit = 0)
+        public IActionResult Get(long productID = 0, short? statusFilter = null, int offset = 0, int limit = 0)
         {
             Product[] products = null;
 
 
             try
             {
-                products = _dbi.GetProducts(withNames: true, offset: 0, limit: limit);
+                products = _dbi.GetProducts(withNames: true, offset: 0, statusFilter: statusFilter, limit: limit);
 
                 return Json(products == null ? new object[0] : products.Select(l => l.Simplify()).ToArray());
             }

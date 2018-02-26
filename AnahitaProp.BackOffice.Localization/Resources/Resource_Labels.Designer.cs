@@ -530,6 +530,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gross Size.
+        /// </summary>
+        public static string lbl_GrossSize {
+            get {
+                return ResourceManager.GetString("lbl_GrossSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello.
         /// </summary>
         public static string lbl_Hello {
@@ -652,6 +661,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Name {
             get {
                 return ResourceManager.GetString("lbl_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Net Size.
+        /// </summary>
+        public static string lbl_NetSize {
+            get {
+                return ResourceManager.GetString("lbl_NetSize", resourceCulture);
             }
         }
         

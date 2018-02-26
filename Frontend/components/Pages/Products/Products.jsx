@@ -32,7 +32,7 @@ const Products = inject("store")(
                 this.pageViewModel = props.pageViewModel;
                 this.errorHandler = props.errorHandler;
 
-                this.viewModel = new ProductsViewModel();
+                this.viewModel = ProductsViewModel.init();
 
                 this.modalHandler = new ModalHandler();
                 this.activeLang = this.props.store.langStore.active;
@@ -58,14 +58,14 @@ const Products = inject("store")(
 
                 if (isFullRefresh) {
 
-                    this.viewModel.products.length = 0;
+                    this.viewModel.clearProducts();
 
                     this.pageViewModel.pageBlurPixels = 3;
                     this.pageViewModel.showPageWaitControl = true;
                 }
                 else {
 
-                    this.viewModel.isLazyLoading = true;
+                    this.viewModel.setPropValue({ isLazyLoading: true });
                 }
 
                 const params = {
@@ -90,10 +90,10 @@ const Products = inject("store")(
 
                                 this.viewModel.removeLazyWaitRecord();
 
-                                const temp = [...data.map((v, i) => this.viewModel.syncProductItem(v, this.activeLang.code))];
+                                const temp = [...data.map((v, i) => this.viewModel.syncProduct(v, this.activeLang.code))];
                                 temp.push(this.viewModel.getLazyWaitRecord());
 
-                                this.viewModel.products.push(...temp);
+                                this.viewModel.pushProduct(...temp);
                             }
                             else {
 
@@ -120,35 +120,17 @@ const Products = inject("store")(
                     () => {
                         this.pageViewModel.pageBlurPixels = 0;
                         this.pageViewModel.showPageWaitControl = false;
-                        this.viewModel.isLazyLoading = false;
+
+                        this.viewModel.setPropValue({ isLazyLoading: false });
                     }
                 );
             }
 
             getProductsRow(value, index) {
 
-                let ovtObjectivesTarget = null;
-                let statusColor = null;
+                if (value.isLazyWait) {
 
-                switch (value.recordState) {
-
-                    case 10:
-                        statusColor = 's-status-add';
-                        break;
-
-                    case 20:
-                        statusColor = 's-status-edit';
-                        break;
-
-                    case 30:
-                        statusColor = 's-status-delete';
-                        break;
-
-                }
-
-                return (
-
-                    value.isLazyWait ?
+                    return (
                         <tr key={value.genId}>
                             <RowLazyWait colSpan={7} spin={true} onAppear={() => {
 
@@ -156,48 +138,45 @@ const Products = inject("store")(
                                 this.getProducts();
                             }} />
                         </tr>
-                        :
+                    );
+                }
+                else {
+
+                    let ovtObjectivesTarget = null;
+                    let statusColor = null;
+
+                    switch (value.recordState) {
+
+                        case 10:
+                            statusColor = 's-status-add';
+                            break;
+
+                        case 20:
+                            statusColor = 's-status-edit';
+                            break;
+
+                        case 30:
+                            statusColor = 's-status-delete';
+                            break;
+
+                    }
+
+                    let tempCode = value.code ? value.code.split('-') : null;
+
+                    tempCode = tempCode && tempCode.length > 0 ? tempCode[0] : null;
+
+                    return (
                         <tr key={value.genId}>
 
                             <td className="s-td-cell-status">
                                 <div className={statusColor}>
                                 </div>
                             </td>
-                            <td className="s-td-cell-name-short">{value.name}</td>
+                            <td className="s-td-cell-name-short">{`${value.name}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`}</td>
 
-                            <td className="hidden-xs hidden-sm">
-                                {
-                                    value.hasObjectives ?
-                                        <div>
-                                            <Overlay
-                                                rootClose
-                                                target={p => ovtObjectivesTarget}
-                                                show={value.showObjectives}
-                                                onHide={() => value.showObjectives = false}
-                                                placement="top">
-                                                {
-                                                    this.popObjectives(
-                                                        value,
-                                                        e => {
-                                                            value.showObjectives = false;
-                                                        })
-                                                }
-                                            </Overlay>
-                                            <Button
-                                                className="s-btn-small-blue-empty"
-                                                ref={r => ovtObjectivesTarget = ReactDOM.findDOMNode(r)}
-                                                onClick={e => this.getProductsObjectives(value, () => value.showObjectives = true)}>
-                                                <span className={`la ${value.isGettingObjectives ? 'la-circle-o-notch la-spin' : 'la-comment-o'}`}></span>
-                                            </Button>
-                                        </div>
-                                        :
-                                        <span className="la la-comment-o lightgray2"></span>
-                                }
-                            </td>
-                            <td className="hidden-xs hidden-sm">{this.activeLang.labels[`lbl_CourseHType_${value.type}`]}</td>
-                            <td className="hidden-xs hidden-sm">{this.activeLang.labels[`lbl_CourseHApproach_${value.approach}`]}</td>
-                            <td className="hidden-xs hidden-sm">{value.expectedDuration}</td>
-                            <td className="hidden-xs hidden-sm">{value.happeningsCount}</td>
+                            <td>{value.netSize}</td>
+                            <td>{value.grossSize}</td>
+
                             <td className="s-td-cell-active">
 
                                 {
@@ -250,7 +229,8 @@ const Products = inject("store")(
                                 }}
                                 deleteTitle={this.activeLang.labels["lbl_DeleteProducts"]} />
                         </tr >
-                );
+                    );
+                }
             }
 
             saveProducts() {
@@ -348,81 +328,6 @@ const Products = inject("store")(
                 }
             }
 
-            getProductsObjectives(value, onSuccess) {
-
-                if (value && value.id > 0 && !value.isGettingObjectives) {
-
-                    if (value.fromObjectives) {
-
-                        if (onSuccess) {
-                            onSuccess();
-                        }
-                    }
-                    else {
-
-                        let idCounter = -1;
-
-                        value.isGettingObjectives = true;
-
-                        Helper.RunPromise(
-                            {
-                                promise: Helper.FetchPromiseGet('/products/GetObjectives/', { headerID: value.id }),
-                                success: data => {
-
-                                    if (data && data.result) {
-
-                                        value.fromObjectives = data.result;
-
-                                        if (value.originalValue) {
-
-                                            value.originalValue.fromObjectives = data.result;
-                                        }
-
-                                        if (onSuccess) {
-                                            onSuccess();
-                                        }
-                                    }
-                                },
-                                incrementSession: () => {
-
-                                    this.getProductsObjectivesPromiseID = this.getProductsObjectivesPromiseID ? (this.getProductsObjectivesPromiseID + 1) : 1;
-                                    idCounter = this.getProductsObjectivesPromiseID;
-                                },
-                                sessionValid: () => {
-
-                                    return idCounter === this.getProductsObjectivesPromiseID;
-                                }
-                            },
-                            error => {
-                                switch (error.exceptionID) {
-                                    default:
-                                        this.errorHandler.showFromLang(this.activeLang);
-                                        break;
-                                }
-                            },
-                            () => {
-                                value.isGettingObjectives = false;
-                            }
-                        );
-                    }
-                }
-            }
-
-            popObjectives(value, onClose) {
-
-                if (value) {
-
-                    return (
-
-                        <Popover id="popObjectives">
-                            <p>
-                                {value.fromObjectives}
-                            </p>
-                        </Popover >
-                    );
-                }
-            }
-
             render() {
 
                 return (
@@ -483,12 +388,9 @@ const Products = inject("store")(
 
                                 <tr>
                                     <th className="s-th-cell-status"></th>
-                                    <th className="s-th-cell-name">{this.activeLang.labels["lbl_Title"]}</th>
-                                    <th className="hidden-xs hidden-sm">{this.activeLang.labels["lbl_Objectives"]}</th>
-                                    <th className="hidden-xs hidden-sm">{this.activeLang.labels["lbl_CourseType"]}</th>
-                                    <th className="hidden-xs hidden-sm">{this.activeLang.labels["lbl_CourseApproach"]}</th>
-                                    <th className="hidden-xs hidden-sm">{this.activeLang.labels["lbl_Duration"]}</th>
-                                    <th className="hidden-xs hidden-sm">{this.activeLang.labels["lbl_Days"]}</th>
+                                    <th className="s-th-cell-name">{this.activeLang.labels["lbl_Name"]}</th>
+                                    <th>{this.activeLang.labels["lbl_NetSize"]}</th>
+                                    <th>{this.activeLang.labels["lbl_GrossSize"]}</th>
                                     <th className="s-th-cell-active">{this.activeLang.labels["lbl_Active"]}</th>
                                     <th className="s-th-cell-controls" />
                                 </tr>

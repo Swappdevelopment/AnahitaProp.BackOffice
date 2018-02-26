@@ -28,7 +28,7 @@ const UserManagement =
 
                     this.pageViewModel = props.pageViewModel;
 
-                    this.viewModel = new UserManagementViewModel();
+                    this.viewModel = UserManagementViewModel.init();
 
                     this.errorHandler = props.errorHandler;
                     this.activeLang = this.props.store.langStore.active;
@@ -67,7 +67,7 @@ const UserManagement =
 
                                 if (data && data.length > 0) {
 
-                                    this.viewModel.users.push(...data.map((v, i) => this.viewModel.syncUserItem(v)));
+                                    this.viewModel.pushUser(...data.map((v, i) => this.viewModel.syncUser(v)));
                                 }
                             },
                             incrementSession: () => {
@@ -178,7 +178,7 @@ const UserManagement =
                                     editButtonDisabled={value.isCurrentUser}
                                     deleteButtonDisabled={value.isCurrentUser}
                                     onEdit={e => {
-                                        this.viewModel.targetRoleUser = value;
+                                        this.viewModel.setPropValue({ targetRoleUser: value.id });
                                         this.modalHandler.show();
                                     }}
                                     onDelete={e => {
@@ -252,7 +252,8 @@ const UserManagement =
                             );
                         }
                         else {
-                            record.isSaving = true;
+
+                            record.setPropValue({ isSaving: true });
 
                             Helper.RunPromise(
                                 {
@@ -265,19 +266,14 @@ const UserManagement =
 
                                                 record.sync(data.accountRole);
 
-                                                if (this.viewModel.targetRoleUser.accountRoles.indexOf(record) < 0) {
+                                                if (!this.viewModel.targetRoleUser.hasAccountRole(data.accountRole.role_Id)) {
 
-                                                    this.viewModel.targetRoleUser.accountRoles.splice(0, 0, record);
+                                                    this.viewModel.targetRoleUser.insertAccountRole(0, data.accountRole);
                                                 }
                                             }
                                             else if (record.recordState === 30) {
 
-                                                const index = this.viewModel.targetRoleUser.accountRoles.indexOf(record);
-
-                                                if (index >= 0) {
-
-                                                    this.viewModel.targetRoleUser.accountRoles.splice(index, 1);
-                                                }
+                                                this.viewModel.targetRoleUser.removeAccountRole(record);
                                             }
                                         }
                                     },
@@ -292,7 +288,7 @@ const UserManagement =
                                 },
                                 () => {
 
-                                    record.isSaving = false;
+                                    record.setPropValue({ isSaving: false });
                                 }
                             );
                         }

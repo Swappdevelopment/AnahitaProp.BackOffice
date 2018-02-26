@@ -1,43 +1,101 @@
-import { extendObservable } from 'mobx';
+import { types } from 'mobx-state-tree';
+import moment from 'moment-es6';
+
+import Helper from '../Helper/Helper';
+
 
 export default class BaseModel {
 
-    constructor(genId) {
+    static getBaseObject() {
 
-        this.originalValue = null;
-
-        this.genId = genId;
-
-        // extendObservable(
-        //     this,
-        //     Object.assign(
-        //         this.getLocalItem(),
-        //         this.getServerItem()));
-
-        this.extendObv = this.extendObv.bind(this);
-        this.getServerItem = this.getServerItem.bind(this);
-        this.getLocalItem = this.getLocalItem.bind(this);
-        this.getValue = this.getValue.bind(this);
-
-        this.extendObv(this, this.getLocalItem(), this.getServerItem());
+        return {
+            id: types.identifier(types.number),
+            recordState: types.optional(types.number, 0),
+            status: types.optional(types.number, 1)
+        };
     }
 
-    extendObv(target, ...properties) {
+    static setPropValue(self, value, listenForChange) {
 
-        return extendObservable(target, ...properties);
+        if (self && value) {
+
+            let prevValue = null;
+
+            for (let [key, value] of Object.entries(value)) {
+
+                if (key !== 'id' && self.hasOwnProperty(key) && !Array.isArray(value)) {
+
+                    prevValue = self[key];
+
+                    if (!value) {
+
+                        switch (prevValue.constructor.name) {
+
+                            case 'String':
+                                value = '';
+                                break;
+
+                            case 'Number':
+                                value = 0;
+                                break;
+                        }
+                    }
+
+                    self[key] = value;
+
+                    if (listenForChange && !BaseModel.compareProps(prevValue, value)) {
+
+                        switch (self.recordState) {
+
+                            case 0:
+                                self.recordState = 20; //Modified
+                                break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    getServerItem() {
+    static compareProps(prop1, prop2) {
 
-        return {};
+        if (prop1 instanceof Date) {
+            prop1 = moment(prop1);
+        }
+        if (prop2 instanceof Date) {
+            prop2 = moment(prop2);
+        }
+
+        if (prop1 instanceof moment && prop2 instanceof moment) {
+
+            return Helper.compareDate(prop1, prop2);
+        }
+
+        return (prop1 === prop2);
     }
 
-    getLocalItem() {
+    static clearValues(self) {
 
-        return {};
+        if (self) {
+
+            self.originalValue = null;
+
+            self.id = 0;
+            self.status = 0;
+            self.recordState = 0;
+        }
     }
 
-    getValue() {
+    static getValueFromSelf(self) {
+
+        if (self) {
+
+            return {
+                recordState: self.recordState,
+                id: self.id,
+                status: self.status
+            };
+        }
 
         return {};
     }

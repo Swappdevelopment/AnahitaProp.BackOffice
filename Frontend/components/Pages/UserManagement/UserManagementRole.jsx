@@ -5,7 +5,7 @@ import { Row, Col, FormGroup, FormControl, OverlayTrigger } from "react-bootstra
 import Helper from "../../../Helper/Helper";
 
 import WaitControl from "../../WaitControl/WaitControl";
-import RoleItem from "../../../Models/RoleItem";
+import RoleModel from "../../../Models/RoleModel";
 
 const UserManagementRole = inject("store")(
     observer(
@@ -22,8 +22,6 @@ const UserManagementRole = inject("store")(
 
                 this.errorHandler = props.errorHandler;
                 this.activeLang = this.props.store.langStore.active;
-
-                this.getRoles = this.getRoles.bind(this);
             }
 
             componentWillMount() {
@@ -31,11 +29,11 @@ const UserManagementRole = inject("store")(
                 this.getRoles();
             }
 
-            getRoles() {
+            getRoles = () => {
 
                 if (this.viewModel.roles.length === 0) {
 
-                    this.viewModel.gettingRoles = true;
+                    this.viewModel.setPropValue({ gettingRoles: true });
 
                     let idCounter = -1;
 
@@ -46,13 +44,7 @@ const UserManagementRole = inject("store")(
 
                                 if (data && data.length > 0) {
 
-                                    this.viewModel.roles.push(...data.map((v, i) => {
-                                        const result = new RoleItem(v);
-                                        result.role_Id = result.id;
-                                        result.id = 0;
-
-                                        return result;
-                                    }));
+                                    this.viewModel.pushRole(...data.map((v, i) => RoleModel.init(Object.assign(v, { role_Id: v.id, id: 0 }), i + 1)));
                                 }
                             },
                             incrementSession: () => {
@@ -75,7 +67,7 @@ const UserManagementRole = inject("store")(
                         },
                         () => {
 
-                            this.viewModel.gettingRoles = false;
+                            this.viewModel.setPropValue({ gettingRoles: false });
                         }
                     );
                 }
@@ -143,7 +135,7 @@ const UserManagementRole = inject("store")(
                                                 this.viewModel.roles.map((v, i) => {
 
                                                     return (
-                                                        <p key={v.role_Id}>
+                                                        <p key={v.genId}>
                                                             {v.name}
                                                         </p>
                                                     );
@@ -162,7 +154,7 @@ const UserManagementRole = inject("store")(
 
                                                     return (
                                                         <div
-                                                            key={v.value}
+                                                            key={v.genId}
                                                             style={{ position: 'relative', height: 21, marginBottom: 10 }}>
                                                             <span style={{ position: 'absolute', left: 5 }} className={v.isSaving ? 'spinner' : ''}></span>
                                                         </div>
@@ -184,20 +176,32 @@ const UserManagementRole = inject("store")(
                                             <ul className="s-user-role-list">
                                                 {
                                                     this.viewModel.roles.map((v, i) => {
-                                                        let userRole = this.viewModel.targetRoleUser.accountRoles.find((ur, urIndex) => ur.name === v.name);
+
+                                                        let userRole = this.viewModel.targetRoleUser.findAccountRole(v.role_Id);
+                                                        
                                                         return (
                                                             <li
                                                                 key={v.role_Id}
-                                                                className={`s-user-role-list-item${userRole ? ' selected' : ''}`}
+                                                                className={`s-user-role-list-item${userRole && userRole.id > 0 ? ' selected' : ''}`}
                                                                 onClick={e => {
+
                                                                     if (userRole && !userRole.isSaving) {
-                                                                        userRole.recordState = 30;
+
+                                                                        userRole.setPropValue({
+                                                                            recordState: 30
+                                                                        });
+
                                                                         this.props.save(userRole);
                                                                     }
                                                                     else if (!v.isSaving) {
+
                                                                         userRole = v;
-                                                                        userRole.account_Id = this.viewModel.targetRoleUser.id;
-                                                                        userRole.recordState = 10;
+
+                                                                        userRole.setPropValue({
+                                                                            account_Id: this.viewModel.targetRoleUser.id,
+                                                                            recordState: 10
+                                                                        });
+
                                                                         this.props.save(userRole);
                                                                     }
                                                                 }}>

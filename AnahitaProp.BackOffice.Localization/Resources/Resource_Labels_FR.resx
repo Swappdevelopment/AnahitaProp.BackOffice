@@ -441,4 +441,10 @@
   <data name="lbl_Menu_properties" xml:space="preserve">
     <value>Propriétées</value>
   </data>
+  <data name="lbl_GrossSize" xml:space="preserve">
+    <value>Dimension Brute</value>
+  </data>
+  <data name="lbl_NetSize" xml:space="preserve">
+    <value>Dimension Net</value>
+  </data>
 </root>
