@@ -287,24 +287,40 @@ const PageActions = inject("store")(
                                         <div>
                                             {
                                                 sideScrollNav.isLeftVisible && sideScrollNav.isLeftVisible() ?
-                                                    <div
-                                                        className={this.props.hidePrev ? 'hidden' : 's-page-action-prev hidden-xs hidden-sm'}
-                                                        onClick={sideScrollNav.onLeftClick}>
-                                                        <span>{sideScrollNav.getLeftLabel ? sideScrollNav.getLeftLabel() : ''}</span>
-                                                        <i className="la la-arrow-left"></i>
-                                                    </div>
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        rootClose
+                                                        overlay={
+                                                            Helper.getTooltip(
+                                                                `tltpPageLeftNav-${this.props.key}`,
+                                                                sideScrollNav.getLeftLabel ? sideScrollNav.getLeftLabel() : '')}>
+                                                        <div
+                                                            className={this.props.hidePrev ? 'hidden' : 's-page-action-prev hidden-xs hidden-sm'}
+                                                            onClick={sideScrollNav.onLeftClick}>
+                                                            <span>{sideScrollNav.getLeftLabel ? sideScrollNav.getLeftLabel() : ''}</span>
+                                                            <i className="la la-arrow-left"></i>
+                                                        </div>
+                                                    </OverlayTrigger>
                                                     :
                                                     null
                                             }
 
                                             {
                                                 sideScrollNav.isRightVisible && sideScrollNav.isRightVisible() ?
-                                                    <div
-                                                        className={this.props.hideNext ? 'hidden' : 's-page-action-next hidden-xs hidden-sm'}
-                                                        onClick={sideScrollNav.onRightClick}>
-                                                        <i className="la la-arrow-right"></i>
-                                                        <span>{sideScrollNav.getRightLabel ? sideScrollNav.getRightLabel() : ''}</span>
-                                                    </div>
+                                                    <OverlayTrigger
+                                                        placement="top"
+                                                        rootClose
+                                                        overlay={
+                                                            Helper.getTooltip(
+                                                                `tltpPageRightNav-${this.props.key}`,
+                                                                sideScrollNav.getRightLabel ? sideScrollNav.getRightLabel() : '')}>
+                                                        <div
+                                                            className={this.props.hideNext ? 'hidden' : 's-page-action-next hidden-xs hidden-sm'}
+                                                            onClick={sideScrollNav.onRightClick}>
+                                                            <i className="la la-arrow-right"></i>
+                                                            <span>{sideScrollNav.getRightLabel ? sideScrollNav.getRightLabel() : ''}</span>
+                                                        </div>
+                                                    </OverlayTrigger>
                                                     :
                                                     null
                                             }

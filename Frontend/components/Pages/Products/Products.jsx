@@ -18,6 +18,7 @@ import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
 import ProductsViewModel from "./ProductsViewModel";
+import ProductDetail from "./ProductDetail";
 
 
 const Products = inject("store")(
@@ -159,10 +160,6 @@ const Products = inject("store")(
 
                     }
 
-                    let tempCode = value.code ? value.code.split('-') : null;
-
-                    tempCode = tempCode && tempCode.length > 0 ? tempCode[0] : null;
-
                     return (
                         <tr key={value.genId}>
 
@@ -170,7 +167,14 @@ const Products = inject("store")(
                                 <div className={statusColor}>
                                 </div>
                             </td>
-                            <td className="s-td-cell-name-short">{`${value.name}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`}</td>
+                            <td
+                                className="s-td-cell-name-short"
+                                onClick={e => {
+
+                                    this.viewModel.execAction(self => {
+                                        self.selectedValue = value.id;
+                                    });
+                                }}>{value.getNameAndCode()}</td>
 
                             <td>{value.netSize.format(0, 3)}</td>
                             <td>{value.grossSize.format(0, 3)}</td>
@@ -493,263 +497,19 @@ const Products = inject("store")(
                         getTableRows={() => this.viewModel.products.map(this.getProductsRow)}
                         hideNext
                         hidePrev
-                        modalHandler={this.modalHandler}
-                        getModalHeader={() => {
 
-                            return this.activeLang.labels["lbl_EditTraining"];
-                        }}
-
-                        getModalInRoot={() => {
-
-                            return <WaitControl opacity50={true} />;
-                        }}
-
-                        getModalBody={() => {
+                        hidePage={this.viewModel.selectedValue ? true : false}
+                        getSiblings={() => {
 
                             return (
-                                this.viewModel.selectedValue === null ?
-                                    null
+
+                                this.viewModel.selectedValue ?
+
+                                    <ProductDetail key="ProductDetail" viewModel={this.viewModel} errorHandler={this.errorHandler} />
                                     :
+                                    null
 
-                                    <div>
-
-                                        <div className="modal-avatar">
-                                            <img src="../images/products.png" />
-                                        </div>
-
-                                        <div className="modal-form">
-
-                                            {
-                                                this.viewModel.selectedValue.isGettingObjectives ?
-                                                    <WaitControl />
-                                                    :
-                                                    <Row>
-                                                        <Col sm={12}>
-                                                            <FormGroup className="form-error">
-                                                                <p className="labels">{this.activeLang.labels['lbl_Title']}</p>
-
-                                                                <FormControl
-                                                                    type="text"
-                                                                    className={this.viewModel.selectedValue.isTitleValid() ? '' : 'input-error'}
-                                                                    value={this.viewModel.selectedValue.title}
-                                                                    onChange={e => {
-
-                                                                        this.viewModel.selectedValue.title = e.target.value;
-                                                                        this.viewModel.selectedValue.checkRecordState();
-
-                                                                    }} />
-                                                                {
-                                                                    this.viewModel.selectedValue.isTitleValid() ?
-                                                                        null
-                                                                        :
-                                                                        <small className="error-label">{this.activeLang.msgs['msg_ValReq']}</small>
-                                                                }
-
-                                                            </FormGroup>
-                                                        </Col>
-
-                                                        <Col sm={12}>
-                                                            <div className="modal-input">
-                                                                <FormGroup>
-                                                                    <p className="labels">{this.activeLang.labels['lbl_Objectives']}</p>
-
-                                                                    <FormControl
-                                                                        componentClass="textarea"
-                                                                        style={{ height: 100 }}
-                                                                        value={this.viewModel.selectedValue.fromObjectives}
-                                                                        onChange={e => {
-                                                                            this.viewModel.selectedValue.fromObjectives = e.target.value
-                                                                            this.viewModel.selectedValue.checkRecordState();
-                                                                        }} />
-
-                                                                </FormGroup>
-                                                            </div>
-                                                        </Col>
-
-                                                        <Col md={6} sm={12}>
-                                                            <div className="modal-input">
-                                                                <FormGroup>
-                                                                    <p className="labels">{this.activeLang.labels['lbl_CourseType']}</p>
-
-                                                                    <DropdownEditor
-                                                                        className="form-control"
-                                                                        title={this.activeLang.labels[`lbl_CourseHType_${this.viewModel.selectedValue.type}`]}>
-                                                                        {
-
-                                                                            Helper.getCourseTypes().map((v, i) => {
-
-                                                                                return (
-                                                                                    <DropdownEditorMenu
-                                                                                        className={v.key === this.viewModel.selectedValue.title ? 'active' : ''}
-                                                                                        key={v.key}
-                                                                                        eventKey={i}
-                                                                                        onClick={e => {
-
-                                                                                            this.viewModel.selectedValue.type = this.activeLang.labels[`lbl_CourseHType_${v.key}`];
-                                                                                            this.viewModel.selectedValue.type = v.key;
-                                                                                            this.viewModel.selectedValue.type.checkRecordState();
-                                                                                        }}>
-                                                                                        {this.activeLang.labels[`lbl_CourseHType_${v.key}`]}
-                                                                                    </DropdownEditorMenu>
-                                                                                );
-                                                                            })
-                                                                        }
-                                                                    </DropdownEditor>
-
-                                                                </FormGroup>
-                                                            </div>
-                                                        </Col>
-
-
-                                                        <Col md={6} sm={12}>
-                                                            <div className="modal-input">
-                                                                <FormGroup>
-                                                                    <p className="labels">{this.activeLang.labels['lbl_CourseApproach']}</p>
-
-                                                                    <DropdownEditor
-                                                                        className="form-control"
-                                                                        title={this.activeLang.labels[`lbl_CourseHApproach_${this.viewModel.selectedValue.approach}`]}>
-                                                                        {
-                                                                            Helper.getCourseApproaches().map((v, i) => {
-
-                                                                                return (
-                                                                                    <DropdownEditorMenu
-                                                                                        className={v.key === this.viewModel.selectedValue.title ? 'active' : ''}
-                                                                                        key={v.key}
-                                                                                        eventKey={i}
-                                                                                        onClick={e => {
-
-                                                                                            this.viewModel.selectedValue.approach = this.activeLang.labels[`lbl_CourseHApproach_${v.key}`];
-                                                                                            this.viewModel.selectedValue.approach = v.key;
-                                                                                            this.viewModel.selectedValue.approach.checkRecordState();
-                                                                                        }}>
-                                                                                        {this.activeLang.labels[`lbl_CourseHApproach_${v.key}`]}
-                                                                                    </DropdownEditorMenu>
-                                                                                );
-                                                                            })
-                                                                        }
-                                                                    </DropdownEditor>
-
-
-                                                                </FormGroup>
-                                                            </div>
-                                                        </Col>
-
-                                                        <Col md={6} sm={12}>
-                                                            <div className="modal-input">
-                                                                <FormGroup>
-                                                                    <p className="labels">{this.activeLang.labels['lbl_Duration']}</p>
-
-                                                                    <FormControl
-                                                                        type="text"
-                                                                        value={this.viewModel.selectedValue.expectedDuration}
-                                                                        onChange={e => {
-                                                                            this.viewModel.selectedValue.expectedDuration = e.target.value
-                                                                            this.viewModel.selectedValue.checkRecordState();
-                                                                        }} />
-
-                                                                </FormGroup>
-                                                            </div>
-                                                        </Col>
-
-                                                        <Col md={6} sm={12}>
-                                                            <div className="modal-input">
-                                                                <FormGroup>
-                                                                    <p className="labels">{this.activeLang.labels['lbl_Days']}</p>
-
-                                                                    <FormControl
-                                                                        type="text"
-                                                                        value={this.viewModel.selectedValue.happeningsCount}
-                                                                        onChange={e => {
-                                                                            this.viewModel.selectedValue.happeningsCount = e.target.value
-                                                                            this.viewModel.selectedValue.checkRecordState();
-                                                                        }} />
-                                                                </FormGroup>
-                                                            </div>
-                                                        </Col>
-
-                                                    </Row>
-                                            }
-                                        </div>
-
-                                    </div>
                             );
-                        }}
-
-                        getModalFooter={() => {
-
-                            return (
-
-                                <div className="modal-controls">
-                                    <Button className="btn-green-secondary"
-                                        onClick={e => {
-
-                                            if (this.viewModel.selectedValue.isValid()) {
-
-                                                this.modalHandler.hide('save');
-                                            }
-                                        }}>
-                                        {this.activeLang.labels["lbl_Save"]}
-
-                                    </Button>
-
-                                    <Button className="btn-purple"
-                                        onClick={e => {
-
-                                            if (this.viewModel.selectedValue.isValid()) {
-
-                                                this.modalHandler.hide('noRevert');
-                                            }
-                                        }}>
-                                        {this.activeLang.labels["lbl_SaveLater"]}
-                                    </Button>
-                                </div>
-                            );
-
-                        }}
-
-                        onModalShow={args => this.viewModel.isModalShown = true}
-                        onModalHide={args => {
-
-                            this.viewModel.isModalShown = false;
-
-                            if (args) {
-
-                                switch (args.action) {
-
-                                    case 'noRevert':
-                                    case 'save':
-
-                                        if (this.viewModel.selectedValue
-                                            && this.viewModel.selectedValue.recordState === 10) {
-
-                                            this.viewModel.addNewProducts(this.viewModel.selectedValue);
-                                        }
-
-                                        if (args.action === 'save') {
-
-                                            this.saveProducts();
-                                        }
-                                        break;
-
-                                    default:
-
-                                        if (this.viewModel.selectedValue) {
-
-                                            if (this.viewModel.selectedValue.recordState === 10) {
-
-                                                this.viewModel.removeProducts(this.viewModel.selectedValue);
-                                            }
-                                            else {
-
-                                                this.viewModel.selectedValue.sync(this.viewModel.selectedValue.originalValue);
-                                            }
-                                        }
-                                        break;
-                                }
-
-                                this.viewModel.selectedValue = null;
-                            }
                         }} />
                 );
             }

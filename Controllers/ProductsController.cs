@@ -31,7 +31,7 @@ namespace AnahitaProp.BackOffice
 
             try
             {
-                products = _dbi.GetListProducts(withNames: true, offset: 0, statusFilter: statusFilter, limit: limit);
+                products = _dbi.GetListProducts(withNames: true, statusFilter: statusFilter, offset: offset, limit: limit);
 
                 return Json(products == null ? new object[0] : products.Select(l => l.Simplify()).ToArray());
             }

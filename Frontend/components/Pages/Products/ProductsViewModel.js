@@ -16,6 +16,13 @@ const ProductsViewModel = types.model(
 ).actions(
     self => ({
 
+        execAction: func => {
+
+            if (func) {
+                func(self);
+            }
+        },
+
         setPropsValue: value => {
             BaseModel.setPropsValue(self, value);
         },
@@ -59,6 +66,17 @@ const ProductsViewModel = types.model(
 
                 destroy(self.products[self.products.length - 1]);
             }
+        }
+    })).views(self => ({
+
+        getSelectedValueIndex: () => {
+
+            if (self.selectedValue) {
+
+                return self.products.indexOf(self.selectedValue);
+            }
+
+            return -1;
         }
     }));
 

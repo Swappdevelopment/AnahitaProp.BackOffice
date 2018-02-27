@@ -99,7 +99,14 @@ const ProductModel = types.model(
         }
     })).views(
     self => ({
+        getNameAndCode: () => {
+            
+            let tempCode = self.code ? self.code.split('-') : null;
 
+            tempCode = tempCode && tempCode.length > 0 ? tempCode[0] : null;
+
+            return `${self.name}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`;
+        }
     }));
 
 
