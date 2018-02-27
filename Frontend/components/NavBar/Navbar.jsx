@@ -100,10 +100,7 @@ const Navbar =
                                     <div className="s-navbar-top">
                                         <div className="col-xs-3 col-sm-4">
                                             <div className="s-brand">
-                                                <a href="/" className="hidden-xs">
-                                                    <img src="../images/logo.png" height="50" />
-                                                </a>
-                                                <a href="/" className="visible-xs">
+                                                <a href="/">
                                                     <img src="../images/logo-sm.png" height="40" />
                                                 </a>
                                             </div>
