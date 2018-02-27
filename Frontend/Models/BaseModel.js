@@ -15,21 +15,17 @@ export default class BaseModel {
         };
     }
 
-    static setPropsValue(self, value, listenForChange) {
+    static setPropsValue(self, value) {
 
         if (self && value) {
-
-            let prevValue = null;
 
             for (let [key, value] of Object.entries(value)) {
 
                 if (key !== 'id' && self.hasOwnProperty(key) && !Array.isArray(value)) {
 
-                    prevValue = self[key];
-
                     if (!value) {
 
-                        switch (prevValue.constructor.name) {
+                        switch (self[key].constructor.name) {
 
                             case 'String':
                                 value = '';
@@ -42,19 +38,36 @@ export default class BaseModel {
                     }
 
                     self[key] = value;
+                }
+            }
+        }
+    }
 
-                    if (listenForChange && !BaseModel.compareProps(prevValue, value)) {
+    static isSelfModified(self, value, skipObjects) {
 
-                        switch (self.recordState) {
+        if (self && value && self.recordState === 0) {
 
-                            case 0:
-                                self.recordState = 20; //Modified
-                                break;
-                        }
+            for (let [key, value] of Object.entries(value)) {
+
+                let selfValue = null;
+
+                if (key !== 'id' && self.hasOwnProperty(key) && !Array.isArray(value)) {
+
+                    selfValue = self[key];
+
+                    if (!BaseModel.compareProps(self[key], value)
+                        && ((skipObjects
+                            && (!selfValue || selfValue.constructor.name !== 'Object')
+                            && (!value || value.constructor.name !== 'Object'))
+                            || !skipObjects)) {
+
+                        return true;
                     }
                 }
             }
         }
+
+        return false;
     }
 
     static compareProps(prop1, prop2) {
@@ -71,7 +84,19 @@ export default class BaseModel {
             return Helper.compareDate(prop1, prop2);
         }
 
-        return (prop1 === prop2);
+        if (prop1 === prop2) {
+
+            return true;
+        }
+
+        if (!prop1 && !prop2) {
+
+            return true;
+        }
+
+
+
+        return false;
     }
 
     static clearValues(self) {
@@ -91,7 +116,7 @@ export default class BaseModel {
         if (self) {
 
             return {
-                recordState: self.recordState,
+                recordState: BaseModel.isSelfModified(self, self.originalValue) ? 20 : self.recordState,
                 id: self.id,
                 status: self.status
             };

@@ -3,8 +3,10 @@ using AnahitaProp.Data.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Swapp.Data;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AnahitaProp.BackOffice
 {
@@ -85,6 +87,98 @@ namespace AnahitaProp.BackOffice
             finally
             {
                 roles = null;
+            }
+        }
+
+
+
+        [HttpGet]
+        [Access]
+        [ResponseCache(Duration = 2592000)] // 30 Days
+        public async Task<JsonResult> GetCurrencies()
+        {
+            Currency[] result = null;
+
+            string defaultCurCode = null;
+
+            try
+            {
+                await Task.WhenAll(
+                    Helper.GetFunc(() =>
+                    {
+                        result = _dbi.GetCurrencies();
+
+                        return Task.CompletedTask;
+                    })(),
+                    Helper.GetFunc(() =>
+                    {
+                        defaultCurCode = _dbi.GetSysParDetailValue("WebCurs", "Default")?.StringVal;
+
+                        return Task.CompletedTask;
+                    })());
+
+
+                return Json(result == null ? new object[0] : result.OrderBy(l => l.Code).Select(l => l.Simplify(defaultCurCode)).ToArray());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                defaultCurCode = null;
+                result = null;
+            }
+        }
+
+
+
+        [HttpGet]
+        [Access]
+        [ResponseCache(Duration = 2592000)] // 30 Days
+        public JsonResult GetProductFamilyTypes()
+        {
+            ProductFamilyType[] types = null;
+
+            try
+            {
+                types = _dbi.GetProductFamilyTypes(withNames: true);
+
+
+                return Json(types == null ? new object[0] : types.Select(l => l.Simplify()).ToArray());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                types = null;
+            }
+        }
+
+
+
+        [HttpGet]
+        [Access]
+        public JsonResult GetProductFamilies()
+        {
+            ProductFamily[] families = null;
+
+            try
+            {
+                families = _dbi.GetProductFamilys(withNames: true);
+
+
+                return Json(families == null ? new object[0] : families.Select(l => l.Simplify()).ToArray());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                families = null;
             }
         }
     }

@@ -11,7 +11,10 @@ const ProductsViewModel = types.model(
         isModalShown: false,
         selectedValue: types.maybe(types.reference(ProductModel), types.null),
         searchText: types.optional(types.string, ''),
-        products: types.optional(types.array(ProductModel), [])
+        products: types.optional(types.array(ProductModel), []),
+        currencies: types.optional(types.array(types.frozen), []),
+        prodFamilies: types.optional(types.array(types.frozen), []),
+        prodFamilyTypes: types.optional(types.array(types.frozen), [])
     }
 ).actions(
     self => ({

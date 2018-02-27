@@ -36,6 +36,7 @@ const ProductModel = types.model(
     'ProductModel',
     Object.assign(
         {
+            receivedInput: false,
             isSaving: false,
             isLazyWait: false,
             isChangingStatus: false,
@@ -55,9 +56,11 @@ const ProductModel = types.model(
 
             self.recordState = value;
         },
-        setPropsValue: value => {
+        setPropsValue: (value, listenForChange) => {
 
-            BaseModel.setPropsValue(self, value, true);
+            BaseModel.setPropsValue(self, value, listenForChange);
+
+            self.receivedInput = listenForChange ? true : false;
         },
         sync: value => {
 
@@ -83,7 +86,7 @@ const ProductModel = types.model(
                         status: v.status,
                         value: v.value,
                         language_Id: v.language_Id,
-                        language_Code: v.lCode,
+                        language_Code: lCode,
                     });
                 }));
             }
@@ -99,13 +102,29 @@ const ProductModel = types.model(
         }
     })).views(
     self => ({
+        requiresSave: () => (self.recordState !== 0 || self.isModified()),
+        isModified: () => {
+
+            return BaseModel.isSelfModified(self, self.originalValue, true)
+                || (self.names.filter((v, i) => v.isModified()).length > 0);
+        },
         getNameAndCode: () => {
-            
+
             let tempCode = self.code ? self.code.split('-') : null;
 
             tempCode = tempCode && tempCode.length > 0 ? tempCode[0] : null;
 
             return `${self.name}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`;
+        },
+        isCodeValid: () => self.recievedInput ? (self.code ? true : false) : true,
+        isPriceAndCurrencyValid: () => self.recievedInput ? ((self.currency_Id > 0 && self.price > 0) ? true : false) : true,
+        isValid: () => {
+
+            self.recievedInput = true;
+
+            return self.isCodeValid()
+                && self.isPriceAndCurrencyValid()
+                && (self.names.filter((v, i) => !v.isValid()).length === 0);
         }
     }));
 

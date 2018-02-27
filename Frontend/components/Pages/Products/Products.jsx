@@ -1,9 +1,8 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import LazyLoad from 'react-lazy-load';
 import { observer, inject } from "mobx-react";
 
-import { Row, Col, FormGroup, FormControl, Button, Overlay, Popover, Checkbox } from "react-bootstrap";
+import { Row, Col, Button, Checkbox } from "react-bootstrap";
 
 import Helper from "../../../Helper/Helper";
 
@@ -13,9 +12,6 @@ import RowLazyWait from "../../RowLazyWait/RowLazyWait";
 
 import GridRowToolbar from "../../GridRowToolbar/GridRowToolbar";
 import PageComponent from "../../PageComponents/PageComponent";
-
-import DropdownEditor from '../../DropdownEditor/DropdownEditor';
-import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
 import ProductsViewModel from "./ProductsViewModel";
 import ProductDetail from "./ProductDetail";
@@ -49,6 +45,159 @@ const Products = inject("store")(
             componentWillMount() {
 
                 this.getProducts();
+                this.getLookups();
+            }
+
+            getLookups = () => {
+
+                if (!this.gettingLookups) {
+
+                    const promises = [];
+
+                    if (this.viewModel.prodFamilyTypes.length === 0) {
+
+                        let idCounter = -1;
+
+                        promises.push(
+                            {
+                                promise: Helper.FetchPromiseGet(
+                                    '/lookup/GetProductFamilyTypes/'),
+                                success: data => {
+
+                                    if (data && data.length > 0) {
+
+                                        this.viewModel.execAction(self => {
+
+                                            self.prodFamilyTypes.push(...data.map((v, i) => {
+
+                                                const name = v.names ?
+                                                    v.names.find(nm => (nm.language_Code ? nm.language_Code.toLowerCase() : '') == this.activeLang.code)
+                                                    :
+                                                    null;
+
+                                                return Object.assign(v, {
+                                                    name: name ? name.value : null
+                                                });
+                                            }));
+                                        });
+                                    }
+                                },
+                                incrementSession: () => {
+
+                                    this.getProductFamilyTypesPromiseID = this.getProductFamilyTypesPromiseID ? (this.getProductFamilyTypesPromiseID + 1) : 1;
+                                    idCounter = this.getProductFamilyTypesPromiseID;
+                                },
+                                sessionValid: () => {
+
+                                    return idCounter === this.getProductFamilyTypesPromiseID;
+                                }
+                            });
+                    }
+
+                    if (this.viewModel.prodFamilies.length === 0) {
+
+                        let idCounter = -1;
+
+                        promises.push(
+                            {
+                                promise: Helper.FetchPromiseGet(
+                                    '/lookup/GetProductFamilies/'),
+                                success: data => {
+
+                                    if (data && data.length > 0) {
+
+                                        this.viewModel.execAction(self => {
+
+                                            self.prodFamilies.push(...data.map((v, i) => {
+
+                                                const name = v.names ?
+                                                    v.names.find(nm => (nm.language_Code ? nm.language_Code.toLowerCase() : '') == this.activeLang.code)
+                                                    :
+                                                    null;
+
+                                                return Object.assign(v, {
+                                                    name: name ? name.value : null
+                                                });
+                                            }));
+                                        });
+                                    }
+                                },
+                                incrementSession: () => {
+
+                                    this.getProductFamiliesPromiseID = this.getProductFamiliesPromiseID ? (this.getProductFamiliesPromiseID + 1) : 1;
+                                    idCounter = this.getProductFamiliesPromiseID;
+                                },
+                                sessionValid: () => {
+
+                                    return idCounter === this.getProductFamiliesPromiseID;
+                                }
+                            });
+                    }
+
+                    if (this.viewModel.currencies.length === 0) {
+
+                        let idCounter = -1;
+
+                        promises.push(
+                            {
+                                promise: Helper.FetchPromiseGet(
+                                    '/lookup/GetCurrencies/'),
+                                success: data => {
+
+                                    if (data && data.length > 0) {
+
+                                        this.viewModel.execAction(self => {
+
+                                            self.currencies.push(...data);
+                                        });
+                                    }
+                                },
+                                incrementSession: () => {
+
+                                    this.getCurrenciesPromiseID = this.getCurrenciesPromiseID ? (this.getCurrenciesPromiseID + 1) : 1;
+                                    idCounter = this.getCurrenciesPromiseID;
+                                },
+                                sessionValid: () => {
+
+                                    return idCounter === this.getCurrenciesPromiseID;
+                                }
+                            });
+                    }
+
+
+                    if (promises.length > 0) {
+
+                        this.gettingLookups = true;
+
+                        let idCounter = -1;
+
+                        Helper.RunPromise(
+                            {
+                                options: promises,
+                                incrementSession: () => {
+
+                                    this.getLookupsPromiseID = this.getLookupsPromiseID ? (this.getLookupsPromiseID + 1) : 1;
+                                    idCounter = this.getLookupsPromiseID;
+                                },
+                                sessionValid: () => {
+
+                                    return idCounter === this.getLookupsPromiseID;
+                                }
+                            },
+                            error => {
+
+                                switch (error.exceptionID) {
+                                    default:
+                                        this.errorHandler.showFromLang(this.activeLang);
+                                        break;
+                                }
+                            },
+                            () => {
+
+                                this.gettingLookups = false;
+                            });
+                    }
+                }
             }
 
             getProducts() {
@@ -150,14 +299,21 @@ const Products = inject("store")(
                             statusColor = 's-status-add';
                             break;
 
-                        case 20:
-                            statusColor = 's-status-edit';
-                            break;
+                        // case 20:
+                        //     statusColor = 's-status-edit';
+                        //     break;
 
                         case 30:
                             statusColor = 's-status-delete';
                             break;
 
+                        default:
+
+                            if (value.isModified()) {
+
+                                statusColor = 's-status-edit';
+                            }
+                            break;
                     }
 
                     return (

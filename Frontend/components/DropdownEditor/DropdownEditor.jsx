@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactFOM from 'react-dom';
+import ReactDOM from 'react-dom';
 
 import './DropdownEditor.scss';
 
@@ -18,7 +18,6 @@ export default class DropdownEditor extends React.Component {
             isOpen: false
         };
 
-        this.hiddenButtonElement = null;
         this.listElement = null;
 
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -237,9 +236,6 @@ export default class DropdownEditor extends React.Component {
         return (
             <div className={`dropdown btn-group${this.state.isOpen ? ' open' : ''}`}>
                 <button
-                    ref={r => {
-                        this.hiddenButtonElement = ReactFOM.findDOMNode(r);
-                    }}
                     id={this.props.id}
                     style={{ display: 'none' }}
                     role="button"
@@ -251,6 +247,9 @@ export default class DropdownEditor extends React.Component {
 
                 <div className="dropdown-input-wrapper">
                     <input
+                        ref={r => {
+                            this.inputElement = ReactDOM.findDOMNode(r);
+                        }}
                         disabled={this.props.disabled}
                         className={this.props.className}
                         value={this.state.inputValue}
@@ -268,12 +267,20 @@ export default class DropdownEditor extends React.Component {
                             }
                         }}
                         onBlur={this.handleOnBlur} />
-                    <span className="caret"></span>
+                    <span
+                        className="caret"
+                        style={{ cursor: 'text' }}
+                        onClick={e => {
+                            if (!this.state.isOpen && this.inputElement) {
+
+                                this.inputElement.focus();
+                            }
+                        }}></span>
                 </div>
 
                 <ul
                     ref={r => {
-                        this.listElement = ReactFOM.findDOMNode(r);
+                        this.listElement = ReactDOM.findDOMNode(r);
                     }}
                     role="menu"
                     className="dropdown-menu"

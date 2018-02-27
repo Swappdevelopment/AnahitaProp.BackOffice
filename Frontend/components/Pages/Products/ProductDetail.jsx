@@ -104,9 +104,13 @@ class ProductDetail extends React.Component {
                     hideAdd />
 
                 <div className="container">
-                    <div className="s-portlet">
-                        <ProductDetail1 viewModel={this.viewModel} errorHandler={this.errorHandler} />
-                    </div>
+                    <Row>
+                        <Col md={8} mdOffset={2}>
+                            <div className="s-portlet" style={{ padding: '30px 40px' }}>
+                                <ProductDetail1 viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                            </div>
+                        </Col>
+                    </Row>
                 </div>
 
             </div>

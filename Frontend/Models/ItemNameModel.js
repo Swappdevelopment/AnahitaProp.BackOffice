@@ -9,12 +9,15 @@ const ItemNameModel = types.model(
     {
         recordState: types.optional(types.number, 0),
         value: types.optional(types.string, ''),
+        recievedInput: false
     }
 ).actions(
     self => ({
-        setPropsValue: value => {
+        setPropsValue: (value, listenForChange) => {
 
-            BaseModel.setPropsValue(self, value);
+            BaseModel.setPropsValue(self, value, listenForChange);
+
+            self.recievedInput = listenForChange ? true : false;
         },
         setValue: value => {
 
@@ -29,11 +32,25 @@ const ItemNameModel = types.model(
                     break;
             }
         }
+    })).views(self => ({
+        isModified: () => {
+
+            return BaseModel.isSelfModified(self, self.originalValue, true);
+        },
+        isValueValid: () => self.recievedInput ? (self.value ? true : false) : true,
+        isValid: () => {
+
+            self.recievedInput = true;
+
+            return self.isValueValid();
+        }
     }));
 
 ItemNameModel.init = value => {
 
     const self = ItemNameModel.create({ recordState: 0 });
+
+    self.originalValue = value;
 
     self.setPropsValue(value);
 

@@ -3,33 +3,177 @@ import { observer, inject } from 'mobx-react';
 
 import { Row, Col } from "react-bootstrap";
 
+import DropdownEditor from '../../DropdownEditor/DropdownEditor';
+import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
+
 class ProductDetail1 extends React.Component {
 
     constructor(props) {
 
         super(props);
 
-        this.productModel = props.productModel;
+        this.viewModel = props.viewModel;
 
         this.activeLang = this.props.store.langStore.active;
+    }
+
+    getInputElement = (params1, params2) => {
+
+        if (params1) {
+
+            return (
+                <div className="s-row-center row" key={params1.key}>
+                    <Col md={2}>
+                        <label>{params1.label}</label>
+                    </Col>
+                    {
+                        params1.getInnerElement ?
+
+                            <Col md={params2 ? 4 : (params1.smallInput ? 4 : 8)}>
+                                {params1.getInnerElement()}
+                            </Col>
+                            :
+                            <Col md={params2 ? 4 : (params1.smallInput ? 4 : 8)}>
+                                <input
+                                    type={params1.inputType ? params1.inputType : 'text'}
+                                    className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
+                                    value={params1.getValue()}
+                                    onChange={params1.setValue} />
+                                {
+                                    !params1.isValid || params1.isValid() ?
+                                        null
+                                        :
+                                        <small className="s-label-error">{params1.errMsg ? params1.errMsg : this.activeLang.msgs['msg_ValReq']}</small>
+                                }
+                            </Col>
+                    }
+                    {
+                        params2 ?
+                            <Col md={2}>
+                                <label>{params2.label}</label>
+                            </Col>
+                            :
+                            null
+                    }
+                    {
+                        params2 ?
+                            <Col md={4}>
+                                <input
+                                    type={params2.inputType ? params2.inputType : 'text'}
+                                    className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
+                                    value={params2.getValue()}
+                                    onChange={params2.setValue} />
+                                {
+                                    !params2.isValid || params2.isValid() ?
+                                        null
+                                        :
+                                        <small className="s-label-error">{params2.errMsg ? params2.errMsg : this.activeLang.msgs['msg_ValReq']}</small>
+                                }
+                            </Col>
+                            :
+                            null
+                    }
+                </div>
+            );
+        }
+
+        return null;
     }
 
 
     render() {
 
+        const prodModel = this.viewModel.selectedValue;
+
+        if (!prodModel) return null;
+
+
         return (
-            <div style={{ padding: 20 }}>
+            <div>
                 <Row>
-                    <Col md={6} mdOffset={3}>
-                        <div className="s-row-center row">
-                            <Col md={3}>
-                                <label>{this.activeLang.labels['lbl_Name']}</label>
-                            </Col>
-                            <Col md={9}>
-                                <input type="text" className="form-control" />
-                            </Col>
-                        </div>
-                    </Col>
+
+                    {
+                        this.getInputElement({
+                            smallInput: true,
+                            label: this.activeLang.labels['lbl_Code'],
+                            isValid: prodModel.isCodeValid,
+                            getValue: () => prodModel.code,
+                            setValue: e => prodModel.setPropsValue({ code: e.target.value })
+                        })
+                    }
+                    {
+                        prodModel.names.map((prodName, i) =>
+
+                            this.getInputElement({
+                                key: `names-${i}`,
+                                label: this.activeLang.labels['lbl_Name'] + ' ' + (prodName.language_Code ? prodName.language_Code.toUpperCase() : ''),
+                                isValid: prodName.isValueValid,
+                                getValue: () => prodName.value,
+                                setValue: e => prodName.setPropsValue({ value: e.target.value })
+                            }))
+                    }
+                    {
+                        this.getInputElement({
+                            label: this.activeLang.labels['lbl_NetSize'],
+                            inputType: 'number',
+                            getValue: () => prodModel.netSize,
+                            setValue: e => prodModel.setPropsValue({ netSize: parseFloat(e.target.value) })
+                        },
+                            {
+                                label: this.activeLang.labels['lbl_GrossSize'],
+                                inputType: 'number',
+                                getValue: () => prodModel.grossSize,
+                                setValue: e => prodModel.setPropsValue({ grossSize: parseFloat(e.target.value) })
+                            })
+                    }
+                    {
+                        this.getInputElement({
+                            label: this.activeLang.labels['lbl_Price'],
+                            isValid: prodModel.isCodeValid,
+                            getInnerElement: () => (
+                                <table style={{ width: '80%' }}>
+                                    <tbody>
+                                        <tr>
+                                            <td style={{ width: 75 }}>
+                                                <DropdownEditor
+                                                    id="drpCurrency"
+                                                    className="form-control s-input s-ellipsis"
+                                                    title={prodModel.currencyCode}>
+                                                    {
+                                                        this.viewModel.currencies.map((v, i) => {
+
+                                                            return (
+                                                                <DropdownEditorMenu
+                                                                    active={v.id === prodModel.currency_Id}
+                                                                    key={v.id}
+                                                                    onClick={e => {
+
+                                                                        prodModel.execAction(self => {
+
+                                                                            self.currency_Id = v.id;
+                                                                            self.currencyCode = v.code;
+                                                                        });
+                                                                    }}>
+                                                                    {v.code}
+                                                                </DropdownEditorMenu>
+                                                            );
+                                                        })
+                                                    }
+                                                </DropdownEditor>
+                                            </td>
+                                            <td style={{ paddingLeft: 10 }}>
+                                                <input
+                                                    type="text"
+                                                    className={'form-control s-input' + (prodModel.isPriceAndCurrencyValid() ? '' : '-error')}
+                                                    value={prodModel.price.format(2, 3)}
+                                                    onChange={e => prodModel.execAction(self => self.price = parseFloat(e.target.value))} />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            )
+                        })
+                    }
                 </Row>
             </div>
         );
