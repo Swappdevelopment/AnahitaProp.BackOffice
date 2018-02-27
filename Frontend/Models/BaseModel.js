@@ -15,7 +15,7 @@ export default class BaseModel {
         };
     }
 
-    static setPropValue(self, value, listenForChange) {
+    static setPropsValue(self, value, listenForChange) {
 
         if (self && value) {
 

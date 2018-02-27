@@ -19,9 +19,9 @@ const UserManagementViewModel = types.model(
         statusType: types.optional(types.number, 1)
     }).actions(
     self => ({
-        setPropValue: value => {
+        setPropsValue: value => {
 
-            BaseModel.setPropValue(self, value);
+            BaseModel.setPropsValue(self, value);
         },
         pushUser: (...user) => {
 

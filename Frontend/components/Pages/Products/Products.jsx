@@ -41,8 +41,6 @@ const Products = inject("store")(
                 this.getProductsRow = this.getProductsRow.bind(this);
                 this.saveProducts = this.saveProducts.bind(this);
 
-                this.changeStatus = this.changeStatus.bind(this);
-
                 this.limit = Helper.LAZY_LOAD_LIMIT;
                 this.offset = 0;
             }
@@ -65,7 +63,7 @@ const Products = inject("store")(
                 }
                 else {
 
-                    this.viewModel.setPropValue({ isLazyLoading: true });
+                    this.viewModel.setPropsValue({ isLazyLoading: true });
                 }
 
                 const params = {
@@ -121,7 +119,7 @@ const Products = inject("store")(
                         this.pageViewModel.pageBlurPixels = 0;
                         this.pageViewModel.showPageWaitControl = false;
 
-                        this.viewModel.setPropValue({ isLazyLoading: false });
+                        this.viewModel.setPropsValue({ isLazyLoading: false });
                     }
                 );
             }
@@ -174,14 +172,47 @@ const Products = inject("store")(
                             </td>
                             <td className="s-td-cell-name-short">{`${value.name}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`}</td>
 
-                            <td>{value.netSize}</td>
-                            <td>{value.grossSize}</td>
+                            <td>{value.netSize.format(0, 3)}</td>
+                            <td>{value.grossSize.format(0, 3)}</td>
+                            <td>{value.currencyCode}</td>
+                            <td style={{ textAlign: 'right' }}>{value.price.format(2, 3)}</td>
+                            <td>{value.productFamily ? value.productFamily.name : 'No Family'}</td>
 
                             <td className="s-td-cell-active">
+                                {
+                                    value.isChangingHideSearch ?
+                                        <span className="spinner"></span>
+                                        :
+                                        <Checkbox className="s-checkbox"
 
+                                            defaultChecked={value.hideSearch ? true : false}
+                                            onChange={e => {
+
+                                                if (value.id > 0) {
+
+                                                    let tempValue = value.hideSearch;
+
+                                                    value.execAction(self => {
+
+                                                        self.hideSearch = e.target.checked ? true : false;
+                                                    });
+
+                                                    if (tempValue !== value.hideSearch) {
+
+                                                        this.changeBoolean(value, 'hideSearch');
+                                                    }
+                                                }
+
+                                            }}>
+                                        </Checkbox>
+                                }
+
+                            </td>
+
+                            <td className="s-td-cell-active">
                                 {
                                     value.isChangingStatus ?
-                                        null
+                                        <span className="spinner"></span>
                                         :
                                         <Checkbox className="s-checkbox"
 
@@ -192,11 +223,14 @@ const Products = inject("store")(
 
                                                     let tempValue = value.status;
 
-                                                    value.status = e.target.checked ? 1 : 0;
+                                                    value.execAction(self => {
+
+                                                        self.status = e.target.checked ? 1 : 0;
+                                                    });
 
                                                     if (tempValue !== value.status) {
 
-                                                        this.changeStatus(value);
+                                                        this.changeBoolean(value, 'status');
                                                     }
                                                 }
 
@@ -284,33 +318,73 @@ const Products = inject("store")(
                 Helper.RunPromise(savePromises);
             }
 
-            changeStatus(value) {
+            changeBoolean = (value, action) => {
 
                 if (value) {
 
                     let idCounter = -1;
 
-                    value.isChangingStatus = true;
+                    value.execAction(self => {
+                        switch (action) {
+
+                            case 'status':
+
+                                self.isChangingStatus = true;
+                                break;
+
+                            case 'hideSearch':
+
+                                self.isChangingHideSearch = true;
+                                break;
+                        }
+
+                    });
 
                     Helper.RunPromise(
                         {
-                            promise: Helper.FetchPromisePost('/products/changeStatus', { id: value.id, status: value.status }),
+                            promise: Helper.FetchPromisePost(
+                                '/products/ChangeBoolean',
+                                {
+                                    id: value.id,
+                                    action: action,
+                                    status: value.status,
+                                    hideSearch: value.hideSearch
+                                }),
                             success: data => {
-
 
                                 if (value.originalValue) {
 
-                                    value.originalValue.status = value.status;
+                                    switch (action) {
+
+                                        case 'status':
+
+                                            value.originalValue.status = value.status;
+
+                                            // value.execAction(self => {
+                                            //     self.originalValue.status = value.status;
+                                            // });
+                                            break;
+
+                                        case 'hideSearch':
+
+                                            value.originalValue.hideSearch = value.hideSearch;
+
+                                            // value.execAction(self => {
+                                            //     self.originalValue.hideSearch = value.hideSearch;
+                                            // });
+                                            break;
+                                    }
+
                                 }
                             },
                             incrementSession: () => {
 
-                                this.changeStatusPromiseID = this.changeStatusPromiseID ? (this.changeStatusPromiseID + 1) : 1;
-                                idCounter = this.changeStatusPromiseID;
+                                this.changeBooleanPromiseID = this.changeBooleanPromiseID ? (this.changeBooleanPromiseID + 1) : 1;
+                                idCounter = this.changeBooleanPromiseID;
                             },
                             sessionValid: () => {
 
-                                return idCounter === this.changeStatusPromiseID;
+                                return idCounter === this.changeBooleanPromiseID;
                             }
                         },
                         error => {
@@ -322,7 +396,22 @@ const Products = inject("store")(
                             }
                         },
                         () => {
-                            value.isChangingStatus = false;
+
+                            value.execAction(self => {
+                                switch (action) {
+
+                                    case 'status':
+
+                                        self.isChangingStatus = false;
+                                        break;
+
+                                    case 'hideSearch':
+
+                                        self.isChangingHideSearch = false;
+                                        break;
+                                }
+
+                            });
                         }
                     );
                 }
@@ -391,6 +480,10 @@ const Products = inject("store")(
                                     <th className="s-th-cell-name">{this.activeLang.labels["lbl_Name"]}</th>
                                     <th>{this.activeLang.labels["lbl_NetSize"]}</th>
                                     <th>{this.activeLang.labels["lbl_GrossSize"]}</th>
+                                    <th>{this.activeLang.labels["lbl_Currency"]}</th>
+                                    <th>{this.activeLang.labels["lbl_Price"]}</th>
+                                    <th>{this.activeLang.labels["lbl_Family"]}</th>
+                                    <th className="s-th-cell-active">{this.activeLang.labels["lbl_HideInWs"]}</th>
                                     <th className="s-th-cell-active">{this.activeLang.labels["lbl_Active"]}</th>
                                     <th className="s-th-cell-controls" />
                                 </tr>

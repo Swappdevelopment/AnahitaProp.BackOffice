@@ -341,6 +341,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Currency.
+        /// </summary>
+        public static string lbl_Currency {
+            get {
+                return ResourceManager.GetString("lbl_Currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Days.
         /// </summary>
         public static string lbl_Days {
@@ -476,6 +485,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Family.
+        /// </summary>
+        public static string lbl_Family {
+            get {
+                return ResourceManager.GetString("lbl_Family", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to First Name.
         /// </summary>
         public static string lbl_FName {
@@ -544,6 +562,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Hello {
             get {
                 return ResourceManager.GetString("lbl_Hello", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide in Website.
+        /// </summary>
+        public static string lbl_HideInWs {
+            get {
+                return ResourceManager.GetString("lbl_HideInWs", resourceCulture);
             }
         }
         
@@ -742,6 +769,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_PostCode {
             get {
                 return ResourceManager.GetString("lbl_PostCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Price.
+        /// </summary>
+        public static string lbl_Price {
+            get {
+                return ResourceManager.GetString("lbl_Price", resourceCulture);
             }
         }
         

@@ -16,8 +16,8 @@ const ProductsViewModel = types.model(
 ).actions(
     self => ({
 
-        setPropValue: value => {
-            BaseModel.setPropValue(self, value);
+        setPropsValue: value => {
+            BaseModel.setPropsValue(self, value);
         },
 
         clearProducts: () => {

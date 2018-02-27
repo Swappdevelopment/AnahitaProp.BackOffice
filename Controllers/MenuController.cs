@@ -28,7 +28,7 @@ namespace AnahitaProp.BackOffice
 
             object[] result = null;
             string fullName = null;
-             
+
             try
             {
                 accexs = _dbi.GetAccountAccexs(onlyRootLevel: true);
@@ -38,8 +38,8 @@ namespace AnahitaProp.BackOffice
 
                 return Json(new
                 {
-                    result = result,
-                    fullName = fullName,
+                    result,
+                    fullName,
                     email = (_dbi?.LoginConnectionToken?.Email == _dbi?.LoginConnectionToken?.Uid ? "" : _dbi?.LoginConnectionToken?.Email),
                     gender = _dbi?.LoginConnectionToken?.Gender
                 });

@@ -447,4 +447,16 @@
   <data name="lbl_NetSize" xml:space="preserve">
     <value>Dimension Net</value>
   </data>
+  <data name="lbl_Price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="lbl_Currency" xml:space="preserve">
+    <value>Devise</value>
+  </data>
+  <data name="lbl_Family" xml:space="preserve">
+    <value>Famille</value>
+  </data>
+  <data name="lbl_HideInWs" xml:space="preserve">
+    <value>Cacher sur le Site Web</value>
+  </data>
 </root>

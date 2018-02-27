@@ -4,17 +4,17 @@ import BaseModel from './BaseModel';
 
 
 
-const ProductNameModel = types.model(
-    'ProductNameModel',
+const ItemNameModel = types.model(
+    'ItemNameModel',
     {
         recordState: types.optional(types.number, 0),
         value: types.optional(types.string, ''),
     }
 ).actions(
     self => ({
-        setPropValue: value => {
+        setPropsValue: value => {
 
-            BaseModel.setPropValue(self, value);
+            BaseModel.setPropsValue(self, value);
         },
         setValue: value => {
 
@@ -31,11 +31,11 @@ const ProductNameModel = types.model(
         }
     }));
 
-ProductNameModel.init = value => {
+ItemNameModel.init = value => {
 
-    const self = ProductNameModel.create({ recordState: 0 });
+    const self = ItemNameModel.create({ recordState: 0 });
 
-    self.setPropValue(value);
+    self.setPropsValue(value);
 
     self.id = value.id;
     self.status = value.status;
@@ -59,4 +59,4 @@ ProductNameModel.init = value => {
 };
 
 
-export default ProductNameModel;
+export default ItemNameModel;

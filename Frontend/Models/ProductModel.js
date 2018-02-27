@@ -1,7 +1,8 @@
 import { types } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
-import ProductNameModel from './ProductNameModel';
+import ItemNameModel from './ItemNameModel';
+import ProdFamilyModel from './ProdFamilyModel';
 
 
 const getObject = () => {
@@ -24,7 +25,8 @@ const getObject = () => {
             hideSearch: false,
             isGroup: false,
             name: types.optional(types.string, ''),
-            names: types.optional(types.array(ProductNameModel), [])
+            names: types.optional(types.array(ItemNameModel), []),
+            productFamily: types.maybe(ProdFamilyModel, types.null)
         },
         BaseModel.getBaseObject());
 };
@@ -35,24 +37,33 @@ const ProductModel = types.model(
     Object.assign(
         {
             isSaving: false,
-            isLazyWait: false
+            isLazyWait: false,
+            isChangingStatus: false,
+            isChangingHideSearch: false
         },
         getObject())
 ).actions(
     self => ({
+        execAction: func => {
+
+            if (func) {
+
+                func(self);
+            }
+        },
         setRecordState: value => {
 
             self.recordState = value;
         },
-        setPropValue: value => {
+        setPropsValue: value => {
 
-            BaseModel.setPropValue(self, value, true);
+            BaseModel.setPropsValue(self, value, true);
         },
         sync: value => {
 
             self.originalValue = value;
 
-            BaseModel.setPropValue(self, value);
+            BaseModel.setPropsValue(self, value);
 
             self.names.length = 0;
 
@@ -67,7 +78,7 @@ const ProductModel = types.model(
                         self.name = v.value;
                     }
 
-                    return ProductNameModel.init({
+                    return ItemNameModel.init({
                         id: v.id,
                         status: v.status,
                         value: v.value,
@@ -75,6 +86,15 @@ const ProductModel = types.model(
                         language_Code: v.lCode,
                     });
                 }));
+            }
+
+            if (value.productFamily) {
+
+                self.productFamily = ProdFamilyModel.init(value.productFamily, self.genId, self.activeLangCode);
+            }
+            else {
+
+                self.productFamily = null;
             }
         }
     })).views(

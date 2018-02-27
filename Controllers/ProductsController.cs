@@ -5,6 +5,8 @@ using System;
 using System.Linq;
 using AnahitaProp.Data;
 using AnahitaProp.Data.Models;
+using Swapp.Data;
+using Newtonsoft.Json.Linq;
 
 namespace AnahitaProp.BackOffice
 {
@@ -27,10 +29,9 @@ namespace AnahitaProp.BackOffice
         {
             Product[] products = null;
 
-
             try
             {
-                products = _dbi.GetProducts(withNames: true, offset: 0, statusFilter: statusFilter, limit: limit);
+                products = _dbi.GetListProducts(withNames: true, offset: 0, statusFilter: statusFilter, limit: limit);
 
                 return Json(products == null ? new object[0] : products.Select(l => l.Simplify()).ToArray());
             }
@@ -41,6 +42,68 @@ namespace AnahitaProp.BackOffice
             finally
             {
                 products = null;
+            }
+        }
+
+
+        [HttpPost]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public IActionResult ChangeBoolean([FromBody]JObject param)
+        {
+            Product product = null;
+
+            try
+            {
+                long id = param.JGetPropVal<long>("id");
+                string action = param.JGetPropVal<string>("action");
+                short? status = param.JGetPropVal<short?>("status");
+                bool? hideSearch = param.JGetPropVal<bool?>("hideSearch");
+
+                if (id > 0 && !string.IsNullOrEmpty(action))
+                {
+                    product = _dbi.GetProduct(id: id);
+
+                    if (product != null)
+                    {
+                        product.RegisterForRecordStateChange();
+
+                        switch (action.ToLower())
+                        {
+                            case "status":
+
+                                if (status != null)
+                                {
+                                    product.Status = (ModelStatus)status.Value;
+                                }
+
+                                break;
+
+                            case "hidesearch":
+
+                                if (hideSearch != null)
+                                {
+                                    product.HideSearch = hideSearch.Value;
+                                }
+
+                                break;
+                        }
+
+                        product.RegisterForRecordStateChange();
+
+                        product = _dbi.ManageModel(product);
+                    }
+                }
+
+                return Json(product == null ? new { notFound = true } : product.Simplify());
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                product = null;
             }
         }
     }

@@ -25,15 +25,15 @@ const RoleModel = types.model(
 ).actions(
     self => ({
         cloneSelf: () => clone(self),
-        setPropValue: value => {
+        setPropsValue: value => {
 
-            BaseModel.setPropValue(self, value);
+            BaseModel.setPropsValue(self, value);
         },
         sync: value => {
 
             self.originalValue = value;
 
-            BaseModel.setPropValue(self, value);
+            BaseModel.setPropsValue(self, value);
         },
         clearValues: () => {
 

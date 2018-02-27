@@ -178,7 +178,7 @@ const UserManagement =
                                     editButtonDisabled={value.isCurrentUser}
                                     deleteButtonDisabled={value.isCurrentUser}
                                     onEdit={e => {
-                                        this.viewModel.setPropValue({ targetRoleUser: value.id });
+                                        this.viewModel.setPropsValue({ targetRoleUser: value.id });
                                         this.modalHandler.show();
                                     }}
                                     onDelete={e => {
@@ -253,7 +253,7 @@ const UserManagement =
                         }
                         else {
 
-                            record.setPropValue({ isSaving: true });
+                            record.setPropsValue({ isSaving: true });
 
                             Helper.RunPromise(
                                 {
@@ -288,7 +288,7 @@ const UserManagement =
                                 },
                                 () => {
 
-                                    record.setPropValue({ isSaving: false });
+                                    record.setPropsValue({ isSaving: false });
                                 }
                             );
                         }

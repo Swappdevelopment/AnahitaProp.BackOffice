@@ -64,9 +64,9 @@ const UserModel = types.model(
 
             return temp ? true : false;
         },
-        setPropValue: value => {
+        setPropsValue: value => {
 
-            BaseModel.setPropValue(self, value, true);
+            BaseModel.setPropsValue(self, value, true);
             this.receivedInput = true;
         },
         setRecordState: value => {
@@ -77,7 +77,7 @@ const UserModel = types.model(
 
             self.originalValue = value;
 
-            BaseModel.setPropValue(
+            BaseModel.setPropsValue(
                 self,
                 Object.assign(
                     value,

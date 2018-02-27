@@ -33,7 +33,7 @@ const UserManagementRole = inject("store")(
 
                 if (this.viewModel.roles.length === 0) {
 
-                    this.viewModel.setPropValue({ gettingRoles: true });
+                    this.viewModel.setPropsValue({ gettingRoles: true });
 
                     let idCounter = -1;
 
@@ -67,7 +67,7 @@ const UserManagementRole = inject("store")(
                         },
                         () => {
 
-                            this.viewModel.setPropValue({ gettingRoles: false });
+                            this.viewModel.setPropsValue({ gettingRoles: false });
                         }
                     );
                 }
@@ -187,7 +187,7 @@ const UserManagementRole = inject("store")(
 
                                                                     if (userRole && !userRole.isSaving) {
 
-                                                                        userRole.setPropValue({
+                                                                        userRole.setPropsValue({
                                                                             recordState: 30
                                                                         });
 
@@ -197,7 +197,7 @@ const UserManagementRole = inject("store")(
 
                                                                         userRole = v;
 
-                                                                        userRole.setPropValue({
+                                                                        userRole.setPropsValue({
                                                                             account_Id: this.viewModel.targetRoleUser.id,
                                                                             recordState: 10
                                                                         });
