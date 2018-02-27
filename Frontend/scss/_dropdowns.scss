@@ -6,7 +6,7 @@
         padding: 0;
         width: 325px;
         border-color: transparent;
-        box-shadow: 0px 0px 15px 1px rgba(132, 141, 47, 0.2);
+        box-shadow: 0px 0px 15px 1px rgba(94,55,19, 0.2);
         background-color: transparent;
       
         .s-dropdown-wrapper{
@@ -15,7 +15,7 @@
             
             .s-dropdown-arrow{
                 position: absolute;
-                color: rgba(194,215,48, 0.6);
+                color: rgba(105, 62, 22, 0.6);
                 top: -13px;
                 right: 50px;
 
@@ -39,7 +39,7 @@
 
             .s-dropdown-header{
                 height: 120px;
-                background: linear-gradient(rgba(194,215,48, 0.9), rgba(194,215,48, 0.9)), url("~/images/background.png") center center no-repeat scroll;
+                background: linear-gradient(rgba(105, 62, 22, 0.9), rgba(105, 62, 22, 0.9)), url("~/images/background.png") center center no-repeat scroll;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
                 padding: 15px;
@@ -160,7 +160,7 @@
         border-color: transparent;
         background-color: $white;
         margin-top: 16px;
-        box-shadow: 0px 0px 15px 1px rgba(23,4,193, 0.1);
+        box-shadow: 0px 0px 15px 1px rgba(22,65,105, 0.1);
 
         .s-dropdown-wrapper{
             border-radius: 6px;
@@ -238,7 +238,7 @@
         margin-top: 5px;
         padding: 5px 0;
         border-color: transparent;
-        box-shadow: 0px 0px 15px 1px rgba(132, 141, 47, 0.2);
+        box-shadow: 0px 0px 15px 1px rgba(94,55,19, 0.2);
         max-height: 250px;
         overflow-y: auto;
 
@@ -280,7 +280,7 @@
         width: auto;
         padding: 0;
         border-color: transparent;
-        box-shadow: 0px 0px 15px 1px rgba(132, 141, 47, 0.2);
+        box-shadow: 0px 0px 15px 1px rgba(94,55,19, 0.2);
         height: 225px;
         overflow-y: auto;
 
@@ -322,7 +322,7 @@
         width: auto;
         padding: 0;
         border-color: transparent;
-        box-shadow: 0px 0px 15px 1px rgba(132, 141, 47, 0.2);
+        box-shadow: 0px 0px 15px 1px rgba(94,55,19, 0.2);
         height: 150px;
         overflow-y: auto;
 

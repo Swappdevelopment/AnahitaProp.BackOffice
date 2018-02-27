@@ -73,7 +73,7 @@ const Account = inject("store")(
                 <div className="col-md-5 col-sm-12">
                   <div className="s-account-wrapper">
                     <div className="s-logo">
-                      <img src="../images/logo.jpg" width="300px" />
+                      <img src="../images/logo.jpg" width="180px" />
                       {this.pathingContent()}
                     </div>
                   </div>

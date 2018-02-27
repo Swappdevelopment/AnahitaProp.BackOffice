@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
-    Microsoft ResX Schema 
-    
+    Microsoft ResX Schema  
+     
     Version 2.0
     
     The primary goals of this format is to allow a simple XML format 
@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppTitle" xml:space="preserve">
-    <value>Anahita Properties Back Office</value>
+    <value>Anahita Property - Back Office</value>
   </data>
   <data name="lbl_Actions" xml:space="preserve">
     <value>Actions</value>
@@ -456,4 +456,8 @@
   <data name="lbl_HideInWs" xml:space="preserve">
     <value>Hide in Website</value>
   </data>
+  <data name="lbl_FrgtPsswrd" xml:space="preserve">
+    <value>Forgotten Password ?</value>
+  </data>
+    
 </root>

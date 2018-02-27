@@ -199,7 +199,7 @@ const ChangePassword =
                                                     null
                                                     :
                                                     <div className="s-logo">
-                                                        <img src="../images/logo.jpg" width="300px" />
+                                                        <img src="../images/logo.jpg" width="180px" />
                                                     </div>
                                             }
                                             <div className="s-change">
