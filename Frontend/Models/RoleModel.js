@@ -24,7 +24,12 @@ const RoleModel = types.model(
         getObject())
 ).actions(
     self => ({
-        cloneSelf: () => clone(self),
+        execAction: func => {
+
+            if (func) {
+                func(self);
+            }
+        },
         setPropsValue: value => {
 
             BaseModel.setPropsValue(self, value);

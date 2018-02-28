@@ -19,13 +19,17 @@ export default class BaseModel {
 
         if (self && value) {
 
+            let selfValue = null;
+
             for (let [key, value] of Object.entries(value)) {
 
                 if (key !== 'id' && self.hasOwnProperty(key) && !Array.isArray(value)) {
 
-                    if (!value) {
+                    selfValue = self[key];
 
-                        switch (self[key].constructor.name) {
+                    if (!value && selfValue !== undefined && selfValue !== null) {
+
+                        switch (selfValue.constructor.name) {
 
                             case 'String':
                                 value = '';

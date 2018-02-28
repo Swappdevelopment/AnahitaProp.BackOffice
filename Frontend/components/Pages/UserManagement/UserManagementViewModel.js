@@ -14,11 +14,18 @@ const UserManagementViewModel = types.model(
         gettingRoles: false,
         targetRoleUser: types.maybe(types.reference(UserModel), types.null),
         searchText: types.optional(types.string, ''),
+        toBeAdded: types.maybe(UserModel, types.null),
         users: types.optional(types.array(UserModel), []),
         roles: types.optional(types.array(RoleModel), []),
         statusType: types.optional(types.number, 1)
     }).actions(
     self => ({
+        execAction: func => {
+
+            if (func) {
+                func(self);
+            }
+        },
         setPropsValue: value => {
 
             BaseModel.setPropsValue(self, value);
@@ -55,7 +62,7 @@ const UserManagementViewModel = types.model(
         },
         getNewUser: () => {
 
-            const user = UserModel.init(UserModel.getObject(), ++self.idGenerator);
+            const user = UserModel.init({ id: -1 }, ++self.idGenerator);
             user.setRecordState(10);
 
             return user;

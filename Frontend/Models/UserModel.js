@@ -1,6 +1,8 @@
 import { types, destroy, detach } from 'mobx-state-tree';
 import moment from 'moment-es6';
 
+import Helper from '../Helper/Helper';
+
 import BaseModel from './BaseModel';
 import RoleModel from './RoleModel';
 
@@ -21,7 +23,8 @@ const getObject = () => {
             activityEndDate: types.optional(types.frozen, null),
             isCurrentUser: false,
             accountRoles: types.optional(types.array(RoleModel), []),
-            accountTokens: types.optional(types.array(types.frozen), [])
+            accountTokens: types.optional(types.array(types.frozen), []),
+            creationStep1Passed: false
         }
     );
 }
@@ -40,6 +43,12 @@ const UserModel = types.model(
         })
 ).actions(
     self => ({
+        execAction: func => {
+
+            if (func) {
+                func(self);
+            }
+        },
         insertAccountRole: (index, value) => {
 
             if (value && index >= 0 && index <= self.accountRoles.length) {
@@ -141,7 +150,7 @@ UserModel.getObject = getObject;
 UserModel.init = (value, genId) => {
 
     const self = UserModel.create({
-        id: value && value.id >= 0 ? value.id : 0
+        id: value && value.id !== 0 ? value.id : 0
     });
 
     self.accountRolesIdGen = 0;
@@ -161,6 +170,7 @@ UserModel.init = (value, genId) => {
         return Object.assign(
             BaseModel.getValueFromSelf(self),
             {
+                id: self.id >= 0 ? self.id : 0,
                 uid: self.uid,
                 accountName: self.accountName,
                 email: self.email,

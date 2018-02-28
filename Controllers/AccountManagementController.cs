@@ -80,21 +80,19 @@ namespace AnahitaProp.BackOffice
                 {
                     case RecordState.Deleted:
 
-                        if (account.ID > 0)
-                        {
-                            account = _dbi.GetAccount(account.ID, null, null, null);
+                        //account = _dbi.GetAccount(account.ID, null, null, null);
 
-                            if (account != null)
-                            {
-                                account.RegisterForRecordStateChange();
-                                account.Status = ModelStatus.Inactive;
-                                account.UnregisterForRecordStateChange();
+                        //if (account != null)
+                        //{
+                        //    account.RegisterForRecordStateChange();
+                        //    account.Status = ModelStatus.Inactive;
+                        //    account.UnregisterForRecordStateChange();
 
-                                toSave.Add(account);
+                        //    toSave.Add(account);
 
-                                deleted = true;
-                            }
-                        }
+                        //    deleted = true;
+                        //}
+                        _dbi.WipeAccount(account.ID);
                         break;
 
                     case RecordState.Updated:
@@ -162,6 +160,8 @@ namespace AnahitaProp.BackOffice
                                         includeRoles: true,
                                         includeSignUpToken: true).FirstOrDefault();
                 }
+
+                var temp = Helper.JSonCamelSerializeObject(account?.Simplify());
 
 
                 return Json(new { account = account?.Simplify() });

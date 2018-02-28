@@ -75,7 +75,14 @@ const UserManagementRole = inject("store")(
 
             render() {
 
-                const isCreatingUser = this.viewModel.targetRoleUser && this.viewModel.targetRoleUser.recordState === 10 && this.viewModel.targetRoleUser.id < 0;
+                if (!this.viewModel.targetRoleUser) {
+                    return null;
+                }
+
+                const isCreatingUser = this.viewModel.targetRoleUser
+                    && this.viewModel.targetRoleUser.recordState === 10
+                    && this.viewModel.targetRoleUser.id < 0
+                    && !this.viewModel.targetRoleUser.creationStep1Passed;
 
                 const value = this.viewModel.targetRoleUser;
 
@@ -111,7 +118,7 @@ const UserManagementRole = inject("store")(
                                                             break;
                                                     }
                                                 }}
-                                                onChange={e => value.email = e.target.value} />
+                                                onChange={e => value.execAction(self => self.email = e.target.value)} />
                                             {
                                                 value.isEmailValid() ?
                                                     null
@@ -178,31 +185,34 @@ const UserManagementRole = inject("store")(
                                                     this.viewModel.roles.map((v, i) => {
 
                                                         let userRole = this.viewModel.targetRoleUser.findAccountRole(v.role_Id);
-                                                        
+
                                                         return (
                                                             <li
                                                                 key={v.role_Id}
                                                                 className={`s-user-role-list-item${userRole && userRole.id > 0 ? ' selected' : ''}`}
                                                                 onClick={e => {
 
-                                                                    if (userRole && !userRole.isSaving) {
+                                                                    if (!this.viewModel.targetRoleUser.isCurrentUser) {
 
-                                                                        userRole.setPropsValue({
-                                                                            recordState: 30
-                                                                        });
+                                                                        if (userRole && !userRole.isSaving) {
 
-                                                                        this.props.save(userRole);
-                                                                    }
-                                                                    else if (!v.isSaving) {
+                                                                            userRole.setPropsValue({
+                                                                                recordState: 30
+                                                                            });
 
-                                                                        userRole = v;
+                                                                            this.props.save(userRole);
+                                                                        }
+                                                                        else if (!v.isSaving) {
 
-                                                                        userRole.setPropsValue({
-                                                                            account_Id: this.viewModel.targetRoleUser.id,
-                                                                            recordState: 10
-                                                                        });
+                                                                            userRole = v;
 
-                                                                        this.props.save(userRole);
+                                                                            userRole.setPropsValue({
+                                                                                account_Id: this.viewModel.targetRoleUser.id,
+                                                                                recordState: 10
+                                                                            });
+
+                                                                            this.props.save(userRole);
+                                                                        }
                                                                     }
                                                                 }}>
                                                             </li>

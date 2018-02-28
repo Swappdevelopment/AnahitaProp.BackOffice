@@ -45,7 +45,7 @@ const UserManagement =
 
                 getUsers() {
 
-                    this.viewModel.users.length = 0;
+                    this.viewModel.execAction(self => self.users.length = 0);
 
                     this.pageViewModel.pageBlurPixels = 3;
                     this.pageViewModel.showPageWaitControl = true;
@@ -91,7 +91,6 @@ const UserManagement =
 
                             this.pageViewModel.pageBlurPixels = 0;
                             this.pageViewModel.showPageWaitControl = false;
-                            this.viewModel.isLazyLoading = false;
                         }
                     );
                 }
@@ -182,7 +181,7 @@ const UserManagement =
                                         this.modalHandler.show();
                                     }}
                                     onDelete={e => {
-                                        value.recordState = 30;
+                                        value.execAction(self => self.recordState = 30);
                                         this.save(value);
                                     }}
                                     deleteTitle={this.activeLang.labels["lbl_DeleteUser"]}
@@ -197,10 +196,10 @@ const UserManagement =
 
                         if (!('role_Id' in record) || this.viewModel.targetRoleUser.recordState === 10) {
 
-                            const user = ('role_Id' in record) ? this.viewModel.targetRoleUser : record;
+                            let user = ('role_Id' in record) ? this.viewModel.targetRoleUser : record;
 
-                            user.isSaving = true;
-                            record.isSaving = true;
+                            user.execAction(self => self.isSaving = true);
+                            record.execAction(self => self.isSaving = true);
 
                             const param = user.getValue();
 
@@ -219,16 +218,26 @@ const UserManagement =
 
                                                 if (index >= 0) {
 
-                                                    this.viewModel.users.splice(index, 1);
+                                                    user.execAction(self => self.isSaving = false);
+
+                                                    this.viewModel.execAction(self => {
+                                                        self.users.splice(index, 1);
+                                                    });
+
+                                                    user = null;
+                                                    record = null;
                                                 }
                                             }
                                             else if (data.account) {
 
-                                                user.sync(data.account);
+                                                const validUser = this.viewModel.syncUser(data.account);
 
-                                                if (this.viewModel.users.indexOf(user) < 0) {
+                                                if (this.viewModel.users.indexOf(validUser) < 0) {
 
-                                                    this.viewModel.users.splice(0, 0, user);
+                                                    this.viewModel.execAction(self => {
+                                                        self.users.splice(0, 0, validUser);
+                                                        self.targetRoleUser = validUser.id;
+                                                    });
                                                 }
 
                                                 this.sendEmail(user);
@@ -246,8 +255,21 @@ const UserManagement =
                                 },
                                 () => {
 
-                                    user.isSaving = false;
-                                    record.isSaving = false;
+                                    if (user) {
+
+                                        user.execAction(self => self.isSaving = false);
+                                    }
+                                    if (record) {
+
+                                        record.execAction(self => self.isSaving = false);
+                                    }
+
+                                    if (this.viewModel.toBeAdded) {
+
+                                        this.viewModel.execAction(self => {
+                                            self.toBeAdded = null;
+                                        });
+                                    }
                                 }
                             );
                         }
@@ -299,7 +321,7 @@ const UserManagement =
 
                     if (user && user.accountTokens && user.accountTokens.length > 0 && user.accountTokens[0].value) {
 
-                        user.emailSentStatus = 10;
+                        user.execAction(self => self.emailSentStatus = 10);
 
                         Helper.RunPromise(
                             {
@@ -308,8 +330,10 @@ const UserManagement =
 
                                     if (data) {
 
-                                        user.accountTokens[0] = data;
-                                        user.emailSentStatus = data.emailSentStatus;
+                                        user.execAction(self => {
+                                            user.accountTokens[0] = data;
+                                            user.emailSentStatus = data.emailSentStatus;
+                                        });
                                     }
                                 },
                             },
@@ -325,7 +349,7 @@ const UserManagement =
                             },
                             () => {
 
-                                user.isSaving = false;
+                                user.execAction(self => self.isSaving = false);
                             }
                         );
                     }
@@ -340,14 +364,14 @@ const UserManagement =
                             && this.viewModel.targetRoleUser.id < 0
                             && this.viewModel.targetRoleUser.isValid()) {
 
-                            this.viewModel.targetRoleUser.id = 0;
+                            //this.viewModel.targetRoleUser.id = 0;
+                            this.viewModel.targetRoleUser.execAction(self => self.creationStep1Passed = true);
                         }
                     };
 
                     return (
 
                         <PageComponent
-
                             paTitle={this.activeLang.labels["lbl_Menu_usermanagement"]}
                             paSearchPlaceholder={this.activeLang.labels["lbl_SearchUsers"]}
                             paSearchValue={this.viewModel.searchText}
@@ -355,10 +379,14 @@ const UserManagement =
                             paOnSearch={e => this.getUsers(this.viewModel.searchText)}
                             paClearSearchValue={e => this.viewModel.searchText = ''}
                             paOnAdd={e => {
-                                const temp = this.viewModel.getNewUser();
-                                temp.id = -1;
 
-                                this.viewModel.targetRoleUser = temp;
+                                const temp = this.viewModel.getNewUser();
+
+                                this.viewModel.execAction(self => {
+
+                                    self.toBeAdded = temp;
+                                    self.targetRoleUser = temp.id;
+                                });
 
                                 this.modalHandler.show();
                             }}
@@ -367,6 +395,7 @@ const UserManagement =
                                 this.saveUsers();
                             }}
                             paRefresh={e => {
+
                                 this.getUsers();
                             }}
                             hideStatus
@@ -460,6 +489,11 @@ const UserManagement =
                                     </div>
 
                                 );
+                            }}
+
+                            onModalHide={() => {
+
+                                this.viewModel.execAction(self => self.targetRoleUser = null)
                             }}
                         />
                     );
