@@ -38,7 +38,7 @@ const Products = inject("store")(
                 this.getProductsRow = this.getProductsRow.bind(this);
                 this.saveProducts = this.saveProducts.bind(this);
 
-                this.limit = Helper.LAZY_LOAD_LIMIT;
+                this.limit = Helper.LAZY_LOAD_LIMIT + 20;
                 this.offset = 0;
             }
 
@@ -411,15 +411,15 @@ const Products = inject("store")(
                                 }}
                                 onDelete={e => {
 
-                                    if (value.recordState === 10) {
+                                    // if (value.recordState === 10) {
 
-                                        this.viewModel.removeProducts(value);
-                                    }
-                                    else {
+                                    //     this.viewModel.removeProducts(value);
+                                    // }
+                                    // else {
 
-                                        value.recordState = 30;
-                                        this.saveProducts();
-                                    }
+                                    //     value.recordState = 30;
+                                    //     this.saveProducts();
+                                    // }
                                 }}
                                 deleteTitle={this.activeLang.labels["lbl_DeleteProducts"]} />
                         </tr >
