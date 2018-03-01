@@ -9,15 +9,17 @@ const getObject = () => {
     return Object.assign(
         {
             slug: types.optional(types.string, ''),
-            type_Id: types.maybe(types.number, types.null),
+            latitude: types.optional(types.number, 0),
+            longitude: types.optional(types.number, 0),
+            size: types.maybe(types.number, types.null),
             names: types.optional(types.array(ItemNameModel), []),
         },
         BaseModel.getBaseObject());
 };
 
 
-const ProdFamilyModel = types.model(
-    'ProdFamilyModel',
+const NeighbourhoodModel = types.model(
+    'NeighbourhoodModel',
     Object.assign(
         {
             isSaving: false
@@ -75,11 +77,11 @@ const ProdFamilyModel = types.model(
     }));
 
 
-ProdFamilyModel.getObject = getObject;
+NeighbourhoodModel.getObject = getObject;
 
-ProdFamilyModel.init = (value, genId, activeLangCode) => {
+NeighbourhoodModel.init = (value, genId, activeLangCode) => {
 
-    const self = ProdFamilyModel.create({
+    const self = NeighbourhoodModel.create({
         id: value && value.id >= 0 ? value.id : 0
     });
 
@@ -108,4 +110,4 @@ ProdFamilyModel.init = (value, genId, activeLangCode) => {
     return self;
 };
 
-export default ProdFamilyModel;
+export default NeighbourhoodModel;

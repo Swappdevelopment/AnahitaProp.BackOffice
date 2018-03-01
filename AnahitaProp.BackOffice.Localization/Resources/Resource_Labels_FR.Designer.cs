@@ -611,11 +611,29 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terrain à bâtir.
+        /// </summary>
+        public static string lbl_Lfs {
+            get {
+                return ResourceManager.GetString("lbl_Lfs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nom.
         /// </summary>
         public static string lbl_LName {
             get {
                 return ResourceManager.GetString("lbl_LName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Surface du Lot.
+        /// </summary>
+        public static string lbl_LotSize {
+            get {
+                return ResourceManager.GetString("lbl_LotSize", resourceCulture);
             }
         }
         
@@ -800,6 +818,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Projet.
+        /// </summary>
+        public static string lbl_Prj {
+            get {
+                return ResourceManager.GetString("lbl_Prj", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Profile.
         /// </summary>
         public static string lbl_Profile {
@@ -877,6 +904,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Role {
             get {
                 return ResourceManager.GetString("lbl_Role", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revente.
+        /// </summary>
+        public static string lbl_Rsl {
+            get {
+                return ResourceManager.GetString("lbl_Rsl", resourceCulture);
             }
         }
         
@@ -994,6 +1030,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_SignOut {
             get {
                 return ResourceManager.GetString("lbl_SignOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choisissez la Propriétée.
+        /// </summary>
+        public static string lbl_SlctProp {
+            get {
+                return ResourceManager.GetString("lbl_SlctProp", resourceCulture);
             }
         }
         

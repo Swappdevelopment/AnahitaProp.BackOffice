@@ -39,14 +39,6 @@ const RoleModel = types.model(
             self.originalValue = value;
 
             BaseModel.setPropsValue(self, value);
-        },
-        clearValues: () => {
-
-            BaseModel.clearValues(self);
-
-            self.name = '';
-            self.account_Id = null;
-            self.role_Id = null;
         }
     }));
 

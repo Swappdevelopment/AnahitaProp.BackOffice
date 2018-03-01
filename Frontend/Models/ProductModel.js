@@ -3,6 +3,7 @@ import { types } from 'mobx-state-tree';
 import BaseModel from './BaseModel';
 import ItemNameModel from './ItemNameModel';
 import ProdFamilyModel from './ProdFamilyModel';
+import PropertyModel from './PropertyModel';
 
 
 const getObject = () => {
@@ -12,21 +13,24 @@ const getObject = () => {
             uid: types.optional(types.string, ''),
             code: types.optional(types.string, ''),
             slug: types.optional(types.string, ''),
+            type: types.optional(types.number, 0),
             property_Id: types.optional(types.number, 0),
             currency_Id: types.optional(types.number, 0),
+            productFamily_Id: types.optional(types.number, 0),
             currencyCode: types.optional(types.string, ''),
             project_Id: types.optional(types.number, 0),
             group_Id: types.optional(types.number, 0),
             netSize: types.optional(types.number, 0),
             grossSize: types.optional(types.number, 0),
             price: types.optional(types.number, 0),
-            priority: types.optional(types.number, 0),
+            priority: types.optional(types.number, 1),
             binaryValue: types.optional(types.number, 0),
             hideSearch: false,
             isGroup: false,
-            name: types.optional(types.string, ''),
             names: types.optional(types.array(ItemNameModel), []),
-            productFamily: types.maybe(ProdFamilyModel, types.null)
+            productFamily: types.maybe(ProdFamilyModel, types.null),
+            originalValue: types.optional(types.frozen, null),
+            property: types.maybe(types.reference(PropertyModel), types.null)
         },
         BaseModel.getBaseObject());
 };
@@ -62,6 +66,18 @@ const ProductModel = types.model(
 
             self.receivedInput = listenForChange ? true : false;
         },
+        resetOriginalValue: () => {
+
+            const value = self.getValue();
+            delete value.recordState;
+
+            self.originalValue = value;
+
+            for (const nmv of self.names) {
+
+                nmv.resetOriginalValue();
+            }
+        },
         sync: value => {
 
             self.originalValue = value;
@@ -74,19 +90,12 @@ const ProductModel = types.model(
 
                 self.names.push(...value.names.map((v, i) => {
 
-                    const lCode = v.language_Code ? v.language_Code.toLowerCase() : '';
-
-                    if (self.activeLangCode && self.activeLangCode === lCode) {
-
-                        self.name = v.value;
-                    }
-
                     return ItemNameModel.init({
                         id: v.id,
                         status: v.status,
                         value: v.value,
                         language_Id: v.language_Id,
-                        language_Code: lCode,
+                        language_Code: v.language_Code ? v.language_Code.toLowerCase() : '',
                     });
                 }));
             }
@@ -102,11 +111,37 @@ const ProductModel = types.model(
         }
     })).views(
     self => ({
-        requiresSave: () => (self.recordState !== 0 || self.isModified()),
-        isModified: () => {
+        getName: () => {
 
-            return BaseModel.isSelfModified(self, self.originalValue, true)
-                || (self.names.filter((v, i) => v.isModified()).length > 0);
+            if (self.names && self.names.length > 0) {
+
+                if (self.activeLangCode) {
+
+                    const nameItem = self.names.find(v => v.language_Code == self.activeLangCode);
+
+                    if (nameItem) {
+
+                        return nameItem.value;
+                    }
+                }
+
+                return self.names[0].value;
+            }
+
+            return '';
+        },
+        requiresSave: () => (self.recordState !== 0 || self.isModified()),
+        isModified: excludeSubs => {
+
+            const modified = BaseModel.isSelfModified(self, self.originalValue, true);
+
+            if (!modified && !excludeSubs) {
+
+                return (self.property && self.property.isModified())
+                    || self.names.filter((v, i) => v.isModified()).length > 0;
+            }
+
+            return modified;
         },
         getNameAndCode: () => {
 
@@ -114,7 +149,7 @@ const ProductModel = types.model(
 
             tempCode = tempCode && tempCode.length > 0 ? tempCode[0] : null;
 
-            return `${self.name}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`;
+            return `${self.getName()}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`;
         },
         isCodeValid: () => self.recievedInput ? (self.code ? true : false) : true,
         isPriceAndCurrencyValid: () => self.recievedInput ? ((self.currency_Id > 0 && self.price > 0) ? true : false) : true,
@@ -147,16 +182,15 @@ ProductModel.init = (value, genId, activeLangCode) => {
 
     self.getValue = () => {
 
-        self.originalValue = null;
-
         return Object.assign(
             BaseModel.getValueFromSelf(self),
             {
                 uid: self.uid,
                 code: self.code,
-                slug: self.slug,
+                slug: self.slug ? self.slug : self.getName(),
                 property_Id: self.property_Id,
                 currency_Id: self.currency_Id,
+                productFamily_Id: self.productFamily_Id,
                 project_Id: self.project_Id,
                 group_Id: self.group_Id,
                 netSize: self.netSize,
@@ -166,6 +200,7 @@ ProductModel.init = (value, genId, activeLangCode) => {
                 binaryValue: self.binaryValue,
                 hideSearch: self.hideSearch,
                 isGroup: self.isGroup,
+                type: self.type,
                 names: self.names.map((v, i) => v.getValue())
             });
     };

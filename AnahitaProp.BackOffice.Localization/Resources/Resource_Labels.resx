@@ -462,4 +462,19 @@
   <data name="lbl_Code" xml:space="preserve">
     <value>Code</value>
   </data>
+  <data name="lbl_Lfs" xml:space="preserve">
+    <value>Land for Sale</value>
+  </data>
+  <data name="lbl_Prj" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="lbl_Rsl" xml:space="preserve">
+    <value>Resale</value>
+  </data>
+  <data name="lbl_LotSize" xml:space="preserve">
+    <value>Lot Size</value>
+  </data>
+  <data name="lbl_SlctProp" xml:space="preserve">
+    <value>Select Property</value>
+  </data>
 </root>

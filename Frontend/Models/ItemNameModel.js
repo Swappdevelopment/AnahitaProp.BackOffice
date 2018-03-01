@@ -9,15 +9,28 @@ const ItemNameModel = types.model(
     {
         recordState: types.optional(types.number, 0),
         value: types.optional(types.string, ''),
-        recievedInput: false
+        recievedInput: false,
+        originalValue: types.optional(types.frozen, null)
     }
 ).actions(
     self => ({
+        execAction: func => {
+            if (func) {
+                func(self);
+            }
+        },
         setPropsValue: (value, listenForChange) => {
 
             BaseModel.setPropsValue(self, value, listenForChange);
 
             self.recievedInput = listenForChange ? true : false;
+        },
+        resetOriginalValue: () => {
+
+            const value = self.getValue();
+            delete value.recordState;
+
+            self.originalValue = value;
         },
         setValue: value => {
 
@@ -50,7 +63,7 @@ ItemNameModel.init = value => {
 
     const self = ItemNameModel.create({ recordState: 0 });
 
-    self.originalValue = value;
+    self.execAction(() => self.originalValue = value);
 
     self.setPropsValue(value);
 

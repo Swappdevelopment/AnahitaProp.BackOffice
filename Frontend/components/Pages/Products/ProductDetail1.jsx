@@ -1,7 +1,9 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 
-import { Row, Col } from "react-bootstrap";
+import Cleave from 'cleave.js/react';
+
+import { Row, Col, Button } from "react-bootstrap";
 
 import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
@@ -37,6 +39,7 @@ class ProductDetail1 extends React.Component {
                                 <input
                                     type={params1.inputType ? params1.inputType : 'text'}
                                     className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
+                                    disabled={params1.isDisabled()}
                                     value={params1.getValue()}
                                     onChange={params1.setValue} />
                                 {
@@ -61,6 +64,7 @@ class ProductDetail1 extends React.Component {
                                 <input
                                     type={params2.inputType ? params2.inputType : 'text'}
                                     className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
+                                    disabled={params1.isDisabled()}
                                     value={params2.getValue()}
                                     onChange={params2.setValue} />
                                 {
@@ -85,98 +89,126 @@ class ProductDetail1 extends React.Component {
 
         const prodModel = this.viewModel.selectedValue;
 
-        if (!prodModel) return null;
+        if (prodModel) {
 
+            return (
+                <div>
+                    <Row>
 
-        return (
-            <div>
-                <Row>
-
-                    {
-                        this.getInputElement({
-                            smallInput: true,
-                            label: this.activeLang.labels['lbl_Code'],
-                            isValid: prodModel.isCodeValid,
-                            getValue: () => prodModel.code,
-                            setValue: e => prodModel.setPropsValue({ code: e.target.value })
-                        })
-                    }
-                    {
-                        prodModel.names.map((prodName, i) =>
-
+                        {
                             this.getInputElement({
-                                key: `names-${i}`,
-                                label: this.activeLang.labels['lbl_Name'] + ' ' + (prodName.language_Code ? prodName.language_Code.toUpperCase() : ''),
-                                isValid: prodName.isValueValid,
-                                getValue: () => prodName.value,
-                                setValue: e => prodName.setPropsValue({ value: e.target.value })
-                            }))
-                    }
-                    {
-                        this.getInputElement({
-                            label: this.activeLang.labels['lbl_NetSize'],
-                            inputType: 'number',
-                            getValue: () => prodModel.netSize,
-                            setValue: e => prodModel.setPropsValue({ netSize: parseFloat(e.target.value) })
-                        },
-                            {
-                                label: this.activeLang.labels['lbl_GrossSize'],
-                                inputType: 'number',
-                                getValue: () => prodModel.grossSize,
-                                setValue: e => prodModel.setPropsValue({ grossSize: parseFloat(e.target.value) })
+                                smallInput: true,
+                                label: this.activeLang.labels['lbl_Code'],
+                                isValid: prodModel.isCodeValid,
+                                isDisabled: () => prodModel.isSaving,
+                                getValue: () => prodModel.code,
+                                setValue: e => prodModel.execAction(self => self.code = e.target.value)
                             })
-                    }
-                    {
-                        this.getInputElement({
-                            label: this.activeLang.labels['lbl_Price'],
-                            isValid: prodModel.isCodeValid,
-                            getInnerElement: () => (
-                                <table style={{ width: '80%' }}>
-                                    <tbody>
-                                        <tr>
-                                            <td style={{ width: 75 }}>
-                                                <DropdownEditor
-                                                    id="drpCurrency"
-                                                    className="form-control s-input s-ellipsis"
-                                                    title={prodModel.currencyCode}>
-                                                    {
-                                                        this.viewModel.currencies.map((v, i) => {
+                        }
+                        {
+                            prodModel.names.map((prodName, i) =>
 
-                                                            return (
-                                                                <DropdownEditorMenu
-                                                                    active={v.id === prodModel.currency_Id}
-                                                                    key={v.id}
-                                                                    onClick={e => {
+                                this.getInputElement({
+                                    key: `names-${i}`,
+                                    label: this.activeLang.labels['lbl_Name'] + ' ' + (prodName.language_Code ? prodName.language_Code.toUpperCase() : ''),
+                                    isValid: prodName.isValueValid,
+                                    isDisabled: () => prodModel.isSaving,
+                                    getValue: () => prodName.value,
+                                    setValue: e => prodName.execAction(self => self.value = e.target.value)
+                                }))
+                        }
+                        {
+                            this.getInputElement({
+                                label: this.activeLang.labels['lbl_NetSize'],
+                                inputType: 'number',
+                                isDisabled: () => prodModel.isSaving,
+                                getValue: () => prodModel.netSize,
+                                setValue: e => prodModel.execAction(self => self.netSize = parseFloat(e.target.value))
+                            },
+                                {
+                                    label: this.activeLang.labels['lbl_GrossSize'],
+                                    inputType: 'number',
+                                    isDisabled: () => prodModel.isSaving,
+                                    getValue: () => prodModel.grossSize,
+                                    setValue: e => prodModel.execAction(self => self.grossSize = parseFloat(e.target.value))
+                                })
+                        }
+                        {
+                            this.getInputElement({
+                                label: this.activeLang.labels['lbl_Price'],
+                                isValid: prodModel.isCodeValid,
+                                getInnerElement: () => (
+                                    <table style={{ width: '80%' }}>
+                                        <tbody>
+                                            <tr>
+                                                <td style={{ width: 75 }}>
+                                                    <DropdownEditor
+                                                        id="drpCurrency"
+                                                        className="form-control s-input s-ellipsis"
+                                                        disabled={prodModel.isSaving}
+                                                        title={prodModel.currencyCode}>
+                                                        {
+                                                            this.viewModel.currencies.map((v, i) => {
 
-                                                                        prodModel.execAction(self => {
+                                                                return (
+                                                                    <DropdownEditorMenu
+                                                                        active={v.id === prodModel.currency_Id}
+                                                                        key={v.id}
+                                                                        onClick={e => {
 
-                                                                            self.currency_Id = v.id;
-                                                                            self.currencyCode = v.code;
-                                                                        });
-                                                                    }}>
-                                                                    {v.code}
-                                                                </DropdownEditorMenu>
-                                                            );
-                                                        })
-                                                    }
-                                                </DropdownEditor>
-                                            </td>
-                                            <td style={{ paddingLeft: 10 }}>
-                                                <input
-                                                    type="text"
-                                                    className={'form-control s-input' + (prodModel.isPriceAndCurrencyValid() ? '' : '-error')}
-                                                    value={prodModel.price.format(2, 3)}
-                                                    onChange={e => prodModel.execAction(self => self.price = parseFloat(e.target.value))} />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            )
-                        })
-                    }
-                </Row>
-            </div>
-        );
+                                                                            prodModel.execAction(self => {
+
+                                                                                self.currency_Id = v.id;
+                                                                                self.currencyCode = v.code;
+                                                                            });
+                                                                        }}>
+                                                                        {v.code}
+                                                                    </DropdownEditorMenu>
+                                                                );
+                                                            })
+                                                        }
+                                                    </DropdownEditor>
+                                                </td>
+                                                <td style={{ paddingLeft: 10 }}>
+                                                    <Cleave
+                                                        type="text"
+                                                        className={'form-control s-input' + (prodModel.isPriceAndCurrencyValid() ? '' : '-error')}
+                                                        options={{
+                                                            numeral: true,
+                                                            numeralThousandsGroupStyle: 'thousand',
+                                                            numeralDecimalScale: 2
+                                                        }}
+                                                        value={prodModel.price}
+                                                        onChange={e => prodModel.execAction(self => {
+
+                                                            self.price = parseFloat(e.target.rawValue);
+                                                        })} />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                )
+                            })
+                        }
+
+                        <div className="s-row-center row" style={{ paddingTop: 20 }}>
+                            <Button
+                                className="s-btn-medium-primary"
+                                disabled={!prodModel.requiresSave()}
+                                onClick={e => { this.viewModel.saveProduct(prodModel) }}
+                                style={{ padding: '12px 36px', marginLeft: "5px" }}>
+                                {
+                                    this.viewModel.savingProfile ?
+                                        <span>{this.activeLang.labels['lbl_SaveChanges']}<i className="spinner-right"></i></span>
+                                        :
+                                        this.activeLang.labels['lbl_SaveChanges']
+                                }
+                            </Button>
+                        </div>
+                    </Row>
+                </div>
+            );
+        }
     }
 }
 

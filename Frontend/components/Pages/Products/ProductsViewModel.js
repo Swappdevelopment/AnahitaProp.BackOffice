@@ -1,17 +1,22 @@
-import { types, destroy } from 'mobx-state-tree';
+import { types, destroy, onPatch } from 'mobx-state-tree';
 
 import BaseModel from '../../../Models/BaseModel';
 import ProductModel from '../../../Models/ProductModel';
+import PropertyModel from '../../../Models/PropertyModel';
+
+import Helper from '../../../Helper/Helper';
 
 
 const ProductsViewModel = types.model(
     'ProductsViewModel',
     {
         isLazyLoading: false,
-        isModalShown: false,
+        isSaving: false,
+        isGettingProperties: false,
         selectedValue: types.maybe(types.reference(ProductModel), types.null),
         searchText: types.optional(types.string, ''),
         products: types.optional(types.array(ProductModel), []),
+        properties: types.optional(types.array(PropertyModel), []),
         currencies: types.optional(types.array(types.frozen), []),
         prodFamilies: types.optional(types.array(types.frozen), []),
         prodFamilyTypes: types.optional(types.array(types.frozen), [])
@@ -69,6 +74,106 @@ const ProductsViewModel = types.model(
 
                 destroy(self.products[self.products.length - 1]);
             }
+        },
+
+        saveProduct: value => {
+
+            if (value && !value.isSaving) {
+
+                value.execAction(prod => prod.isSaving = true);
+
+                let idCounter = -1;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromisePost('/products/saveBasics', value.getValue()),
+                        success: data => {
+
+                            if (data && data.saved) {
+
+                                if (value.recordState === 30) {
+
+
+                                }
+                                else {
+
+                                    switch (value.recordState) {
+
+                                        case 10:
+
+                                            break;
+
+                                        default:
+
+                                            value.resetOriginalValue();
+                                            break;
+                                    }
+                                }
+                            }
+                        },
+                    },
+                    error => {
+
+                        if (self.showPromiseError) {
+                            self.showPromiseError(error);
+                        }
+                    },
+                    () => {
+
+                        value.execAction(prod => prod.isSaving = false);
+                    }
+                );
+            }
+        },
+
+        getProperties: activeLangCode => {
+
+            if (self.properties.length === 0 && !self.isGettingProperties) {
+
+                self.isGettingProperties = true;
+
+                let idCounter = -1;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromiseGet('/products/GetProductPropertiesDetails'),
+                        success: data => {
+
+                            if (data && data.length) {
+
+                                self.execAction(() => {
+
+                                    self.properties.push(...data.map((mv, i) => PropertyModel.init(mv, ++self.idGenerator, activeLangCode)));
+
+                                    if (self.selectedValue) {
+
+                                        self.selectedValue.property = self.selectedValue.property_Id;
+                                    }
+                                });
+                            }
+                        },
+                        incrementSession: () => {
+
+                            self.getPropertiesPromiseID = self.getPropertiesPromiseID ? (self.getPropertiesPromiseID + 1) : 1;
+                            idCounter = self.getPropertiesPromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.getPropertiesPromiseID;
+                        }
+                    },
+                    error => {
+
+                        if (self.showPromiseError) {
+                            self.showPromiseError(error);
+                        }
+                    },
+                    () => {
+
+                        self.execAction(() => self.isGettingProperties = false);
+                    }
+                );
+            }
         }
     })).views(self => ({
 
@@ -102,6 +207,21 @@ ProductsViewModel.init = () => {
     };
 
     self.getLazyWaitRecord = () => ProductModel.init({ id: -1, isLazyWait: true }, ++self.genId);
+
+
+    onPatch(self, patch => {
+
+        switch (patch.path) {
+
+            case '/selectedValue':
+
+                if (self.selectedValue && self.properties.length > 0) {
+
+                    self.execAction(() => self.selectedValue.property = self.selectedValue.property_Id);
+                }
+                break;
+        }
+    })
 
 
     return self;

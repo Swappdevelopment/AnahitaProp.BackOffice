@@ -51,7 +51,6 @@ const config = {
             'fetch',
             'bootstrap/dist/css/bootstrap.css',
             'react-datepicker/dist/react-datepicker.css'
-
         ]
     },
     output: {

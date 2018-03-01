@@ -7,6 +7,7 @@ using AnahitaProp.Data;
 using AnahitaProp.Data.Models;
 using Swapp.Data;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 namespace AnahitaProp.BackOffice
 {
@@ -31,7 +32,7 @@ namespace AnahitaProp.BackOffice
 
             try
             {
-                products = _dbi.GetListProducts(withNames: true, statusFilter: statusFilter, offset: offset, limit: limit);
+                products = _dbi.GetListProducts(withNames: true, withoutGroupsAndSubs: true, statusFilter: statusFilter, offset: offset, limit: limit);
 
                 return Json(products == null ? new object[0] : products.Select(l => l.Simplify()).ToArray());
             }
@@ -42,6 +43,30 @@ namespace AnahitaProp.BackOffice
             finally
             {
                 products = null;
+            }
+        }
+
+
+        [HttpGet]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public IActionResult GetProductPropertiesDetails()
+        {
+            Property[] result = null;
+
+            try
+            {
+                result = _dbi.GetPropertysDetails();
+
+                return Json(result == null ? new object[0] : result.Select(l => l.Simplify()).ToArray());
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                result = null;
             }
         }
 
@@ -103,6 +128,115 @@ namespace AnahitaProp.BackOffice
             }
             finally
             {
+                product = null;
+            }
+        }
+
+
+        [HttpPost]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public IActionResult SaveBasics([FromBody]JObject param)
+        {
+            Product product = null;
+
+            bool saved = false;
+
+            List<IdentityModel> toSave = null;
+
+
+            try
+            {
+                product = Helper.JSonCamelDeserializeObject<Product>(param);
+
+                product.Group_Id = product.Group_Id == 0 ? null : product.Group_Id;
+                product.Project_Id = product.Project_Id == 0 ? null : product.Project_Id;
+                product.Property_Id = product.Property_Id == 0 ? null : product.Property_Id;
+
+                if (product != null)
+                {
+                    toSave = new List<IdentityModel>();
+
+                    switch (product.RecordState)
+                    {
+                        case RecordState.Added:
+
+                            product.UID = Helper.GenerateSequentialGuid().ToString();
+                            product.Slug = _dbi.GetProductSlug(product.Slug.ToSlug(length: Product.SLUG_LENGTH - 4));
+
+                            toSave.Add(product);
+
+                            if (product.Names != null)
+                            {
+                                toSave.AddRange(
+                                        product.Names
+                                        .Where(l => l.RecordState != RecordState.None)
+                                        .Select(l => l.AddCommand("Product_Id", $"SELECT ID FROM Products WHERE UID = '{product.UID}'")));
+                            }
+                            break;
+
+                        case RecordState.Updated:
+
+                            toSave.Add(product);
+
+                            if (product.Names != null)
+                            {
+                                toSave.AddRange(
+                                        product.Names
+                                        .Where(l => l.RecordState != RecordState.None)
+                                        .Select(l =>
+                                        {
+                                            l.Product_Id = product.ID;
+                                            return l;
+                                        }));
+                            }
+                            break;
+                        case RecordState.Deleted:
+                            break;
+
+                        default:
+
+                            if (product.Names != null)
+                            {
+                                toSave.AddRange(
+                                        product.Names
+                                        .Where(l => l.RecordState != RecordState.None)
+                                        .Select(l =>
+                                        {
+                                            l.Product_Id = product.ID;
+                                            return l;
+                                        }));
+                            }
+                            break;
+                    }
+
+                    if (toSave.Count > 0)
+                    {
+                        _dbi.ManageIdentityModels(toSave.ToArray());
+
+                        saved = true;
+                    }
+
+                    if (saved && product.RecordState == RecordState.Added)
+                    {
+                        product = _dbi.GetListProducts(uid: product.UID, withNames: true, withoutGroupsAndSubs: true)?.FirstOrDefault();
+                    }
+                    else
+                    {
+                        product = null;
+                    }
+                }
+
+                return Json(new { saved, newProduct = product?.Simplify() });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                toSave?.Clear();
+                toSave = null;
                 product = null;
             }
         }

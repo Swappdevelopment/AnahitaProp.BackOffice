@@ -2,9 +2,11 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 
 import { Row, Col } from "react-bootstrap";
+import LazyLoad from 'react-lazy-load';
 
 import PageActions from '../../PageComponents/PageActions/PageActions';
 import ProductDetail1 from './ProductDetail1';
+import ProductDetail2 from './ProductDetail2';
 
 
 class ProductDetail extends React.Component {
@@ -109,6 +111,12 @@ class ProductDetail extends React.Component {
                             <div className="s-portlet" style={{ padding: '30px 40px' }}>
                                 <ProductDetail1 viewModel={this.viewModel} errorHandler={this.errorHandler} />
                             </div>
+                            <br />
+                            <LazyLoad debounce={false}>
+                                <div className="s-portlet" style={{ padding: '30px 40px' }}>
+                                    <ProductDetail2 viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                </div>
+                            </LazyLoad>
                         </Col>
                     </Row>
                 </div>

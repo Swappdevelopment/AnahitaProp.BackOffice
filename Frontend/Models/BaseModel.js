@@ -15,7 +15,7 @@ export default class BaseModel {
         };
     }
 
-    static setPropsValue(self, value) {
+    static setPropsValue(self, value, toSkip) {
 
         if (self && value) {
 
@@ -23,7 +23,10 @@ export default class BaseModel {
 
             for (let [key, value] of Object.entries(value)) {
 
-                if (key !== 'id' && self.hasOwnProperty(key) && !Array.isArray(value)) {
+                if (key !== 'id'
+                    && self.hasOwnProperty(key)
+                    && !Array.isArray(value)
+                    && (!toSkip || toSkip.length === 0 || toSkip.indexOf(key) < 0)) {
 
                     selfValue = self[key];
 
@@ -121,7 +124,7 @@ export default class BaseModel {
 
             return {
                 recordState: BaseModel.isSelfModified(self, self.originalValue) ? 20 : self.recordState,
-                id: self.id,
+                id: self.id < 0 ? 0 : self.id,
                 status: self.status
             };
         }
