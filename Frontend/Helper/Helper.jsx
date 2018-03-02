@@ -56,7 +56,7 @@ export default class Helper {
 
             Promise.all(option.map((v, i) => v.promise))
                 .then(responses => {
-                    
+
                     if (!Array.isArray(responses)) {
 
                         responses = [responses];
@@ -68,7 +68,13 @@ export default class Helper {
 
                             const resp = responses[index];
 
-                            // if (resp.status === 200) {
+                            // if (resp.url && resp.url.indexOf('getProductsFlags') >= 0) {
+
+                            //     resp.text().then(data => {
+
+                            //         debugger;
+                            //     });
+                            // }
 
                             resp.json().then(data => {
 
@@ -102,7 +108,12 @@ export default class Helper {
 
                                     complete(data);
                                 }
-                            });
+                            })
+                                .catch(error => {
+
+                                    debugger;
+                                });
+
                             // }
                             // else {
 

@@ -181,5 +181,30 @@ namespace AnahitaProp.BackOffice
                 families = null;
             }
         }
+
+
+
+        [HttpGet]
+        [Access]
+        public JsonResult GetFlagViews()
+        {
+            Flag[] flags = null;
+
+            try
+            {
+                flags = _dbi.GetFlags(colValueRef: Flag.VIEW_REF, includeFieldTypes: true);
+
+
+                return Json(flags == null ? new object[0] : flags.Select(l => l.Simplify()).ToArray());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                flags = null;
+            }
+        }
     }
 }

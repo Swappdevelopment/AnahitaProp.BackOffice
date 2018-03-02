@@ -95,6 +95,34 @@ namespace AnahitaProp.BackOffice
         }
 
 
+        [HttpGet]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public IActionResult GetProductFlags(long productID = 0)
+        {
+            Product product = null;
+
+            try
+            {
+                product = _dbi.GetProductsFlags(productID).FirstOrDefault();
+
+                return Json(new
+                {
+                    productFlags = product?.Flags?.Select(l => l.Simplify()).ToArray(),
+                    propertyFlags = product?.Property?.Flags?.Select(l => l.Simplify()).ToArray()
+                });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                product = null;
+            }
+        }
+
+
         [HttpPost]
         [Access]
         [MenuRequirement("products>crud")]

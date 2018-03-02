@@ -34,6 +34,11 @@ namespace AnahitaProp.BackOffice
                 accexs = _dbi.GetAccountAccexs(onlyRootLevel: true);
                 fullName = GetUserFullName(this.User);
 
+                if (string.IsNullOrEmpty(fullName))
+                {
+                    fullName = _dbi.GetAccountFullName(_dbi.ConnToken?.AccessValue);
+                }
+
                 result = accexs?.Select(l => l.ToFrontMenu()).ToArray();
 
                 return Json(new

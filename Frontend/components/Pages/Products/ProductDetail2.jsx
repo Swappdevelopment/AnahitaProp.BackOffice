@@ -29,15 +29,36 @@ class ProductDetail2 extends React.Component {
             switch (key) {
 
                 case 0:
+
+                    if (this.viewModel.selectedValue.originalValue) {
+
+                        this.viewModel.selectedValue.execAction(self => {
+
+                            self.project_Id = self.originalValue.project_Id ? self.originalValue.project_Id : 0;
+                            self.project = self.project_Id > 0 ? self.project_Id : null;
+                        });
+                    }
+
                     this.viewModel.getProperties(this.activeLang.code);
                     break;
 
                 case 1:
+
                     this.viewModel.getProperties(this.activeLang.code);
                     this.viewModel.getProjects(this.activeLang.code);
                     break;
 
                 case 2:
+
+                    if (this.viewModel.selectedValue.originalValue) {
+
+                        this.viewModel.selectedValue.execAction(self => {
+
+                            self.property_Id = self.originalValue.property_Id ? self.originalValue.property_Id : 0;
+                            self.property = self.property_Id > 0 ? self.property_Id : null;
+                        });
+                    }
+
                     this.viewModel.getProjects(this.activeLang.code);
                     break;
             }

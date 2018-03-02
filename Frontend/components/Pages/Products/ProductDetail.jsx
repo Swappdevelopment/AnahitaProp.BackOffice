@@ -7,6 +7,7 @@ import LazyLoad from 'react-lazy-load';
 import PageActions from '../../PageComponents/PageActions/PageActions';
 import ProductDetail1 from './ProductDetail1';
 import ProductDetail2 from './ProductDetail2';
+import ProductDetail3 from './ProductDetail3';
 
 
 class ProductDetail extends React.Component {
@@ -91,6 +92,31 @@ class ProductDetail extends React.Component {
 
     render() {
 
+        let statusColor = null;
+
+        if (this.viewModel.selectedValue) {
+
+            switch (this.viewModel.selectedValue.recordState) {
+
+                case 10:
+                    statusColor = 's-circle s-status-add';
+                    break;
+
+                case 30:
+                    statusColor = 's-circle s-status-delete';
+                    break;
+
+                default:
+
+                    if (this.viewModel.selectedValue.isModified()) {
+
+                        statusColor = 's-circle s-status-edit';
+                    }
+                    break;
+            }
+        }
+
+
         return (
             <div className="s-page">
 
@@ -118,6 +144,12 @@ class ProductDetail extends React.Component {
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
                                     <ProductDetail2 viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                </div>
+                            </LazyLoad>
+                            <br />
+                            <LazyLoad debounce={false}>
+                                <div className="s-portlet" style={{ padding: '30px 40px' }}>
+                                    <ProductDetail3 viewModel={this.viewModel} errorHandler={this.errorHandler} />
                                 </div>
                             </LazyLoad>
                         </Col>

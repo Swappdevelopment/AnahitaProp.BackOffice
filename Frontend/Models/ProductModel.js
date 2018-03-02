@@ -5,6 +5,7 @@ import ItemNameModel from './ItemNameModel';
 import ProdFamilyModel from './ProdFamilyModel';
 import PropertyModel from './PropertyModel';
 import ProjectModel from './ProjectModel';
+import FlagLinkModel from './FlagLinkModel';
 
 
 const getObject = () => {
@@ -32,7 +33,8 @@ const getObject = () => {
             productFamily: types.maybe(ProdFamilyModel, types.null),
             originalValue: types.optional(types.frozen, null),
             property: types.maybe(types.reference(PropertyModel), types.null),
-            project: types.maybe(types.reference(ProjectModel), types.null)
+            project: types.maybe(types.reference(ProjectModel), types.null),
+            flags: types.optional(types.array(FlagLinkModel), [])
         },
         BaseModel.getBaseObject());
 };
@@ -43,8 +45,7 @@ const ProductModel = types.model(
     Object.assign(
         {
             receivedInput: false,
-            //isSaving: false,
-            isSaving: true,
+            isSaving: false,
             isLazyWait: false,
             isChangingStatus: false,
             isChangingHideSearch: false
@@ -141,13 +142,14 @@ const ProductModel = types.model(
         requiresSave: () => (self.recordState !== 0 || self.isModified()),
         isModified: excludeSubs => {
 
-            const modified = BaseModel.isSelfModified(self, self.originalValue, true);
+            const modified = BaseModel.isSelfModified(self, self.originalValue);
 
             if (!modified && !excludeSubs) {
 
                 return (self.property && self.property.isModified())
                     //|| (self.project && self.project.isModified())
-                    || self.names.filter((v, i) => v.isModified()).length > 0;
+                    || self.names.filter((v, i) => v.isModified()).length > 0
+                    || self.flags.filter((v, i) => v.isModified()).length > 0;
             }
 
             return modified;

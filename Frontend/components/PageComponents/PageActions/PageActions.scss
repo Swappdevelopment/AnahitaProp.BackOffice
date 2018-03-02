@@ -1,84 +1,69 @@
 @import "../../../scss/_variables.scss";
-
-
-.s-page-action-wrapper{
+.s-page-action-wrapper {
     position: relative;
     min-height: 100px;
     line-height: 100px;
     width: 100%;
-
-    .s-page-action{
+    .s-page-action {
         position: relative;
         width: 100%;
     }
-
-    .s-page-action-affix{
+    .s-page-action-affix {
         position: fixed;
         width: 100%;
         top: 70px;
         background-color: $white;
         z-index: 998;
-        box-shadow: 0 4px 4px -4px rgba(0,0,0,.2);
+        box-shadow: 0 4px 4px -4px rgba(0, 0, 0, .2);
     }
-
-    .s-page-action-back{
+    .s-page-action-back {
         text-decoration: none;
         cursor: pointer;
         color: $black;
     }
-
     .s-page-header {
         float: left;
         font-weight: bold;
         line-height: 100px;
-       
-
-        @media(max-width: $screen-xs-max){
+        @media(max-width: $screen-xs-max) {
             font-size: 18px;
-            white-space: nowrap; 
-            width: auto; 
+            white-space: nowrap;
+            width: auto;
             max-width: 400px;
             overflow: hidden;
-            text-overflow: ellipsis; 
+            text-overflow: ellipsis;
         }
-
-        @media(max-width: $screen-sm-max){
+        @media(max-width: $screen-sm-max) {
             font-size: 18px;
-            white-space: nowrap; 
-            width: auto; 
+            white-space: nowrap;
+            width: auto;
             overflow: hidden;
-            text-overflow: ellipsis; 
+            text-overflow: ellipsis;
         }
-
-        span{
-            color: #aec104;
+        span {
+            color: $primary;
         }
     }
-
-    .s-page-action-refresh{
+    .s-page-action-refresh {
         float: left;
         padding-left: 5px;
     }
-
     .s-page-action-add {
         float: left;
     }
-
-    .s-page-action-save{
+    .s-page-action-save {
         float: right;
         padding-right: 5px;
     }
-
-    .s-page-action-status{
+    .s-page-action-status {
         float: right;
     }
-
-    .s-page-action-next{
+    .s-page-action-next {
         position: fixed;
         height: 50px;
         width: 50px;
         background-color: $primaryDark;
-        right:0;
+        right: 0;
         top: 60%;
         border-radius: 10px;
         cursor: pointer;
@@ -86,26 +71,22 @@
         transition: all ease 300ms;
         padding: 5px 10px;
         display: flex;
-
-        &:hover{
+        &:hover {
             width: 200px;
             transition: all ease 300ms;
         }
-
-        &:hover i{
+        &:hover i {
             transition: all ease 300ms;
             justify-content: flex-start;
             width: auto;
             margin-right: 10px;
         }
-        
-        &:hover span{
+        &:hover span {
             display: block;
             margin-top: 12px;
             transition: all ease 300ms;
         }
-
-        i{
+        i {
             position: relative;
             width: 50px;
             color: $white;
@@ -115,25 +96,23 @@
             align-items: center;
             transition: all ease 300ms;
         }
-
-        span{
+        span {
             color: $white;
             line-height: 16px;
             width: auto;
             display: none;
-            white-space: nowrap; 
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; 
+            text-overflow: ellipsis;
             transition: all ease 300ms;
         }
     }
-
-    .s-page-action-prev{
+    .s-page-action-prev {
         position: fixed;
         height: 50px;
         width: 50px;
         background-color: $primaryDark;
-        left:0;
+        left: 0;
         top: 60%;
         border-radius: 10px;
         cursor: pointer;
@@ -141,30 +120,26 @@
         transition: all ease 300ms;
         padding: 5px 10px;
         display: flex;
-
-        &:hover{
+        &:hover {
             width: 200px;
             transition: all ease 300ms;
             justify-content: flex-end;
         }
-
-        &:hover i{
+        &:hover i {
             transition: all ease 300ms;
             justify-content: flex-end;
             width: auto;
             margin-left: 10px;
         }
-        
-        &:hover span{
+        &:hover span {
             display: block;
             margin-top: 12px;
             transition: all ease 300ms;
-            white-space: nowrap; 
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; 
+            text-overflow: ellipsis;
         }
-
-        i{
+        i {
             position: relative;
             width: 50px;
             color: $white;
@@ -174,18 +149,14 @@
             align-items: center;
             transition: all ease 300ms;
         }
-
-        span{
+        span {
             color: $white;
             line-height: 16px;
             width: auto;
             display: none;
             transition: all ease 300ms;
         }
-
     }
-
-
     .search {
         text-align: center;
         .search-input {
@@ -222,10 +193,8 @@
             }
         }
     }
-
-    @media(max-width: $screen-sm-max){
-    
-        .s-page-action-status{
+    @media(max-width: $screen-sm-max) {
+        .s-page-action-status {
             float: left;
         }
     }

@@ -305,10 +305,6 @@ class Products extends React.Component {
                     statusColor = 's-status-add';
                     break;
 
-                // case 20:
-                //     statusColor = 's-status-edit';
-                //     break;
-
                 case 30:
                     statusColor = 's-status-delete';
                     break;

@@ -8,6 +8,9 @@ import { Row, Col, Button } from "react-bootstrap";
 import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
+import WaitBlock from '../../WaitBlock/WaitBlock';
+
+
 class ProductDetail1 extends React.Component {
 
     constructor(props) {
@@ -65,12 +68,16 @@ class ProductDetail1 extends React.Component {
                     {
                         params2 ?
                             <Col md={4}>
-                                <input
-                                    type={params2.inputType ? params2.inputType : 'text'}
-                                    className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
-                                    disabled={params1.isDisabled()}
-                                    value={params2.getValue()}
-                                    onChange={params2.setValue} />
+                                {
+                                    params1.isDisabled() ?
+                                        <WaitBlock fullWidth height={34} />
+                                        :
+                                        <input
+                                            type={params2.inputType ? params2.inputType : 'text'}
+                                            className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
+                                            value={params2.getValue()}
+                                            onChange={params2.setValue} />
+                                }
                                 {
                                     !params2.isValid || params2.isValid() ?
                                         null
@@ -146,48 +153,58 @@ class ProductDetail1 extends React.Component {
                                         <tbody>
                                             <tr>
                                                 <td style={{ width: 75 }}>
-                                                    <DropdownEditor
-                                                        id="drpCurrency"
-                                                        className="form-control s-input s-ellipsis"
-                                                        disabled={prodModel.isSaving}
-                                                        title={prodModel.currencyCode}>
-                                                        {
-                                                            this.viewModel.currencies.map((v, i) => {
+                                                    {
+                                                        prodModel.isSaving ?
+                                                            <WaitBlock fullWidth height={34} />
+                                                            :
+                                                            <DropdownEditor
+                                                                id="drpCurrency"
+                                                                className="form-control s-input s-ellipsis"
+                                                                disabled={prodModel.isSaving}
+                                                                title={prodModel.currencyCode}>
+                                                                {
+                                                                    this.viewModel.currencies.map((v, i) => {
 
-                                                                return (
-                                                                    <DropdownEditorMenu
-                                                                        active={v.id === prodModel.currency_Id}
-                                                                        key={v.id}
-                                                                        onClick={e => {
+                                                                        return (
+                                                                            <DropdownEditorMenu
+                                                                                active={v.id === prodModel.currency_Id}
+                                                                                key={v.id}
+                                                                                onClick={e => {
 
-                                                                            prodModel.execAction(self => {
+                                                                                    prodModel.execAction(self => {
 
-                                                                                self.currency_Id = v.id;
-                                                                                self.currencyCode = v.code;
-                                                                            });
-                                                                        }}>
-                                                                        {v.code}
-                                                                    </DropdownEditorMenu>
-                                                                );
-                                                            })
-                                                        }
-                                                    </DropdownEditor>
+                                                                                        self.currency_Id = v.id;
+                                                                                        self.currencyCode = v.code;
+                                                                                    });
+                                                                                }}>
+                                                                                {v.code}
+                                                                            </DropdownEditorMenu>
+                                                                        );
+                                                                    })
+                                                                }
+                                                            </DropdownEditor>
+                                                    }
                                                 </td>
                                                 <td style={{ paddingLeft: 10 }}>
-                                                    <Cleave
-                                                        type="text"
-                                                        className={'form-control s-input' + (prodModel.isPriceAndCurrencyValid() ? '' : '-error')}
-                                                        disabled={prodModel.isSaving}
-                                                        options={{
-                                                            numeral: true,
-                                                            numeralThousandsGroupStyle: 'thousand',
-                                                            numeralDecimalScale: 2
-                                                        }}
-                                                        value={prodModel.price}
-                                                        onChange={e => prodModel.execAction(self => {
+                                                    {
+                                                        prodModel.isSaving ?
+                                                            <WaitBlock fullWidth height={34} />
+                                                            :
+                                                            <Cleave
+                                                                type="text"
+                                                                className={'form-control s-input' + (prodModel.isPriceAndCurrencyValid() ? '' : '-error')}
+                                                                disabled={prodModel.isSaving}
+                                                                options={{
+                                                                    numeral: true,
+                                                                    numeralThousandsGroupStyle: 'thousand',
+                                                                    numeralDecimalScale: 2
+                                                                }}
+                                                                value={prodModel.price}
+                                                                onChange={e => prodModel.execAction(self => {
 
-                                                            self.price = parseFloat(e.target.rawValue);
-                                                        })} />
+                                                                    self.price = parseFloat(e.target.rawValue);
+                                                                })} />
+                                                    }
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -214,6 +231,8 @@ class ProductDetail1 extends React.Component {
                 </div>
             );
         }
+
+        return null;
     }
 }
 

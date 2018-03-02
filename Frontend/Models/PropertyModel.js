@@ -2,6 +2,7 @@ import { types, clone } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
 import NeighbourhoodModel from './NeighbourhoodModel';
+import FlagLinkModel from './FlagLinkModel';
 
 
 const getObject = () => {
@@ -12,7 +13,8 @@ const getObject = () => {
             code: types.optional(types.string, ''),
             lotSize: types.optional(types.number, 0),
             neighbourhood_Id: types.maybe(types.number, types.null),
-            neighbourhood: types.maybe(NeighbourhoodModel, types.null)
+            neighbourhood: types.maybe(NeighbourhoodModel, types.null),
+            flags: types.optional(types.array(FlagLinkModel), [])
         },
         BaseModel.getBaseObject());
 };
@@ -65,7 +67,17 @@ const PropertyModel = types.model(
             }
         }
     })).views(self => ({
-        isModified: () => BaseModel.isSelfModified(self, self.originalValue, true)
+        isModified: excludeSubs => {
+
+            const modified = BaseModel.isSelfModified(self, self.originalValue);
+
+            if (!modified && !excludeSubs) {
+
+                return self.flags.filter((v, i) => v.isModified()).length > 0;
+            }
+
+            return modified;
+        }
     }));
 
 

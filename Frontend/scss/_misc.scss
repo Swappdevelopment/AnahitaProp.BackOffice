@@ -10,6 +10,7 @@
     }
 }
 
+
 /* Tooltip */
 
 .tooltip-inner {
@@ -97,6 +98,7 @@
     }
 }
 
+
 /* Popover */
 
 #popDelete {
@@ -123,7 +125,7 @@
     top: 105px !important;
     left: 313px !important;
     border: none;
-    box-shadow: 0px 0px 15px 1px rgba(22,65,105, 0.2);
+    box-shadow: 0px 0px 15px 1px rgba(22, 65, 105, 0.2);
     .popover-content {
         width: 264px;
         padding: 12px;
@@ -135,7 +137,7 @@
 
 #popObjectives {
     border: none;
-    box-shadow: 0px 0px 15px 1px rgba(22,65,105, 0.2);
+    box-shadow: 0px 0px 15px 1px rgba(22, 65, 105, 0.2);
     &.popover {
         max-width: 450px;
     }
@@ -172,21 +174,20 @@
     }
 }
 
+
 /* Badge */
 
-.s-badge{
+.s-badge {
     padding: 4px 8px;
-
-    &-red{
+    &-red {
         @extend .s-badge;
         background-color: $red;
         border-color: $red;
         transition: all ease 300ms;
-        
         &:hover,
         &:focus,
         &:active,
-        &:active:focus{
+        &:active:focus {
             background-color: $redDark;
             border-color: $redDark;
             color: $white;
@@ -195,17 +196,15 @@
             transition: all ease 300ms;
         }
     }
-
-    &-blue{
+    &-blue {
         @extend .s-badge;
         background-color: $blue;
         border-color: $blue;
         transition: all ease 300ms;
-        
         &:hover,
         &:focus,
         &:active,
-        &:active:focus{
+        &:active:focus {
             background-color: $blueDark;
             border-color: $blueDark;
             color: $white;
@@ -214,17 +213,15 @@
             transition: all ease 300ms;
         }
     }
-
-    &-orange{
+    &-orange {
         @extend .s-badge;
         background-color: $orange;
         border-color: $orange;
         transition: all ease 300ms;
-        
         &:hover,
         &:focus,
         &:active,
-        &:active:focus{
+        &:active:focus {
             background-color: $orangeDark;
             border-color: $orangeDark;
             color: $white;
@@ -233,17 +230,15 @@
             transition: all ease 300ms;
         }
     }
-
-    &-primary{
+    &-primary {
         @extend .s-badge;
         background-color: $primary;
         border-color: $primary;
         transition: all ease 300ms;
-        
         &:hover,
         &:focus,
         &:active,
-        &:active:focus{
+        &:active:focus {
             background-color: $primary;
             border-color: $primary;
             color: $white;
@@ -252,17 +247,15 @@
             transition: all ease 300ms;
         }
     }
-
-    &-lightgray{
+    &-lightgray {
         @extend .s-badge;
         background-color: $lightgray3;
         border-color: $lightgray3;
         transition: all ease 300ms;
-        
         &:hover,
         &:focus,
         &:active,
-        &:active:focus{
+        &:active:focus {
             background-color: $lightgray3;
             border-color: $lightgray3;
             color: $white;
@@ -273,23 +266,20 @@
     }
 }
 
+
 /* Switch */
 
-.s-switch{
-   
-}
+// .s-switch {}
 
 /* Label */
 
-.s-label{
+.s-label {
     margin-bottom: 10px;
-
     span {
         font-weight: bold;
         padding-left: 2px;
     }
-    
-    &-error{
+    &-error {
         padding-left: 2px;
         color: $redDark;
     }

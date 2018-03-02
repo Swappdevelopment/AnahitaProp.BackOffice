@@ -44,11 +44,18 @@ const ItemNameModel = types.model(
                     self.recordState = nrs;
                     break;
             }
+        },
+        resetOriginalValue: () => {
+
+            const value = self.getValue();
+            delete value.recordState;
+
+            self.originalValue = value;
         }
     })).views(self => ({
         isModified: () => {
 
-            return BaseModel.isSelfModified(self, self.originalValue, true);
+            return BaseModel.isSelfModified(self, self.originalValue);
         },
         isValueValid: () => self.recievedInput ? (self.value ? true : false) : true,
         isValid: () => {

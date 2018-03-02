@@ -59,7 +59,7 @@ const ProjectModel = types.model(
     })).views(self => ({
         isModified: () => excludeSubs => {
 
-            const modified = BaseModel.isSelfModified(self, self.originalValue, true);
+            const modified = BaseModel.isSelfModified(self, self.originalValue);
 
             if (!modified && !excludeSubs) {
 
