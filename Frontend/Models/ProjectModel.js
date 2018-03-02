@@ -8,28 +8,31 @@ const getObject = () => {
 
     return Object.assign(
         {
+            uid: types.optional(types.string, ''),
             slug: types.optional(types.string, ''),
-            latitude: types.optional(types.number, 0),
-            longitude: types.optional(types.number, 0),
-            size: types.maybe(types.number, types.null),
+            type: types.optional(types.number, 0),
             names: types.optional(types.array(ItemNameModel), []),
         },
         BaseModel.getBaseObject());
 };
 
 
-const NeighbourhoodModel = types.model(
-    'NeighbourhoodModel',
+const ProjectModel = types.model(
+    'ProjectModel',
     Object.assign(
         {
-            isSaving: false
+            isSaving: false,
+            activeLangCode: types.optional(types.string, ''),
+            originalValue: types.optional(types.frozen, null),
         },
         getObject())
 ).actions(
     self => ({
-        setPropsValue: value => {
+        execAction: func => {
 
-            BaseModel.setPropsValue(self, value);
+            if (func) {
+                func(self);
+            }
         },
         sync: value => {
 
@@ -52,16 +55,19 @@ const NeighbourhoodModel = types.model(
                     });
                 }));
             }
-        },
-        resetOriginalValue: () => {
-
-            const value = self.getValue();
-            delete value.recordState;
-
-            self.originalValue = value;
         }
     })).views(self => ({
+        isModified: () => excludeSubs => {
 
+            const modified = BaseModel.isSelfModified(self, self.originalValue, true);
+
+            if (!modified && !excludeSubs) {
+
+                return self.names.filter((v, i) => v.isModified()).length > 0;
+            }
+
+            return modified;
+        },
         getName: () => {
 
             if (self.names && self.names.length > 0) {
@@ -80,20 +86,20 @@ const NeighbourhoodModel = types.model(
             }
 
             return '';
-        },
+        }
     }));
 
 
-NeighbourhoodModel.getObject = getObject;
+ProjectModel.getObject = getObject;
 
-NeighbourhoodModel.init = (value, genId, activeLangCode) => {
+ProjectModel.init = (value, genId, activeLangCode) => {
 
-    const self = NeighbourhoodModel.create({
+    const self = ProjectModel.create({
         id: value && value.id >= 0 ? value.id : 0
     });
 
     self.genId = genId;
-    self.activeLangCode = activeLangCode;
+    self.execAction(() => self.activeLangCode = activeLangCode);
 
     self.sync(value);
 
@@ -105,8 +111,9 @@ NeighbourhoodModel.init = (value, genId, activeLangCode) => {
         return Object.assign(
             BaseModel.getValueFromSelf(self),
             {
+                uid: self.uid,
                 slug: self.slug,
-                type_Id: self.type_Id,
+                type: self.type,
                 names: self.names.map((v, i) => v.getValue())
             });
     };
@@ -114,4 +121,4 @@ NeighbourhoodModel.init = (value, genId, activeLangCode) => {
     return self;
 };
 
-export default NeighbourhoodModel;
+export default ProjectModel;

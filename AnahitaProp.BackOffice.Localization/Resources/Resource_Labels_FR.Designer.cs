@@ -1034,7 +1034,16 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choisissez la Propriétée.
+        ///   Looks up a localized string similar to Selectionez un Projet.
+        /// </summary>
+        public static string lbl_SlctProj {
+            get {
+                return ResourceManager.GetString("lbl_SlctProj", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selectionez une Propriétée.
         /// </summary>
         public static string lbl_SlctProp {
             get {

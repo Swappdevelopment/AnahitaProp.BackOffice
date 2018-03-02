@@ -60,8 +60,6 @@ RoleModel.init = (value, genId) => {
 
     self.getValue = () => {
 
-        self.originalValue = null;
-
         return Object.assign(
             BaseModel.getValueFromSelf(self),
             {

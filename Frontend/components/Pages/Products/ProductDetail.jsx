@@ -103,6 +103,9 @@ class ProductDetail extends React.Component {
                             self.selectedValue = null;
                         });
                     }}
+                    paShowSaveButton={() => true}
+                    saveBtnDisabled={() => !this.viewModel.selectedValue || !this.viewModel.selectedValue.requiresSave()}
+                    paGlobalSaveOnClick={() => this.viewModel.saveProduct(this.viewModel.selectedValue)}
                     hideAdd />
 
                 <div className="container">

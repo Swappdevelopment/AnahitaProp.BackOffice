@@ -71,6 +71,30 @@ namespace AnahitaProp.BackOffice
         }
 
 
+        [HttpGet]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public IActionResult GetProductProjectsDetails()
+        {
+            Project[] result = null;
+
+            try
+            {
+                result = _dbi.GetProjects(withNames: true);
+
+                return Json(result == null ? new object[0] : result.Select(l => l.Simplify()).ToArray());
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                result = null;
+            }
+        }
+
+
         [HttpPost]
         [Access]
         [MenuRequirement("products>crud")]
@@ -144,6 +168,10 @@ namespace AnahitaProp.BackOffice
 
             List<IdentityModel> toSave = null;
 
+            ProductSoldDate[] psds = null;
+
+            string getProdIdQuery = null;
+
 
             try
             {
@@ -152,6 +180,8 @@ namespace AnahitaProp.BackOffice
                 product.Group_Id = product.Group_Id == 0 ? null : product.Group_Id;
                 product.Project_Id = product.Project_Id == 0 ? null : product.Project_Id;
                 product.Property_Id = product.Property_Id == 0 ? null : product.Property_Id;
+
+                getProdIdQuery = $"SELECT ID FROM Products WHERE UID = '{product.UID}'";
 
                 if (product != null)
                 {
@@ -171,8 +201,15 @@ namespace AnahitaProp.BackOffice
                                 toSave.AddRange(
                                         product.Names
                                         .Where(l => l.RecordState != RecordState.None)
-                                        .Select(l => l.AddCommand("Product_Id", $"SELECT ID FROM Products WHERE UID = '{product.UID}'")));
+                                        .Select(l => l.AddCommand("Product_Id", getProdIdQuery)));
                             }
+
+                            toSave.Add(new ProductSalePeriod()
+                            {
+                                RecordState = RecordState.Added,
+                                DateFrom = DateTime.UtcNow,
+                                DateTo = null,
+                            }.AddCommand("Product_Id", getProdIdQuery));
                             break;
 
                         case RecordState.Updated:
@@ -210,8 +247,69 @@ namespace AnahitaProp.BackOffice
                             break;
                     }
 
+                    if (product.Property != null)
+                    {
+                        if (product.Property.RecordState != RecordState.None)
+                        {
+                            toSave.Add(product.Property);
+                        }
+
+                        if (product.Property.Neighbourhood != null
+                            && product.Property.Neighbourhood.RecordState != RecordState.None)
+                        {
+                            toSave.Add(product.Property.Neighbourhood);
+                        }
+
+                        if (product.Property.Names != null)
+                        {
+                            toSave.AddRange(product.Property.Names.Where(l => l.RecordState != RecordState.None));
+                        }
+                    }
+
+
                     if (toSave.Count > 0)
                     {
+                        foreach (var tempProd in toSave.OfType<Product>().ToArray())
+                        {
+                            psds = tempProd.ID > 0 ? _dbi.GetProductSoldDates(tempProd.ID) : null;
+
+                            if (tempProd.Type == ProductType.Resale)
+                            {
+                                tempProd.Project_Id = null;
+
+                                if (psds == null || psds.Length == 0)
+                                {
+                                    psds = new ProductSoldDate[]
+                                    {
+                                        new ProductSoldDate()
+                                        {
+                                            RecordState = RecordState.Added,
+                                            DateSold = DateTime.UtcNow.AddDays(-7)
+                                        }.AddCommand<ProductSoldDate>("Product_Id", getProdIdQuery)
+                                    };
+                                }
+                            }
+                            else if (psds != null)
+                            {
+                                switch (tempProd.Type)
+                                {
+                                    case ProductType.Project:
+                                        tempProd.Property_Id = null;
+                                        break;
+                                }
+
+                                foreach (var psd in psds)
+                                {
+                                    psd.RecordState = RecordState.Deleted;
+                                }
+                            }
+
+                            if (psds != null)
+                            {
+                                toSave.AddRange(psds.Where(l => l.RecordState != RecordState.None));
+                            }
+                        }
+
                         _dbi.ManageIdentityModels(toSave.ToArray());
 
                         saved = true;

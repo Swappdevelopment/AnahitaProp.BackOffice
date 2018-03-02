@@ -50,7 +50,7 @@ export default class BaseModel {
         }
     }
 
-    static isSelfModified(self, value, skipObjects) {
+    static isSelfModified(self, value, compareObjects) {
 
         if (self && value && self.recordState === 0) {
 
@@ -58,17 +58,21 @@ export default class BaseModel {
 
                 let selfValue = null;
 
-                if (key !== 'id' && self.hasOwnProperty(key) && !Array.isArray(value)) {
+                if (key && key !== 'id' && self.hasOwnProperty(key) && !Array.isArray(value)) {
 
                     selfValue = self[key];
 
-                    if (!BaseModel.compareProps(self[key], value)
-                        && ((skipObjects
-                            && (!selfValue || selfValue.constructor.name !== 'Object')
-                            && (!value || value.constructor.name !== 'Object'))
-                            || !skipObjects)) {
+                    if (!compareObjects
+                        && (selfValue && selfValue.constructor.name === 'Object')
+                        || (value && value.constructor.name === 'Object')) {
 
-                        return true;
+                    }
+                    else {
+
+                        if (!BaseModel.compareProps(self[key], value)) {
+
+                            return true;
+                        }
                     }
                 }
             }

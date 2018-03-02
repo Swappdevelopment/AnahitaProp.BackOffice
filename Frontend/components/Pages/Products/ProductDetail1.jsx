@@ -36,12 +36,16 @@ class ProductDetail1 extends React.Component {
                             </Col>
                             :
                             <Col md={params2 ? 4 : (params1.smallInput ? 4 : 8)}>
-                                <input
-                                    type={params1.inputType ? params1.inputType : 'text'}
-                                    className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
-                                    disabled={params1.isDisabled()}
-                                    value={params1.getValue()}
-                                    onChange={params1.setValue} />
+                                {
+                                    params1.isDisabled() ?
+                                        <WaitBlock fullWidth height={34} />
+                                        :
+                                        <input
+                                            type={params1.inputType ? params1.inputType : 'text'}
+                                            className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
+                                            value={params1.getValue()}
+                                            onChange={params1.setValue} />
+                                }
                                 {
                                     !params1.isValid || params1.isValid() ?
                                         null
@@ -173,6 +177,7 @@ class ProductDetail1 extends React.Component {
                                                     <Cleave
                                                         type="text"
                                                         className={'form-control s-input' + (prodModel.isPriceAndCurrencyValid() ? '' : '-error')}
+                                                        disabled={prodModel.isSaving}
                                                         options={{
                                                             numeral: true,
                                                             numeralThousandsGroupStyle: 'thousand',
@@ -191,7 +196,7 @@ class ProductDetail1 extends React.Component {
                             })
                         }
 
-                        <div className="s-row-center row" style={{ paddingTop: 20 }}>
+                        {/* <div className="s-row-center row" style={{ paddingTop: 20 }}>
                             <Button
                                 className="s-btn-medium-primary"
                                 disabled={!prodModel.requiresSave()}
@@ -204,7 +209,7 @@ class ProductDetail1 extends React.Component {
                                         this.activeLang.labels['lbl_SaveChanges']
                                 }
                             </Button>
-                        </div>
+                        </div> */}
                     </Row>
                 </div>
             );

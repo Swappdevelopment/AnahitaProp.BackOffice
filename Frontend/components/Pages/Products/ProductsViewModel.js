@@ -3,6 +3,7 @@ import { types, destroy, onPatch } from 'mobx-state-tree';
 import BaseModel from '../../../Models/BaseModel';
 import ProductModel from '../../../Models/ProductModel';
 import PropertyModel from '../../../Models/PropertyModel';
+import ProjectModel from '../../../Models/ProjectModel';
 
 import Helper from '../../../Helper/Helper';
 
@@ -13,10 +14,12 @@ const ProductsViewModel = types.model(
         isLazyLoading: false,
         isSaving: false,
         isGettingProperties: false,
+        isGettingProjects: false,
         selectedValue: types.maybe(types.reference(ProductModel), types.null),
         searchText: types.optional(types.string, ''),
         products: types.optional(types.array(ProductModel), []),
         properties: types.optional(types.array(PropertyModel), []),
+        projects: types.optional(types.array(ProjectModel), []),
         currencies: types.optional(types.array(types.frozen), []),
         prodFamilies: types.optional(types.array(types.frozen), []),
         prodFamilyTypes: types.optional(types.array(types.frozen), [])
@@ -78,7 +81,7 @@ const ProductsViewModel = types.model(
 
         saveProduct: value => {
 
-            if (value && !value.isSaving) {
+            if (value && !value.isSaving && (value.recordState > 0 || value.isModified())) {
 
                 value.execAction(prod => prod.isSaving = true);
 
@@ -145,7 +148,7 @@ const ProductsViewModel = types.model(
 
                                     self.properties.push(...data.map((mv, i) => PropertyModel.init(mv, ++self.idGenerator, activeLangCode)));
 
-                                    if (self.selectedValue) {
+                                    if (self.selectedValue && self.selectedValue.property_Id > 0) {
 
                                         self.selectedValue.property = self.selectedValue.property_Id;
                                     }
@@ -171,6 +174,56 @@ const ProductsViewModel = types.model(
                     () => {
 
                         self.execAction(() => self.isGettingProperties = false);
+                    }
+                );
+            }
+        },
+
+        getProjects: activeLangCode => {
+
+            if (self.projects.length === 0 && !self.isGettingProjects) {
+
+                self.isGettingProjects = true;
+
+                let idCounter = -1;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromiseGet('/products/GetProductProjectsDetails'),
+                        success: data => {
+
+                            if (data && data.length) {
+
+                                self.execAction(() => {
+
+                                    self.projects.push(...data.map((mv, i) => ProjectModel.init(mv, ++self.idGenerator, activeLangCode)));
+
+                                    if (self.selectedValue && self.selectedValue.project_Id > 0) {
+
+                                        self.selectedValue.project = self.selectedValue.project_Id;
+                                    }
+                                });
+                            }
+                        },
+                        incrementSession: () => {
+
+                            self.getProjectsPromiseID = self.getProjectsPromiseID ? (self.getProjectsPromiseID + 1) : 1;
+                            idCounter = self.getProjectsPromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.getProjectsPromiseID;
+                        }
+                    },
+                    error => {
+
+                        if (self.showPromiseError) {
+                            self.showPromiseError(error);
+                        }
+                    },
+                    () => {
+
+                        self.execAction(() => self.isGettingProjects = false);
                     }
                 );
             }
@@ -215,9 +268,20 @@ ProductsViewModel.init = () => {
 
             case '/selectedValue':
 
-                if (self.selectedValue && self.properties.length > 0) {
+                if (self.selectedValue) {
 
-                    self.execAction(() => self.selectedValue.property = self.selectedValue.property_Id);
+                    self.execAction(() => {
+
+                        if (self.properties.length > 0) {
+
+                            self.selectedValue.property = self.selectedValue.property_Id > 0 ? self.selectedValue.property_Id : null;
+                        }
+
+                        if (self.projects.length > 0) {
+
+                            self.selectedValue.project = self.selectedValue.project_Id > 0 ? self.selectedValue.project_Id : null;
+                        }
+                    });
                 }
                 break;
         }

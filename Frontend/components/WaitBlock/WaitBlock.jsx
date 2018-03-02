@@ -30,7 +30,7 @@ export default class WaitBlock extends React.Component {
 
         if (this.props.width) {
 
-            style['width'] = isNaN(this.props.width) ? this.props.width : `${this.props.width}px`;
+            style['width'] = this.props.fullWidth ? '100%' : isNaN(this.props.width) ? this.props.width : `${this.props.width}px`;
         }
         else {
 

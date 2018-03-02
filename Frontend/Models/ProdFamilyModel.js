@@ -93,8 +93,6 @@ ProdFamilyModel.init = (value, genId, activeLangCode) => {
 
     self.getValue = () => {
 
-        self.originalValue = null;
-
         return Object.assign(
             BaseModel.getValueFromSelf(self),
             {

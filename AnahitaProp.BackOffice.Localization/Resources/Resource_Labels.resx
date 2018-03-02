@@ -477,4 +477,7 @@
   <data name="lbl_SlctProp" xml:space="preserve">
     <value>Select Property</value>
   </data>
+  <data name="lbl_SlctProj" xml:space="preserve">
+    <value>Select Project</value>
+  </data>
 </root>

@@ -4,6 +4,7 @@ import BaseModel from './BaseModel';
 import ItemNameModel from './ItemNameModel';
 import ProdFamilyModel from './ProdFamilyModel';
 import PropertyModel from './PropertyModel';
+import ProjectModel from './ProjectModel';
 
 
 const getObject = () => {
@@ -30,7 +31,8 @@ const getObject = () => {
             names: types.optional(types.array(ItemNameModel), []),
             productFamily: types.maybe(ProdFamilyModel, types.null),
             originalValue: types.optional(types.frozen, null),
-            property: types.maybe(types.reference(PropertyModel), types.null)
+            property: types.maybe(types.reference(PropertyModel), types.null),
+            project: types.maybe(types.reference(ProjectModel), types.null)
         },
         BaseModel.getBaseObject());
 };
@@ -41,7 +43,8 @@ const ProductModel = types.model(
     Object.assign(
         {
             receivedInput: false,
-            isSaving: false,
+            //isSaving: false,
+            isSaving: true,
             isLazyWait: false,
             isChangingStatus: false,
             isChangingHideSearch: false
@@ -72,6 +75,11 @@ const ProductModel = types.model(
             delete value.recordState;
 
             self.originalValue = value;
+
+            if (self.property) {
+
+                self.property.resetOriginalValue();
+            }
 
             for (const nmv of self.names) {
 
@@ -138,6 +146,7 @@ const ProductModel = types.model(
             if (!modified && !excludeSubs) {
 
                 return (self.property && self.property.isModified())
+                    //|| (self.project && self.project.isModified())
                     || self.names.filter((v, i) => v.isModified()).length > 0;
             }
 
@@ -201,7 +210,8 @@ ProductModel.init = (value, genId, activeLangCode) => {
                 hideSearch: self.hideSearch,
                 isGroup: self.isGroup,
                 type: self.type,
-                names: self.names.map((v, i) => v.getValue())
+                names: self.names.map((v, i) => v.getValue()),
+                property: self.property ? self.property.getValue() : null
             });
     };
 

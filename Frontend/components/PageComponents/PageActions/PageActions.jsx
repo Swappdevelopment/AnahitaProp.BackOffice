@@ -268,6 +268,7 @@ const PageActions = inject("store")(
 
                                             <Button
                                                 className="s-btn-medium-primary"
+                                                disabled={this.props.saveBtnDisabled && this.props.saveBtnDisabled()}
                                                 onClick={e => {
 
                                                     if (this.props.paGlobalSaveOnClick)

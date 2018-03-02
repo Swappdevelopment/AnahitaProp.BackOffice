@@ -6,6 +6,8 @@ import { Row, Col, Button, Tabs, Tab, Label } from "react-bootstrap";
 import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
+import WaitBlock from '../../WaitBlock/WaitBlock';
+
 
 class ProductDetail2 extends React.Component {
 
@@ -29,25 +31,161 @@ class ProductDetail2 extends React.Component {
                 case 0:
                     this.viewModel.getProperties(this.activeLang.code);
                     break;
+
+                case 1:
+                    this.viewModel.getProperties(this.activeLang.code);
+                    this.viewModel.getProjects(this.activeLang.code);
+                    break;
+
+                case 2:
+                    this.viewModel.getProjects(this.activeLang.code);
+                    break;
             }
         }
     }
 
-    getTabHeader = (label, index, hideSpinner) => (
-        <span>
-            <span
-                className={'la ' + (this.getTabIndex() === index ? 'la-check-circle' : 'la-circle')}
-                style={{ marginRight: 5, fontSize: '1.3em' }}>
+    getTabHeader = (label, index, showSpinnerAction) => {
+
+        const isTabActive = this.getTabIndex() === index;
+
+        return (
+            <span>
+                <span
+                    className={'la ' + (isTabActive ? 'la-check-circle' : 'la-circle')}
+                    style={{ marginRight: 5, fontSize: '1.3em' }}>
+                </span>
+                <span>{label}</span>
+                {
+                    isTabActive && showSpinnerAction && showSpinnerAction() ?
+                        <span className="spinner" />
+                        :
+                        null
+                }
             </span>
-            <span>{label}</span>
-            {
-                !hideSpinner && this.viewModel.isGettingProperties ?
-                    <span className="spinner" />
-                    :
-                    null
-            }
-        </span>
-    )
+        );
+    }
+
+    getPropertyChoiceContent = params => {
+
+        if (!params) return null;
+
+
+        const { prodModel, hideProperty, hideProject, projectsFilter } = params;
+
+        return (
+            <Row style={{ paddingTop: 30 }}>
+                {
+                    hideProperty ?
+                        null
+                        :
+                        <div>
+                            <div className="s-row-center row">
+                                <Col md={2}>
+                                    <label>{this.activeLang.labels['lbl_SlctProp']}</label>
+                                </Col>
+                                <Col md={4}>
+                                    {
+                                        prodModel.isSaving ?
+                                            <WaitBlock fullWidth height={34} />
+                                            :
+                                            <DropdownEditor
+                                                id="drpProdProp"
+                                                className="form-control s-input s-ellipsis"
+                                                title={prodModel.property.code}>
+                                                {
+                                                    this.viewModel.properties.map((v, i) => {
+
+                                                        return (
+                                                            <DropdownEditorMenu
+                                                                active={v.id === prodModel.property_Id}
+                                                                key={v.id}
+                                                                onClick={e => {
+
+                                                                    prodModel.execAction(self => {
+
+                                                                        self.property_Id = v.id;
+                                                                        self.property = v.id;
+                                                                    });
+                                                                }}>
+                                                                {v.code}
+                                                            </DropdownEditorMenu>
+                                                        );
+                                                    })
+                                                }
+                                            </DropdownEditor>
+                                    }
+                                </Col>
+                            </div>
+                            <div className="s-row-center row">
+                                <Col md={2}>
+                                    <label>{this.activeLang.labels['lbl_LotSize']}</label>
+                                </Col>
+                                <Col md={4}>
+                                    {
+                                        prodModel.isSaving ?
+                                            <WaitBlock fullWidth height={34} />
+                                            :
+                                            <input
+                                                type="number"
+                                                className="form-control s-input"
+                                                value={prodModel.property.lotSize}
+                                                onChange={e => prodModel.property.execAction(self => self.lotSize = parseFloat(e.target.value))} />
+                                    }
+                                </Col>
+                            </div>
+                        </div>
+                }
+
+                {
+                    hideProject ?
+                        null
+                        :
+                        <div className="s-row-center row">
+                            <Col md={2}>
+                                <label>{this.activeLang.labels['lbl_SlctProj']}</label>
+                            </Col>
+                            <Col md={4}>
+                                {
+                                    prodModel.isSaving ?
+                                        <WaitBlock fullWidth height={34} />
+                                        :
+                                        <DropdownEditor
+                                            id="drpProdProp"
+                                            className="form-control s-input s-ellipsis"
+                                            disabled={prodModel.isSaving}
+                                            title={prodModel.project ? prodModel.project.getName() : ''}>
+                                            {
+                                                (projectsFilter ?
+                                                    this.viewModel.projects.filter(projectsFilter)
+                                                    :
+                                                    this.viewModel.projects).map((v, i) => {
+
+                                                        return (
+                                                            <DropdownEditorMenu
+                                                                active={v.id === prodModel.project_Id}
+                                                                key={v.id}
+                                                                onClick={e => {
+
+                                                                    prodModel.execAction(self => {
+
+                                                                        self.project_Id = v.id;
+                                                                        self.project = v.id;
+                                                                    });
+                                                                }}>
+                                                                {v.getName()}
+                                                            </DropdownEditorMenu>
+                                                        );
+                                                    })
+                                            }
+                                        </DropdownEditor>
+                                }
+                            </Col>
+                        </div>
+                }
+
+            </Row>
+        );
+    }
 
     getTabIndex = () => (this.viewModel.selectedValue ? (this.viewModel.selectedValue.type / 10) - 1 : -1)
 
@@ -63,8 +201,9 @@ class ProductDetail2 extends React.Component {
                     defaultActiveKey={this.getTabIndex()}
                     onSelect={this.onTabSelect}>
                     <Tab
+                        disabled={prodModel.isSaving}
                         eventKey={0}
-                        title={this.getTabHeader(this.activeLang.labels['lbl_Rsl'], 0)}>
+                        title={this.getTabHeader(this.activeLang.labels['lbl_Rsl'], 0, () => this.viewModel.isGettingProperties)}>
                         {
                             this.viewModel.isGettingProperties ?
                                 null
@@ -73,57 +212,7 @@ class ProductDetail2 extends React.Component {
 
                                     if (prodModel.property) {
 
-                                        return (
-                                            <Row style={{ paddingTop: 30 }}>
-                                                <div className="s-row-center row">
-                                                    <Col md={2}>
-                                                        <label>{this.activeLang.labels['lbl_SlctProp']}</label>
-                                                    </Col>
-                                                    <Col md={4}>
-                                                        <DropdownEditor
-                                                            id="drpProdProp"
-                                                            className="form-control s-input s-ellipsis"
-                                                            disabled={prodModel.isSaving}
-                                                            title={prodModel.property.code}>
-                                                            {
-                                                                this.viewModel.properties.map((v, i) => {
-
-                                                                    return (
-                                                                        <DropdownEditorMenu
-                                                                            active={v.id === prodModel.property_Id}
-                                                                            key={v.id}
-                                                                            onClick={e => {
-
-                                                                                prodModel.execAction(self => {
-
-                                                                                    self.property_Id = v.id;
-                                                                                    self.property = v.id;
-                                                                                });
-                                                                            }}>
-                                                                            {v.code}
-                                                                        </DropdownEditorMenu>
-                                                                    );
-                                                                })
-                                                            }
-                                                        </DropdownEditor>
-                                                    </Col>
-                                                </div>
-
-                                                <div className="s-row-center row">
-                                                    <Col md={2}>
-                                                        <label>{this.activeLang.labels['lbl_LotSize']}</label>
-                                                    </Col>
-                                                    <Col md={4}>
-                                                        <input
-                                                            type="number"
-                                                            className="form-control s-input"
-                                                            disabled={prodModel.isSaving}
-                                                            value={prodModel.property.lotSize}
-                                                            onChange={e => prodModel.property.execAction(self => self.lotSize = parseFloat(e.target.value))} />
-                                                    </Col>
-                                                </div>
-                                            </Row>
-                                        );
+                                        return this.getPropertyChoiceContent({ prodModel, hideProject: true });
                                     }
 
                                     return null;
@@ -131,12 +220,51 @@ class ProductDetail2 extends React.Component {
                         }
                     </Tab>
                     <Tab
+                        disabled={prodModel.isSaving}
                         eventKey={1}
-                        title={this.getTabHeader(this.activeLang.labels['lbl_Lfs'], 1, true)}>
+                        title={this.getTabHeader(this.activeLang.labels['lbl_Lfs'], 1, () => this.viewModel.isGettingProperties || this.viewModel.isGettingProjects)}>
+                        {
+                            this.viewModel.isGettingProperties || this.viewModel.isGettingProjects ?
+                                null
+                                :
+                                (() => {
+
+                                    if (prodModel.property) {
+
+                                        return this.getPropertyChoiceContent(
+                                            {
+                                                prodModel,
+                                                projectsFilter: (v, i) => v.type === 10
+                                            });
+                                    }
+
+                                    return null;
+                                })()
+                        }
                     </Tab>
                     <Tab
+                        disabled={prodModel.isSaving}
                         eventKey={2}
-                        title={this.getTabHeader(this.activeLang.labels['lbl_Prj'], 2, true)}>
+                        title={this.getTabHeader(this.activeLang.labels['lbl_Prj'], 2, () => this.viewModel.isGettingProjects)}>
+                        {
+                            this.viewModel.isGettingProjects ?
+                                null
+                                :
+                                (() => {
+
+                                    if (prodModel.property) {
+
+                                        return this.getPropertyChoiceContent(
+                                            {
+                                                prodModel,
+                                                hideProperty: true,
+                                                projectsFilter: (v, i) => v.type !== 10
+                                            });
+                                    }
+
+                                    return null;
+                                })()
+                        }
                     </Tab>
                 </Tabs>
             </div>
