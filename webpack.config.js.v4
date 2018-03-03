@@ -1,42 +1,32 @@
-const webpack = require('webpack');
 const path = require('path');
 
+const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
 
 const ROOT_PATH = path.resolve(__dirname, 'wwwroot');
 const FEND_PATH = path.resolve(__dirname, 'Frontend');
 
-const isProd = (process.argv.indexOf('-p') >= 0);
+const isProd = false;
 
 const plugins = [
     new ExtractTextPlugin({
         filename: isProd ? '[name].min.css' : '[name].css',
         allChunks: true
     }),
-    new OptimizeCssAssetsPlugin({
-        assetNameRegExp: /\.min\.css$/,
-        cssProcessorOptions: { discardComments: { removeAll: true } }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-        include: /\.min\.js$/,
-        minimize: true
-    })
+    // new OptimizeCssAssetsPlugin({
+    //     assetNameRegExp: /\.min\.css$/,
+    //     cssProcessorOptions: { discardComments: { removeAll: true } }
+    // }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //     include: /\.min\.js$/,
+    //     minimize: true
+    // })
 ];
 
-
-if (isProd) {
-
-    console.log('Is Production');
-
-    plugins.push(new webpack.DefinePlugin({
-        'process.env': {
-            'NODE_ENV': JSON.stringify('production')
-        }
-    }));
-}
-
-const config = {
+module.exports = {
+    plugins,
 
     node: {
         dns: 'mock',
@@ -53,13 +43,15 @@ const config = {
             'react-datepicker/dist/react-datepicker.css'
         ]
     },
+
     output: {
         path: ROOT_PATH + '/dist',
         filename: isProd ? '[name].min.js' : '[name].js',
-        publicPath: '/dist/'
+        //publicPath: '/dist/'
     },
+
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.(png|jpg|jpeg|gif)$/,
                 loader: 'url-loader',
@@ -87,10 +79,9 @@ const config = {
             },
             {
                 test: /\.(js|jsx)$/,
-                include: FEND_PATH,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['react', 'es2015', 'stage-2']
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader"
                 }
             },
             {
@@ -99,23 +90,7 @@ const config = {
                     fallback: 'style-loader',
                     use: ['css-loader', 'postcss-loader', 'sass-loader']
                 })
-            },
-            // {
-            //     test: /\.(css|scss)$/,
-            //     loader: 'postcss-loader',
-            //     options: {
-            //         ident: 'postcss',
-            //         plugins: (loader) => [
-            //             require('autoprefixer')()
-            //         ]
-            //     }
-            // }
+            }
         ]
-    },
-    resolve: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx']
-    },
-    plugins: plugins
+    }
 };
-
-module.exports = config;

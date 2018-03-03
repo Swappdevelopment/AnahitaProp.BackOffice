@@ -3,19 +3,25 @@ import { extendObservable, intercept, observe } from 'mobx';
 import RouteItem from '../Objects/RouteItem';
 
 
+
 export default class RouteStore {
 
-    static DefaultPage = 'dashboard';
+    static get DefaultPage() {
+        return 'dashboard';
+    }
 
-    static PrivatePages = [
-        RouteStore.DefaultPage,
-        'changepassword',
-        'user-profile',
-        'user-management',
-        'properties',
-        'projects',
-        'products'
-    ];
+    static get PrivatePages() {
+        return [
+            RouteStore.DefaultPage,
+            'changepassword',
+            'user-profile',
+            'user-management',
+            'properties',
+            'projects',
+            'products'
+        ];
+    }
+
 
     constructor(accessStore, uiStore) {
 

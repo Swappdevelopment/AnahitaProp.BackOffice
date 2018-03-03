@@ -3,14 +3,28 @@ import ReactDOM from 'react-dom';
 import moment from 'moment-es6';
 import { Tooltip } from 'react-bootstrap';
 
+let _setNoAccess = null;
+
 export default class Helper {
 
-    static DATE_FORMAT = 'DD/MM/YYYY';
-    static EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    static get DATE_FORMAT() {
+        return 'DD/MM/YYYY';
+    }
 
-    static LAZY_LOAD_LIMIT = 20;
+    static get EMAIL_REGEX() {
+        return /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    }
 
-    static setNoAccess = null;
+    static get LAZY_LOAD_LIMIT() {
+        return 20;
+    }
+
+    static get setNoAccess() {
+        return _setNoAccess;
+    }
+    static set setNoAccess(value) {
+        _setNoAccess = value;
+    }
 
 
     static RunPromise(option, failure, complete) {
