@@ -3,6 +3,8 @@ import { observer, inject } from 'mobx-react';
 
 import { Row, Col, Button } from "react-bootstrap";
 
+import WaitBlock from '../../WaitBlock/WaitBlock';
+
 
 class ProductDetail3 extends React.Component {
 
@@ -100,27 +102,115 @@ class ProductDetail3 extends React.Component {
 
         if (prodModel) {
 
-            return (
-                <div>
-                    <Row>
-                        {
-                            prodModel.flags.map((prodFlag, i) => {
+            if (prodModel.isGettingFlags) {
 
-                                debugger;
+            }
+            else if (prodModel.flags.length > 0) {
 
-                                // return this.getInputElement({
-                                //     key: `names-${i}`,
-                                //     label: this.activeLang.labels['lbl_Name'] + ' ' + (prodName.language_Code ? prodName.language_Code.toUpperCase() : ''),
-                                //     isValid: prodName.isValueValid,
-                                //     isDisabled: () => prodModel.isSaving,
-                                //     getValue: () => prodName.value,
-                                //     setValue: e => prodName.execAction(self => self.value = e.target.value)
-                                // });
-                            })
-                        }
-                    </Row>
-                </div>
-            );
+                let flBedRoomCount = null, flOptnDen = null, flViews = null;
+
+                flBedRoomCount = prodModel.flags.find((v, i) => v.flag && v.flag.colValueRef === GlobalValues.constants.FLAG_NUM_BEDROOMS_REF);
+
+                if (prodModel.productFamily
+                    && prodModel.productFamily.type
+                    && prodModel.productFamily.type.slug === GlobalValues.constants.PRODFAMILY_APPARTMENT_VALUE) {
+
+                    flOptnDen = prodModel.flags.find((v, i) => v.flag && v.flag.colValueRef === GlobalValues.constants.FLAG_OPTION_ROOM_DEN);
+                }
+
+                flViews = prodModel.getPropertyFlags(GlobalValues.constants.FLAG_VIEW_REF);
+
+                if (flBedRoomCount != null || flOptnDen != null || flViews != null) {
+
+                    return (
+                        <div>
+                            <Row>
+                                {
+                                    flBedRoomCount ?
+                                        this.getInputElement({
+                                            inputType: 'number',
+                                            smallInput: true,
+                                            label: this.activeLang.labels['lbl_BdRmsCnt'],
+                                            isValid: flBedRoomCount.isBedNumberValueValid,
+                                            isDisabled: () => prodModel.isSaving,
+                                            getValue: () => flBedRoomCount.valueInt,
+                                            setValue: e => flBedRoomCount.execAction(self => self.valueInt = parseInt(e.target.value))
+                                        })
+                                        :
+                                        null
+                                }
+                                {
+                                    flOptnDen ?
+                                        this.getInputElement({
+                                            inputType: 'number',
+                                            smallInput: true,
+                                            label: this.activeLang.labels['lbl_OptnRmDen'],
+                                            isValid: flOptnDen.isBedNumberValueValid,
+                                            isDisabled: () => prodModel.isSaving,
+                                            getValue: () => flOptnDen.valueInt,
+                                            setValue: e => flOptnDen.execAction(self => self.valueInt = parseInt(e.target.value))
+                                        })
+                                        :
+                                        null
+                                }
+                                {
+                                    flViews ?
+                                        <div className="s-row-center row">
+                                            <Col md={2}>
+                                                <label>{this.activeLang.labels['lbl_Views']}</label>
+                                            </Col>
+                                            <Col md={6}>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <Button className="clr-back-greenPastel" bsSize="xsmall">
+                                                                    <span style={{ color: 'white' }} className="la la-plus"></span>
+                                                                </Button>
+                                                            </td>
+                                                            {
+                                                                flViews.map((v, i) => {
+
+                                                                    if (v.flag) {
+
+                                                                        return (
+                                                                            <td
+                                                                                key={v.genId}
+                                                                                style={{ paddingLeft: 8 }}>
+                                                                                <div
+                                                                                    className="clr-back-primary"
+                                                                                    style={{
+                                                                                        cursor: 'pointer',
+                                                                                        borderBottomLeftRadius: 5,
+                                                                                        borderBottomRightRadius: 5,
+                                                                                        borderTopLeftRadius: 5,
+                                                                                        borderTopRightRadius: 5,
+                                                                                        padding: '8px 12px'
+                                                                                    }}>
+                                                                                    <span style={{ color: 'white' }}>
+                                                                                        {v.flag.getType()}
+                                                                                    </span>
+                                                                                </div>
+                                                                            </td>
+                                                                        );
+                                                                    }
+
+                                                                    return null;
+                                                                })
+                                                            }
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </Col>
+                                        </div>
+                                        :
+                                        null
+                                }
+                            </Row>
+                        </div>
+                    );
+                }
+            }
         }
 
         return null;

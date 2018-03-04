@@ -1,4 +1,8 @@
 @import "../scss/_variables.scss";
+.clr-back-primary {
+    background-color: $primary;
+}
+
 .clr-fore-primary {
     color: $primary;
 }
@@ -13,6 +17,10 @@
 
 .clr-fore-blueDark {
     color: $blueDark;
+}
+
+.clr-back-red {
+    background-color: $red;
 }
 
 .clr-fore-red {
@@ -37,4 +45,12 @@
 
 .clr-fore-lightgray2 {
     color: $lightgray2;
+}
+
+.clr-back-greenPastel {
+    background-color: $greenPastel;
+}
+
+.clr-fore-greenPastel {
+    color: $greenPastel;
 }

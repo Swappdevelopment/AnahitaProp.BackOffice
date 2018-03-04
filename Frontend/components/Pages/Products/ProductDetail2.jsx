@@ -39,12 +39,12 @@ class ProductDetail2 extends React.Component {
                         });
                     }
 
-                    this.viewModel.getProperties(this.activeLang.code);
+                    //this.viewModel.getProperties(this.activeLang.code);
                     break;
 
                 case 1:
 
-                    this.viewModel.getProperties(this.activeLang.code);
+                    //this.viewModel.getProperties(this.activeLang.code);
                     this.viewModel.getProjects(this.activeLang.code);
                     break;
 

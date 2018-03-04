@@ -10,6 +10,7 @@ const getObject = () => {
         {
             slug: types.optional(types.string, ''),
             type_Id: types.maybe(types.number, types.null),
+            type: types.optional(types.frozen, null),
             names: types.optional(types.array(ItemNameModel), []),
         },
         BaseModel.getBaseObject());
@@ -34,6 +35,8 @@ const ProdFamilyModel = types.model(
             self.originalValue = value;
 
             BaseModel.setPropsValue(self, value);
+
+            self.type = value.type ? value.type : null;
 
             self.names.length = 0;
 

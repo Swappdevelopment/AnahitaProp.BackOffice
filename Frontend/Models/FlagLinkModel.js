@@ -38,6 +38,7 @@ const FlagLinkModel = types.model(
         },
         sync: value => {
 
+            debugger;
             self.originalValue = value;
 
             BaseModel.setPropsValue(self, value);
@@ -52,7 +53,17 @@ const FlagLinkModel = types.model(
         }
     })).views(
     self => ({
-        isModified: () => BaseModel.isSelfModified(self, self.originalValue)
+        isModified: () => BaseModel.isSelfModified(self, self.originalValue),
+        isBedNumberValueValid: () => {
+
+            if (self.flag && self.flag.colValueRef === GlobalValues.constants.FLAG_NUM_BEDROOMS_REF) {
+
+                return self.valueInt > 0;
+            }
+
+            return true;
+        },
+        getType: () => self.flag ? self.flag.getType() : ''
     }));;
 
 

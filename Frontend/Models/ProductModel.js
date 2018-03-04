@@ -47,6 +47,7 @@ const ProductModel = types.model(
             receivedInput: false,
             isSaving: false,
             isLazyWait: false,
+            isGettingFlags: false,
             isChangingStatus: false,
             isChangingHideSearch: false
         },
@@ -171,6 +172,25 @@ const ProductModel = types.model(
             return self.isCodeValid()
                 && self.isPriceAndCurrencyValid()
                 && (self.names.filter((v, i) => !v.isValid()).length === 0);
+        },
+        getPropertyFlags: colRefFilter => {
+
+            if (self.property) {
+
+                if (colRefFilter) {
+
+                    const temp = self.property.flags.filter(f => {
+
+                        return f.flag && f.flag.colValueRef === colRefFilter;
+                    });
+
+                    return temp;
+                }
+
+                return self.property.flags;
+            }
+
+            return null;
         }
     }));
 

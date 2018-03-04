@@ -188,6 +188,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bed Rooms Count.
+        /// </summary>
+        public static string lbl_BdRmsCnt {
+            get {
+                return ResourceManager.GetString("lbl_BdRmsCnt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset Password.
         /// </summary>
         public static string lbl_BoRstPsswrd {
@@ -773,6 +782,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Option Room DEN.
+        /// </summary>
+        public static string lbl_OptnRmDen {
+            get {
+                return ResourceManager.GetString("lbl_OptnRmDen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Or.
         /// </summary>
         public static string lbl_Or {
@@ -1129,6 +1147,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Verifying {
             get {
                 return ResourceManager.GetString("lbl_Verifying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Views.
+        /// </summary>
+        public static string lbl_Views {
+            get {
+                return ResourceManager.GetString("lbl_Views", resourceCulture);
             }
         }
         

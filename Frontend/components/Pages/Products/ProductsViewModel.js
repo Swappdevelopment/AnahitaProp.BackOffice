@@ -133,6 +133,14 @@ const ProductsViewModel = types.model(
             }
         },
 
+        syncProperties: (activeLangCode, data) => {
+
+            if (data) {
+
+                self.properties.push(...data.map((mv, i) => PropertyModel.init(mv, ++self.idGenerator, activeLangCode)));
+            }
+        },
+
         getProperties: activeLangCode => {
 
             if (self.properties.length === 0 && !self.isGettingProperties) {
@@ -235,134 +243,130 @@ const ProductsViewModel = types.model(
 
         getFlags: activeLangCode => {
 
-            if (!self.isGettingFlags) {
+            const promises = [];
 
-                const promises = [];
+            if (!self.isGettingFlags && self.flags.length === 0) {
 
-                if (self.flags.length === 0) {
+                self.isGettingFlags = true;
 
-                    let idCounter = -1;
+                let idCounter = -1;
 
-                    promises.push(
-                        {
-                            promise: Helper.FetchPromiseGet(
-                                '/lookup/getFlagViews/'),
-                            success: data => {
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromiseGet('/lookup/getFlagViews'),
+                        success: data => {
 
-                                if (data && data.length > 0) {
+                            if (data && data.length > 0) {
 
-                                    self.execAction(() => {
+                                self.execAction(() => {
 
-                                        self.flags.push(...data
-                                            .map((v, i) => FlagModel.init(v, i + 1, activeLangCode))
-                                            .sort((a, b) => {
+                                    self.flags.push(...data
+                                        .map((v, i) => FlagModel.init(v, i + 1, activeLangCode))
+                                        .sort((a, b) => {
 
-                                                if (a && b) {
+                                            if (a && b) {
 
-                                                    const nameA = a.getName().toLowerCase();
-                                                    const nameB = b.getName().toLowerCase();
+                                                const nameA = a.getType().toLowerCase();
+                                                const nameB = b.getType().toLowerCase();
 
-                                                    if (nameA < nameB) {
-                                                        return -1;
-                                                    }
-
-                                                    if (nameA > nameB) {
-                                                        return 1;
-                                                    }
+                                                if (nameA < nameB) {
+                                                    return -1;
                                                 }
 
-                                                return 0;
-                                            }));
-                                    });
-                                }
-                            },
-                            incrementSession: () => {
+                                                if (nameA > nameB) {
+                                                    return 1;
+                                                }
+                                            }
 
-                                self.getFlagViewsPromiseID = self.getFlagViewsPromiseID ? (self.getFlagViewsPromiseID + 1) : 1;
-                                idCounter = self.getFlagViewsPromiseID;
-                            },
-                            sessionValid: () => {
-
-                                return idCounter === self.getFlagViewsPromiseID;
-                            }
-                        });
-                }
-
-
-                const prodModel = self.selectedValue;
-
-                if (prodModel) {
-
-                    const propModel = prodModel.property;
-
-                    let idCounter = -1;
-
-                    promises.push(
-                        {
-                            promise: Helper.FetchPromiseGet(
-                                '/products/GetProductFlags', { productID: prodModel.id }),
-                            success: data => {
-
-                                if (data) {
-
-                                    if (data.productFlags && data.productFlags.length > 0) {
-
-                                        prodModel.execAction(() =>
-                                            prodModel.flags.push(...data.productFlags
-                                                .map((v, i) => FlagLinkModel.init(v, ++self.idGenerator, activeLangCode))));
-                                    }
-
-                                    if (propModel && data.propertyFlags && data.propertyFlags.length > 0) {
-
-                                        propModel.execAction(() =>
-                                            propModel.flags.push(...data.productFlags
-                                                .map((v, i) => FlagLinkModel.init(v, ++self.idGenerator, activeLangCode))));
-                                    }
-                                }
-                            },
-                            incrementSession: () => {
-
-                                self.getFlagViewsPromiseID = self.getFlagViewsPromiseID ? (self.getFlagViewsPromiseID + 1) : 1;
-                                idCounter = self.getFlagViewsPromiseID;
-                            },
-                            sessionValid: () => {
-
-                                return idCounter === self.getFlagViewsPromiseID;
-                            }
-                        });
-                }
-
-
-                if (promises.length > 0) {
-
-                    self.isGettingFlags = true;
-
-                    let idCounter = -1;
-
-                    Helper.RunPromise(
-                        {
-                            options: promises,
-                            incrementSession: () => {
-
-                                self.getFlagsPromiseID = self.getFlagsPromiseID ? (self.getFlagsPromiseID + 1) : 1;
-                                idCounter = self.getFlagsPromiseID;
-                            },
-                            sessionValid: () => {
-
-                                return idCounter === self.getFlagsPromiseID;
+                                            return 0;
+                                        }));
+                                });
                             }
                         },
-                        error => {
+                        incrementSession: () => {
 
-                            if (self.showPromiseError) {
-                                self.showPromiseError(error);
+                            self.getFlagViewsPromiseID = self.getFlagViewsPromiseID ? (self.getFlagViewsPromiseID + 1) : 1;
+                            idCounter = self.getFlagViewsPromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.getFlagViewsPromiseID;
+                        }
+                    },
+                    error => {
+
+                        if (self.showPromiseError) {
+                            self.showPromiseError(error);
+                        }
+                    },
+                    () => {
+
+                        self.execAction(() => self.isGettingFlags = false);
+                    }
+                );
+            }
+
+            const prodModel = self.selectedValue;
+
+            if (prodModel && !prodModel.isGettingFlags) {
+
+                prodModel.execAction(() => {
+                    prodModel.isGettingFlags = true;
+                    prodModel.flags.length = 0;
+                });
+
+                const propModel = prodModel.property;
+
+                if (propModel) {
+
+                    propModel.execAction(() => propModel.flags.length = 0);
+                }
+
+                let idCounter = -1;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromiseGet('/products/getProductFlags', { productID: prodModel.id }),
+                        success: data => {
+
+                            if (data) {
+
+                                if (data.productFlags && data.productFlags.length > 0) {
+
+                                    prodModel.execAction(() =>
+                                        prodModel.flags.push(...data.productFlags
+                                            .map((v, i) => FlagLinkModel.init(v, ++self.idGenerator, activeLangCode))));
+                                }
+
+                                if (propModel && data.propertyFlags && data.propertyFlags.length > 0) {
+
+                                    propModel.execAction(() =>
+                                        propModel.flags.push(...data.propertyFlags
+                                            .map((v, i) => FlagLinkModel.init(v, ++self.idGenerator, activeLangCode))));
+                                }
                             }
                         },
-                        () => {
+                        incrementSession: () => {
 
-                            self.execAction(() => self.gettingLookups = false);
-                        });
-                }
+                            self.getProductFlagsPromiseID = self.getProductFlagsPromiseID ? (self.getProductFlagsPromiseID + 1) : 1;
+                            idCounter = self.getProductFlagsPromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.getProductFlagsPromiseID;
+                        }
+                    },
+                    error => {
+
+                        if (self.showPromiseError) {
+                            self.showPromiseError(error);
+                        }
+                    },
+                    () => {
+
+                        prodModel.execAction(() => prodModel.isGettingFlags = false);
+                    }
+                );
             }
         }
     })).views(self => ({

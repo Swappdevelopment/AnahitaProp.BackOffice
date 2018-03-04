@@ -225,7 +225,8 @@ class Products extends React.Component {
         const params = {
             limit: this.limit,
             offset: this.offset,
-            statusFilter: this.viewModel.statusType
+            statusFilter: this.viewModel.statusType,
+            withProperties: (this.viewModel.properties.length === 0)
         };
 
         if (this.viewModel.searchText) {
@@ -240,18 +241,26 @@ class Products extends React.Component {
                 promise: Helper.FetchPromiseGet('/products/get/', params),
                 success: data => {
 
-                    if (data && data.length > 0) {
+                    if (data) {
 
-                        this.viewModel.removeLazyWaitRecord();
+                        if (data.properties && data.properties.length > 0) {
 
-                        const temp = [...data.map((v, i) => this.viewModel.syncProduct(v, this.activeLang.code))];
-                        temp.push(this.viewModel.getLazyWaitRecord());
+                            this.viewModel.syncProperties(this.activeLang.code, data.properties);
+                        }
 
-                        this.viewModel.pushProduct(...temp);
-                    }
-                    else {
+                        if (data.products && data.products.length > 0) {
 
-                        this.viewModel.removeLazyWaitRecord();
+                            this.viewModel.removeLazyWaitRecord();
+
+                            const temp = [...data.products.map((v, i) => this.viewModel.syncProduct(v, this.activeLang.code))];
+                            temp.push(this.viewModel.getLazyWaitRecord());
+
+                            this.viewModel.pushProduct(...temp);
+                        }
+                        else {
+
+                            this.viewModel.removeLazyWaitRecord();
+                        }
                     }
                 },
                 incrementSession: () => {

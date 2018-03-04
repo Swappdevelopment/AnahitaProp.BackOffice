@@ -8,6 +8,7 @@ using AnahitaProp.Data.Models;
 using Swapp.Data;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AnahitaProp.BackOffice
 {
@@ -26,15 +27,29 @@ namespace AnahitaProp.BackOffice
         [HttpGet]
         [Access]
         [MenuRequirement("products>crud")]
-        public IActionResult Get(long productID = 0, short? statusFilter = null, int offset = 0, int limit = 0)
+        public async Task<IActionResult> Get(long productID = 0, short? statusFilter = null, int offset = 0, int limit = 0, bool withProperties = false)
         {
             Product[] products = null;
+            Property[] properties = null;
 
             try
             {
-                products = _dbi.GetListProducts(withNames: true, withoutGroupsAndSubs: true, statusFilter: statusFilter, offset: offset, limit: limit);
+                await Task.WhenAll(
+                    Helper.GetFunc(() =>
+                    {
+                        products = _dbi.GetListProducts(withNames: true, withoutGroupsAndSubs: true, statusFilter: statusFilter, offset: offset, limit: limit);
 
-                return Json(products == null ? new object[0] : products.Select(l => l.Simplify()).ToArray());
+                        return Task.CompletedTask;
+                    })(),
+                    Helper.GetFunc(() =>
+                    {
+                        properties = withProperties ? _dbi.GetPropertysDetails() : null;
+
+                        return Task.CompletedTask;
+                    })());
+
+
+                return Json(new { products = products?.Select(l => l.Simplify()).ToArray(), properties = properties?.Select(l => l.Simplify()).ToArray() });
             }
             catch (Exception ex)
             {
@@ -43,6 +58,7 @@ namespace AnahitaProp.BackOffice
             finally
             {
                 products = null;
+                properties = null;
             }
         }
 

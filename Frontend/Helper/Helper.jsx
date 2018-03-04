@@ -122,11 +122,11 @@ export default class Helper {
 
                                     complete(data);
                                 }
-                            })
-                                .catch(error => {
+                            });
+                            // .catch(error => {
 
-                                    debugger;
-                                });
+                            //     debugger;
+                            // });
 
                             // }
                             // else {

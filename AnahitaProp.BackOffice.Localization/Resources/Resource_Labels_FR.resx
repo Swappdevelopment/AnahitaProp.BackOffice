@@ -483,4 +483,13 @@
   <data name="lbl_SlctProj" xml:space="preserve">
     <value>Selectionez un Projet</value>
   </data>
+  <data name="lbl_BdRmsCnt" xml:space="preserve">
+    <value>Nombre de Chambres</value>
+  </data>
+  <data name="lbl_OptnRmDen" xml:space="preserve">
+    <value>Option Chambres DEN</value>
+  </data>
+  <data name="lbl_Views" xml:space="preserve">
+    <value>Vues</value>
+  </data>
 </root>

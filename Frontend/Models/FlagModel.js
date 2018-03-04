@@ -70,17 +70,17 @@ const FlagModel = types.model(
     })).views(
     self => ({
 
-        getName: () => {
+        getType: () => {
 
             if (self.types && self.types.length > 0) {
 
                 if (self.activeLangCode) {
 
-                    const nameItem = self.types.find(v => v.language_Code == self.activeLangCode);
+                    const typeItem = self.types.find(v => v.language_Code == self.activeLangCode);
 
-                    if (nameItem) {
+                    if (typeItem) {
 
-                        return nameItem.value;
+                        return typeItem.value;
                     }
                 }
 
@@ -88,7 +88,7 @@ const FlagModel = types.model(
             }
 
             return '';
-        },
+        }
     }));
 
 
