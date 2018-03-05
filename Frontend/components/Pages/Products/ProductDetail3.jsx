@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, OverlayTrigger, Popover } from "react-bootstrap";
 
 import WaitBlock from '../../WaitBlock/WaitBlock';
 
@@ -120,6 +120,8 @@ class ProductDetail3 extends React.Component {
 
                 flViews = prodModel.getPropertyFlags(GlobalValues.constants.FLAG_VIEW_REF);
 
+                const propModel = prodModel.property;
+
                 if (flBedRoomCount != null || flOptnDen != null || flViews != null) {
 
                     return (
@@ -160,47 +162,117 @@ class ProductDetail3 extends React.Component {
                                                 <label>{this.activeLang.labels['lbl_Views']}</label>
                                             </Col>
                                             <Col md={6}>
-                                                <table>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>
-                                                                <Button className="clr-back-greenPastel" bsSize="xsmall">
-                                                                    <span style={{ color: 'white' }} className="la la-plus"></span>
-                                                                </Button>
-                                                            </td>
-                                                            {
-                                                                flViews.map((v, i) => {
+                                                {
+                                                    prodModel.isSaving ?
+                                                        <WaitBlock fullWidth height={34} />
+                                                        :
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <OverlayTrigger
+                                                                            rootClose
+                                                                            trigger="click"
+                                                                            placement="top"
+                                                                            container={this.props.rootContainer}
+                                                                            overlay={
+                                                                                <Popover id="popoverViews">
+                                                                                    <div style={{ minHeight: 200 }}>
+                                                                                        <Row>
+                                                                                            {
+                                                                                                this.viewModel.flags.filter(f => {
+                                                                                                    return !flViews.find(flv => flv.flag && flv.flag.id === f.id);
+                                                                                                }).map((f, i) => (
+                                                                                                    <Col md={4} key={f.genId}>
+                                                                                                        <Button
+                                                                                                            className={'s-btn-small-red'}
+                                                                                                            style={{
+                                                                                                                borderBottomLeftRadius: 5,
+                                                                                                                borderBottomRightRadius: 5,
+                                                                                                                borderTopLeftRadius: 5,
+                                                                                                                borderTopRightRadius: 5
+                                                                                                            }}
+                                                                                                            onClick={e => propModel.addViewFlag(f.getValue())}>
+                                                                                                            <span className="la la-plus"></span>
+                                                                                                            <span style={{ marginLeft: 10, color: 'white' }}>
+                                                                                                                {f.getType()}
+                                                                                                            </span>
+                                                                                                        </Button>
+                                                                                                    </Col>
+                                                                                                ))
+                                                                                            }
+                                                                                        </Row>
+                                                                                    </div>
+                                                                                </Popover>
+                                                                            }>
+                                                                            <Button
+                                                                                style={{ padding: '0 12px' }}
+                                                                                className="s-btn-small-blue-empty">
+                                                                                <i className="flaticon-add"></i>
+                                                                            </Button>
+                                                                        </OverlayTrigger>
+                                                                    </td>
+                                                                    {
+                                                                        flViews.map((v, i) => {
 
-                                                                    if (v.flag) {
+                                                                            if (v.flag) {
 
-                                                                        return (
-                                                                            <td
-                                                                                key={v.genId}
-                                                                                style={{ paddingLeft: 8 }}>
-                                                                                <div
-                                                                                    className="clr-back-primary"
-                                                                                    style={{
-                                                                                        cursor: 'pointer',
-                                                                                        borderBottomLeftRadius: 5,
-                                                                                        borderBottomRightRadius: 5,
-                                                                                        borderTopLeftRadius: 5,
-                                                                                        borderTopRightRadius: 5,
-                                                                                        padding: '8px 12px'
-                                                                                    }}>
-                                                                                    <span style={{ color: 'white' }}>
-                                                                                        {v.flag.getType()}
-                                                                                    </span>
-                                                                                </div>
-                                                                            </td>
-                                                                        );
+                                                                                let icon = 'flaticon-close';
+
+                                                                                switch (v.recordState) {
+
+                                                                                    case 30:
+                                                                                        icon = 'la la-undo';
+                                                                                        break;
+                                                                                }
+
+                                                                                return (
+                                                                                    <td
+                                                                                        key={v.genId}
+                                                                                        style={{ paddingLeft: 8 }}>
+                                                                                        <Button
+                                                                                            className={'s-btn-small-' + (v.recordState === 30 ? 'red' : 'primary')}
+                                                                                            style={{
+                                                                                                borderBottomLeftRadius: 5,
+                                                                                                borderBottomRightRadius: 5,
+                                                                                                borderTopLeftRadius: 5,
+                                                                                                borderTopRightRadius: 5
+                                                                                            }}
+                                                                                            onClick={e => {
+
+                                                                                                v.execAction(self => {
+                                                                                                    switch (self.recordState) {
+
+                                                                                                        case 0:
+                                                                                                            self.recordState = 30;
+                                                                                                            break;
+
+                                                                                                        case 10:
+                                                                                                            propModel.destroySubModel(self);
+                                                                                                            break;
+
+                                                                                                        case 30:
+                                                                                                            self.recordState = 0;
+                                                                                                            break;
+                                                                                                    }
+                                                                                                });
+                                                                                            }}>
+                                                                                            <span className={icon}></span>
+                                                                                            <span style={{ marginLeft: 10, color: 'white' }}>
+                                                                                                {v.flag.getType()}
+                                                                                            </span>
+                                                                                        </Button>
+                                                                                    </td>
+                                                                                );
+                                                                            }
+
+                                                                            return null;
+                                                                        })
                                                                     }
-
-                                                                    return null;
-                                                                })
-                                                            }
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                }
                                             </Col>
                                         </div>
                                         :

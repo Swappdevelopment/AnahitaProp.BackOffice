@@ -149,7 +149,7 @@ class ProductDetail extends React.Component {
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail3 viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                    <ProductDetail3 viewModel={this.viewModel} errorHandler={this.errorHandler} rootContainer={this}/>
                                 </div>
                             </LazyLoad>
                         </Col>

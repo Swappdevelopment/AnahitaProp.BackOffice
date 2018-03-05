@@ -38,7 +38,6 @@ const FlagLinkModel = types.model(
         },
         sync: value => {
 
-            debugger;
             self.originalValue = value;
 
             BaseModel.setPropsValue(self, value);
@@ -50,6 +49,13 @@ const FlagLinkModel = types.model(
             else {
                 self.flag = null;
             }
+        },
+        resetOriginalValue: () => {
+
+            const value = self.getValue();
+            delete value.recordState;
+
+            self.originalValue = value;
         }
     })).views(
     self => ({

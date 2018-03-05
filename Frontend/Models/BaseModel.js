@@ -77,6 +77,10 @@ export default class BaseModel {
                 }
             }
         }
+        else if (self && self.recordState > 0) {
+
+            return true;
+        }
 
         return false;
     }
@@ -127,7 +131,7 @@ export default class BaseModel {
         if (self) {
 
             return {
-                recordState: BaseModel.isSelfModified(self, self.originalValue) ? 20 : self.recordState,
+                recordState: self.recordState > 0 ? self.recordState : (BaseModel.isSelfModified(self, self.originalValue) ? 20 : self.recordState),
                 id: self.id < 0 ? 0 : self.id,
                 status: self.status
             };

@@ -112,7 +112,7 @@ const ProductsViewModel = types.model(
 
                                         default:
 
-                                            value.resetOriginalValue();
+                                            value.resetOriginalValue(data.propertyFlags);
                                             break;
                                     }
                                 }

@@ -1,4 +1,4 @@
-import { types, clone } from 'mobx-state-tree';
+import { types, destroy } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
 import NeighbourhoodModel from './NeighbourhoodModel';
@@ -14,7 +14,8 @@ const getObject = () => {
             lotSize: types.optional(types.number, 0),
             neighbourhood_Id: types.maybe(types.number, types.null),
             neighbourhood: types.maybe(NeighbourhoodModel, types.null),
-            flags: types.optional(types.array(FlagLinkModel), [])
+            flags: types.optional(types.array(FlagLinkModel), []),
+            activeLangCode: types.optional(types.string, '')
         },
         BaseModel.getBaseObject());
 };
@@ -54,7 +55,7 @@ const PropertyModel = types.model(
                 self.neighbourhood = null;
             }
         },
-        resetOriginalValue: () => {
+        resetOriginalValue: propertyFlags => {
 
             const value = self.getValue();
             delete value.recordState;
@@ -64,6 +65,56 @@ const PropertyModel = types.model(
             if (self.neighbourhood) {
 
                 self.neighbourhood.resetOriginalValue();
+            }
+
+            for (const flag of self.flags.slice()) {
+
+                if (flag.id > 0) {
+
+                    if (flag.recordState === 30) {
+
+                        destroy(flag);
+                    }
+                    else {
+
+                        flag.resetOriginalValue();
+                    }
+                }
+                else {
+
+                    destroy(flag);
+                }
+            }
+
+            if (propertyFlags) {
+
+                self.flags.push(...propertyFlags.filter(f => {
+                    return !self.flags.find(sf => sf.id === f.id);
+                }).map(f => FlagLinkModel.init(f, f.id + 100000, self.activeLangCode)));
+            }
+        },
+        addViewFlag: flag => {
+
+            if (flag) {
+
+                const negId = --self.flagGenId;
+
+                self.flags.push(FlagLinkModel.init({
+                    id: negId,
+                    status: 1,
+                    recordState: 10,
+                    flag_Id: flag.id,
+                    valueBool: true,
+                    flag
+                },
+                    (negId * -1),
+                    self.activeLangCode));
+            }
+        },
+        destroySubModel: subModel => {
+
+            if (subModel) {
+                destroy(subModel);
             }
         }
     })).views(self => ({
@@ -89,6 +140,8 @@ PropertyModel.init = (value, genId, activeLangCode) => {
         id: value && value.id >= 0 ? value.id : 0
     });
 
+    self.flagGenId = -1;
+
     self.genId = genId;
     self.execAction(() => self.activeLangCode = activeLangCode);
 
@@ -109,7 +162,8 @@ PropertyModel.init = (value, genId, activeLangCode) => {
                 code: self.code,
                 lotSize: self.lotSize,
                 neighbourhood_Id: self.neighbourhood_Id,
-                neighbourhood: self.neighbourhood ? self.neighbourhood.getValue() : null
+                neighbourhood: self.neighbourhood ? self.neighbourhood.getValue() : null,
+                flags: self.flags ? self.flags.map(f => f.getValue()) : null
             });
     };
 

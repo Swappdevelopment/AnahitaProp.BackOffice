@@ -208,13 +208,15 @@ namespace AnahitaProp.BackOffice
         {
             Product product = null;
 
-            bool saved = false;
+            bool saved = false, hasNewPropFlags = false;
 
             List<IdentityModel> toSave = null;
 
             ProductSoldDate[] psds = null;
 
             string getProdIdQuery = null;
+
+            IEnumerable<PropertyFlag> propertyFlags = null;
 
 
             try
@@ -244,8 +246,7 @@ namespace AnahitaProp.BackOffice
                             {
                                 toSave.AddRange(
                                         product.Names
-                                        .Where(l => l.RecordState != RecordState.None)
-                                        .Select(l => l.AddCommand("Product_Id", getProdIdQuery)));
+                                        .Select(l => l.SetRecordState(RecordState.Added).AddCommand("Product_Id", getProdIdQuery)));
                             }
 
                             toSave.Add(new ProductSalePeriod()
@@ -259,36 +260,40 @@ namespace AnahitaProp.BackOffice
                         case RecordState.Updated:
 
                             toSave.Add(product);
-
-                            if (product.Names != null)
-                            {
-                                toSave.AddRange(
-                                        product.Names
-                                        .Where(l => l.RecordState != RecordState.None)
-                                        .Select(l =>
-                                        {
-                                            l.Product_Id = product.ID;
-                                            return l;
-                                        }));
-                            }
                             break;
                         case RecordState.Deleted:
                             break;
+                    }
 
-                        default:
+                    if (product.Names != null)
+                    {
+                        toSave.AddRange(
+                                product.Names
+                                .Where(l => l.RecordState == RecordState.Deleted || l.RecordState == RecordState.Updated)
+                                .Select(l =>
+                                {
+                                    l.Product_Id = product.ID;
+                                    return l;
+                                }));
+                    }
 
-                            if (product.Names != null)
-                            {
-                                toSave.AddRange(
-                                        product.Names
-                                        .Where(l => l.RecordState != RecordState.None)
-                                        .Select(l =>
+                    if (product.Flags != null)
+                    {
+                        toSave.AddRange(from fl in product.Flags
+                                        where fl.RecordState != 0
+                                        select Helper.GetFunc<ProductFlag, ProductFlag>(pfl =>
                                         {
-                                            l.Product_Id = product.ID;
-                                            return l;
-                                        }));
-                            }
-                            break;
+                                            if (product.RecordState == RecordState.Added)
+                                            {
+                                                pfl.AddCommand("Product_Id", $"SELECT ID FROM Products WHERE UID = '{product.UID}' ");
+                                            }
+                                            else
+                                            {
+                                                pfl.Product_Id = product.ID;
+                                            }
+
+                                            return pfl;
+                                        })(fl));
                     }
 
                     if (product.Property != null)
@@ -307,6 +312,32 @@ namespace AnahitaProp.BackOffice
                         if (product.Property.Names != null)
                         {
                             toSave.AddRange(product.Property.Names.Where(l => l.RecordState != RecordState.None));
+                        }
+
+                        if (product.Property.Flags != null)
+                        {
+                            toSave.AddRange(from fl in product.Property.Flags
+                                            where fl.RecordState != 0
+                                            select Helper.GetFunc<PropertyFlag, PropertyFlag>(pfl =>
+                                            {
+                                                if (product.Property.RecordState == RecordState.Added)
+                                                {
+                                                    pfl.AddCommand("Property_Id", $"SELECT ID FROM Propertys WHERE Code = '{product.Property.Code}' ");
+                                                }
+                                                else
+                                                {
+                                                    pfl.Property_Id = product.Property.ID;
+                                                }
+
+                                                switch (pfl.RecordState)
+                                                {
+                                                    case RecordState.Added:
+                                                        hasNewPropFlags = true;
+                                                        break;
+                                                }
+
+                                                return pfl;
+                                            })(fl));
                         }
                     }
 
@@ -359,17 +390,32 @@ namespace AnahitaProp.BackOffice
                         saved = true;
                     }
 
-                    if (saved && product.RecordState == RecordState.Added)
+
+                    bool clearProduct = true;
+
+                    if (saved)
                     {
-                        product = _dbi.GetListProducts(uid: product.UID, withNames: true, withoutGroupsAndSubs: true)?.FirstOrDefault();
+                        if (product.RecordState == RecordState.Added)
+                        {
+                            product = _dbi.GetListProducts(uid: product.UID, withNames: true, withoutGroupsAndSubs: true)?.FirstOrDefault();
+
+                            clearProduct = false;
+                        }
+                        else if (product.RecordState == RecordState.Deleted)
+                        {
+                            product = null;
+                        }
+
+                        if (hasNewPropFlags && product.Property_Id > 0)
+                        {
+                            propertyFlags = _dbi.GetProductsFlags(product.ID, includeProductFlags: false).FirstOrDefault()?.Property?.Flags;
+                        }
                     }
-                    else
-                    {
-                        product = null;
-                    }
+
+                    product = clearProduct ? null : product;
                 }
 
-                return Json(new { saved, newProduct = product?.Simplify() });
+                return Json(new { saved, newProduct = product?.Simplify(), propertyFlags = propertyFlags?.Select(l => l.Simplify()).ToArray() });
             }
             catch (Exception ex)
             {
@@ -380,6 +426,7 @@ namespace AnahitaProp.BackOffice
                 toSave?.Clear();
                 toSave = null;
                 product = null;
+                propertyFlags = null;
             }
         }
     }

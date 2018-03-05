@@ -86,7 +86,6 @@ export default class Helper {
 
                             //     resp.text().then(data => {
 
-                            //         debugger;
                             //     });
                             // }
 
@@ -125,7 +124,6 @@ export default class Helper {
                             });
                             // .catch(error => {
 
-                            //     debugger;
                             // });
 
                             // }

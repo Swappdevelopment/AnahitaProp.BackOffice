@@ -71,7 +71,7 @@ const ProductModel = types.model(
 
             self.receivedInput = listenForChange ? true : false;
         },
-        resetOriginalValue: () => {
+        resetOriginalValue: propertyFlags => {
 
             const value = self.getValue();
             delete value.recordState;
@@ -80,12 +80,17 @@ const ProductModel = types.model(
 
             if (self.property) {
 
-                self.property.resetOriginalValue();
+                self.property.resetOriginalValue(propertyFlags);
             }
 
             for (const nmv of self.names) {
 
                 nmv.resetOriginalValue();
+            }
+
+            for (const flag of self.flags) {
+
+                flag.resetOriginalValue();
             }
         },
         sync: value => {
@@ -233,7 +238,8 @@ ProductModel.init = (value, genId, activeLangCode) => {
                 isGroup: self.isGroup,
                 type: self.type,
                 names: self.names.map((v, i) => v.getValue()),
-                property: self.property ? self.property.getValue() : null
+                property: self.property ? self.property.getValue() : null,
+                flags: self.flags ? self.flags.map(f => f.getValue()) : null
             });
     };
 
