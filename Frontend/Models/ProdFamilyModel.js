@@ -1,7 +1,7 @@
 import { types, clone } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
-import ItemNameModel from './ItemNameModel';
+import ItemFieldModel from './ItemFieldModel';
 
 
 const getObject = () => {
@@ -11,7 +11,7 @@ const getObject = () => {
             slug: types.optional(types.string, ''),
             type_Id: types.maybe(types.number, types.null),
             type: types.optional(types.frozen, null),
-            names: types.optional(types.array(ItemNameModel), []),
+            names: types.optional(types.array(ItemFieldModel), []),
         },
         BaseModel.getBaseObject());
 };
@@ -44,7 +44,7 @@ const ProdFamilyModel = types.model(
 
                 self.names.push(...value.names.map((v, i) => {
 
-                    return ItemNameModel.init({
+                    return ItemFieldModel.init({
                         id: v.id,
                         status: v.status,
                         value: v.value,

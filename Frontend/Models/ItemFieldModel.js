@@ -4,8 +4,8 @@ import BaseModel from './BaseModel';
 
 
 
-const ItemNameModel = types.model(
-    'ItemNameModel',
+const ItemFieldModel = types.model(
+    'ItemFieldModel',
     {
         recordState: types.optional(types.number, 0),
         value: types.optional(types.string, ''),
@@ -66,16 +66,20 @@ const ItemNameModel = types.model(
         }
     }));
 
-ItemNameModel.init = value => {
+ItemFieldModel.init = (value, genId) => {
 
-    const self = ItemNameModel.create({ recordState: 0 });
+    const self = ItemFieldModel.create({ recordState: 0 });
 
+    self.genId = genId;
+    
     self.execAction(() => self.originalValue = value);
 
     self.setPropsValue(value);
 
     self.id = value.id;
     self.status = value.status;
+    self.isList = value.isList;
+    self.detailRank = value.detailRank;
     self.language_Id = value.language_Id;
     self.language_Code = value.language_Code;
 
@@ -86,6 +90,8 @@ ItemNameModel.init = value => {
             BaseModel.getValueFromSelf(self),
             {
                 value: self.value,
+                isList: self.isList,
+                detailRank: self.detailRank,
                 language_Id: self.language_Id,
                 language_Code: self.language_Code
             });
@@ -96,4 +102,4 @@ ItemNameModel.init = value => {
 };
 
 
-export default ItemNameModel;
+export default ItemFieldModel;

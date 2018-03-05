@@ -1,7 +1,7 @@
 import { types } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
-import ItemNameModel from './ItemNameModel';
+import ItemFieldModel from './ItemFieldModel';
 import ProdFamilyModel from './ProdFamilyModel';
 import PropertyModel from './PropertyModel';
 import ProjectModel from './ProjectModel';
@@ -29,7 +29,8 @@ const getObject = () => {
             binaryValue: types.optional(types.number, 0),
             hideSearch: false,
             isGroup: false,
-            names: types.optional(types.array(ItemNameModel), []),
+            names: types.optional(types.array(ItemFieldModel), []),
+            descs: types.optional(types.array(ItemFieldModel), []),
             productFamily: types.maybe(ProdFamilyModel, types.null),
             originalValue: types.optional(types.frozen, null),
             property: types.maybe(types.reference(PropertyModel), types.null),
@@ -88,6 +89,11 @@ const ProductModel = types.model(
                 nmv.resetOriginalValue();
             }
 
+            for (const desc of self.descs) {
+
+                desc.resetOriginalValue();
+            }
+
             for (const flag of self.flags) {
 
                 flag.resetOriginalValue();
@@ -105,7 +111,7 @@ const ProductModel = types.model(
 
                 self.names.push(...value.names.map((v, i) => {
 
-                    return ItemNameModel.init({
+                    return ItemFieldModel.init({
                         id: v.id,
                         status: v.status,
                         value: v.value,
@@ -122,6 +128,13 @@ const ProductModel = types.model(
             else {
 
                 self.productFamily = null;
+            }
+        },
+        setOriginalValueProperty: value => {
+
+            if (value) {
+
+                self.originalValue = Object.assign({}, self.originalValue, value);
             }
         }
     })).views(
@@ -155,6 +168,7 @@ const ProductModel = types.model(
                 return (self.property && self.property.isModified())
                     //|| (self.project && self.project.isModified())
                     || self.names.filter((v, i) => v.isModified()).length > 0
+                    || self.descs.filter((v, i) => v.isModified()).length > 0
                     || self.flags.filter((v, i) => v.isModified()).length > 0;
             }
 
@@ -237,7 +251,8 @@ ProductModel.init = (value, genId, activeLangCode) => {
                 hideSearch: self.hideSearch,
                 isGroup: self.isGroup,
                 type: self.type,
-                names: self.names.map((v, i) => v.getValue()),
+                names: self.names ? self.names.map(f => f.getValue()) : null,
+                descs: self.descs ? self.descs.map(f => f.getValue()) : null,
                 property: self.property ? self.property.getValue() : null,
                 flags: self.flags ? self.flags.map(f => f.getValue()) : null
             });

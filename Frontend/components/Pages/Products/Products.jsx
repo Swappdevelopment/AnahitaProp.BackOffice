@@ -208,85 +208,92 @@ class Products extends React.Component {
 
     getProducts() {
 
-        const isFullRefresh = this.offset === 0;
+        if (!this.isGettingProducts) {
 
-        if (isFullRefresh) {
+            this.isGettingProducts = true;
 
-            this.viewModel.clearProducts();
+            const isFullRefresh = this.offset === 0;
 
-            this.pageViewModel.pageBlurPixels = 3;
-            this.pageViewModel.showPageWaitControl = true;
-        }
-        else {
+            if (isFullRefresh) {
 
-            this.viewModel.setPropsValue({ isLazyLoading: true });
-        }
+                this.viewModel.clearProducts();
 
-        const params = {
-            limit: this.limit,
-            offset: this.offset,
-            statusFilter: this.viewModel.statusType,
-            withProperties: (this.viewModel.properties.length === 0)
-        };
+                this.pageViewModel.pageBlurPixels = 3;
+                this.pageViewModel.showPageWaitControl = true;
+            }
+            else {
 
-        if (this.viewModel.searchText) {
+                this.viewModel.setPropsValue({ isLazyLoading: true });
+            }
 
-            params['nameFilter'] = this.viewModel.searchText;
-        }
+            const params = {
+                limit: this.limit,
+                offset: this.offset,
+                statusFilter: this.viewModel.statusType,
+                withProperties: (this.viewModel.properties.length === 0)
+            };
 
-        let idCounter = -1;
+            if (this.viewModel.searchText) {
 
-        Helper.RunPromise(
-            {
-                promise: Helper.FetchPromiseGet('/products/get/', params),
-                success: data => {
+                params['nameFilter'] = this.viewModel.searchText;
+            }
 
-                    if (data) {
+            let idCounter = -1;
 
-                        if (data.properties && data.properties.length > 0) {
+            Helper.RunPromise(
+                {
+                    promise: Helper.FetchPromiseGet('/products/get/', params),
+                    success: data => {
 
-                            this.viewModel.syncProperties(this.activeLang.code, data.properties);
+                        if (data) {
+
+                            if (data.properties && data.properties.length > 0) {
+
+                                this.viewModel.syncProperties(this.activeLang.code, data.properties);
+                            }
+
+                            if (data.products && data.products.length > 0) {
+
+                                this.viewModel.removeLazyWaitRecord();
+
+                                const temp = [...data.products.map((v, i) => this.viewModel.syncProduct(v, this.activeLang.code))];
+                                temp.push(this.viewModel.getLazyWaitRecord());
+
+                                this.viewModel.pushProduct(...temp);
+                            }
+                            else {
+
+                                this.viewModel.removeLazyWaitRecord();
+                            }
                         }
+                    },
+                    incrementSession: () => {
 
-                        if (data.products && data.products.length > 0) {
+                        this.getProductsPromiseID = this.getProductsPromiseID ? (this.getProductsPromiseID + 1) : 1;
+                        idCounter = this.getProductsPromiseID;
+                    },
+                    sessionValid: () => {
 
-                            this.viewModel.removeLazyWaitRecord();
-
-                            const temp = [...data.products.map((v, i) => this.viewModel.syncProduct(v, this.activeLang.code))];
-                            temp.push(this.viewModel.getLazyWaitRecord());
-
-                            this.viewModel.pushProduct(...temp);
-                        }
-                        else {
-
-                            this.viewModel.removeLazyWaitRecord();
-                        }
+                        return idCounter === this.getProductsPromiseID;
                     }
                 },
-                incrementSession: () => {
-
-                    this.getProductsPromiseID = this.getProductsPromiseID ? (this.getProductsPromiseID + 1) : 1;
-                    idCounter = this.getProductsPromiseID;
+                error => {
+                    switch (error.exceptionID) {
+                        default:
+                            this.errorHandler.showFromLang(this.activeLang);
+                            break;
+                    }
                 },
-                sessionValid: () => {
+                () => {
+                    this.pageViewModel.pageBlurPixels = 0;
+                    this.pageViewModel.showPageWaitControl = false;
 
-                    return idCounter === this.getProductsPromiseID;
-                }
-            },
-            error => {
-                switch (error.exceptionID) {
-                    default:
-                        this.errorHandler.showFromLang(this.activeLang);
-                        break;
-                }
-            },
-            () => {
-                this.pageViewModel.pageBlurPixels = 0;
-                this.pageViewModel.showPageWaitControl = false;
+                    this.viewModel.setPropsValue({ isLazyLoading: false });
 
-                this.viewModel.setPropsValue({ isLazyLoading: false });
-            }
-        );
+                    this.isGettingProducts = false;
+                }
+            );
+        }
     }
 
     getProductsRow(value, index) {
@@ -364,7 +371,7 @@ class Products extends React.Component {
                                 :
                                 <Checkbox className="s-checkbox"
 
-                                    defaultChecked={value.hideSearch ? true : false}
+                                    defaultChecked={value.hideSearch ? false : true}
                                     onChange={e => {
 
                                         if (value.id > 0) {
@@ -373,7 +380,7 @@ class Products extends React.Component {
 
                                             value.execAction(self => {
 
-                                                self.hideSearch = e.target.checked ? true : false;
+                                                self.hideSearch = e.target.checked ? false : true;
                                             });
 
                                             if (tempValue !== value.hideSearch) {
@@ -388,7 +395,7 @@ class Products extends React.Component {
 
                     </td>
 
-                    <td className="s-td-cell-active">
+                    {/* <td className="s-td-cell-active">
                         {
                             value.isChangingStatus ?
                                 <span className="spinner"></span>
@@ -417,7 +424,7 @@ class Products extends React.Component {
                                 </Checkbox>
                         }
 
-                    </td>
+                    </td> */}
 
                     <GridRowToolbar hideEdit
                         currentValue={value}
@@ -537,20 +544,12 @@ class Products extends React.Component {
 
                                 case 'status':
 
-                                    value.originalValue.status = value.status;
-
-                                    // value.execAction(self => {
-                                    //     self.originalValue.status = value.status;
-                                    // });
+                                    value.setOriginalValueProperty({ status: value.status });
                                     break;
 
                                 case 'hideSearch':
 
-                                    value.originalValue.hideSearch = value.hideSearch;
-
-                                    // value.execAction(self => {
-                                    //     self.originalValue.hideSearch = value.hideSearch;
-                                    // });
+                                    value.setOriginalValueProperty({ hideSearch: value.hideSearch });
                                     break;
                             }
 
@@ -663,7 +662,7 @@ class Products extends React.Component {
                             <th>{this.activeLang.labels["lbl_Currency"]}</th>
                             <th>{this.activeLang.labels["lbl_Price"]}</th>
                             <th>{this.activeLang.labels["lbl_Family"]}</th>
-                            <th className="s-th-cell-active">{this.activeLang.labels["lbl_HideInWs"]}</th>
+                            {/* <th className="s-th-cell-active">{this.activeLang.labels["lbl_HideInWs"]}</th> */}
                             <th className="s-th-cell-active">{this.activeLang.labels["lbl_Active"]}</th>
                             <th className="s-th-cell-controls" />
                         </tr>

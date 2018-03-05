@@ -489,4 +489,16 @@
   <data name="lbl_Views" xml:space="preserve">
     <value>Views</value>
   </data>
+  <data name="lbl_Desc" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="lbl_DtlPg" xml:space="preserve">
+    <value>Detail Page</value>
+  </data>
+  <data name="lbl_ShortDesc" xml:space="preserve">
+    <value>Short (Listing)</value>
+  </data>
+  <data name="lbl_Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
 </root>

@@ -6,8 +6,12 @@ import PropertyModel from '../../../Models/PropertyModel';
 import ProjectModel from '../../../Models/ProjectModel';
 import FlagModel from '../../../Models/FlagModel';
 import FlagLinkModel from '../../../Models/FlagLinkModel';
+import ItemFieldModel from '../../../Models/ItemFieldModel';
 
 import Helper from '../../../Helper/Helper';
+
+
+const _onSelectedValueChangeCallbacks = [];
 
 
 const ProductsViewModel = types.model(
@@ -18,6 +22,7 @@ const ProductsViewModel = types.model(
         isGettingProperties: false,
         isGettingProjects: false,
         isGettingFlags: false,
+        isGettingDescs: false,
         selectedValue: types.maybe(types.reference(ProductModel), types.null),
         searchText: types.optional(types.string, ''),
         products: types.optional(types.array(ProductModel), []),
@@ -243,8 +248,6 @@ const ProductsViewModel = types.model(
 
         getFlags: activeLangCode => {
 
-            const promises = [];
-
             if (!self.isGettingFlags && self.flags.length === 0) {
 
                 self.isGettingFlags = true;
@@ -368,6 +371,77 @@ const ProductsViewModel = types.model(
                     }
                 );
             }
+        },
+
+        getDescs: () => {
+            
+            const prodModel = self.selectedValue;
+
+            if (prodModel && !prodModel.isGettingDescs) {
+
+                prodModel.execAction(() => {
+                    prodModel.isGettingDescs = true;
+                    prodModel.descs.length = 0;
+                });
+
+                let idCounter = -1;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromiseGet('/products/getProductDescs', { productID: prodModel.id }),
+                        success: data => {
+
+                            if (data) {
+
+                                if (data.length > 0) {
+
+                                    prodModel.execAction(() =>
+                                        prodModel.descs.push(...data
+                                            .map((v, i) => ItemFieldModel.init(v, ++self.idGenerator))));
+                                }
+                            }
+                        },
+                        incrementSession: () => {
+
+                            self.getProductDescsPromiseID = self.getProductDescsPromiseID ? (self.getProductDescsPromiseID + 1) : 1;
+                            idCounter = self.getProductDescsPromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.getProductDescsPromiseID;
+                        }
+                    },
+                    error => {
+
+                        if (self.showPromiseError) {
+                            self.showPromiseError(error);
+                        }
+                    },
+                    () => {
+
+                        prodModel.execAction(() => prodModel.isGettingDescs = false);
+                    }
+                );
+            }
+        },
+
+        bindOnSelectedValueChange: callback => {
+
+            if (callback) {
+                _onSelectedValueChangeCallbacks.push(callback);
+            }
+        },
+
+        unbindOnSelectedValueChange: callback => {
+
+            if (callback) {
+
+                const index = _onSelectedValueChangeCallbacks.indexOf(callback);
+
+                if (index >= 0) {
+                    _onSelectedValueChangeCallbacks.splice(index, 1);
+                }
+            }
         }
     })).views(self => ({
 
@@ -424,9 +498,16 @@ ProductsViewModel.init = () => {
                         }
                     });
                 }
+
+                for (const cb of _onSelectedValueChangeCallbacks) {
+
+                    if (cb) {
+                        cb();
+                    }
+                }
                 break;
         }
-    })
+    });
 
 
     return self;

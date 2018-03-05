@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import { Row, Col, Button, OverlayTrigger, Popover } from "react-bootstrap";
 
 import WaitBlock from '../../WaitBlock/WaitBlock';
+import WaitControl from '../../WaitControl/WaitControl';
 
 
 class ProductDetail3 extends React.Component {
@@ -18,6 +19,17 @@ class ProductDetail3 extends React.Component {
     }
 
     componentWillMount() {
+
+        this.viewModel.bindOnSelectedValueChange(this.getFlags);
+
+        this.getFlags();
+    }
+
+    componentWillUnmount() {
+        this.viewModel.unbindOnSelectedValueChange(this.getFlags);
+    }
+
+    getFlags = () => {
 
         this.viewModel.getFlags(this.activeLang.code);
     }
@@ -104,6 +116,7 @@ class ProductDetail3 extends React.Component {
 
             if (prodModel.isGettingFlags) {
 
+                return <WaitControl show={true} />;
             }
             else if (prodModel.flags.length > 0) {
 

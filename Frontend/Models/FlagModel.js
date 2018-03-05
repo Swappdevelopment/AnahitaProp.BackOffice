@@ -1,7 +1,7 @@
 import { types, clone } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
-import ItemNameModel from './ItemNameModel';
+import ItemFieldModel from './ItemFieldModel';
 
 
 const getObject = () => {
@@ -10,7 +10,7 @@ const getObject = () => {
         {
             colValueRef: types.optional(types.string, ''),
             typeRef: types.optional(types.string, ''),
-            types: types.optional(types.array(ItemNameModel), []),
+            types: types.optional(types.array(ItemFieldModel), []),
             originalValue: types.optional(types.frozen, null)
         },
         BaseModel.getBaseObject());
@@ -45,7 +45,7 @@ const FlagModel = types.model(
 
                 self.types.push(...value.types.map((v, i) => {
 
-                    return ItemNameModel.init({
+                    return ItemFieldModel.init({
                         id: v.id,
                         status: v.status,
                         value: v.value,

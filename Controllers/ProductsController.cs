@@ -139,6 +139,30 @@ namespace AnahitaProp.BackOffice
         }
 
 
+        [HttpGet]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public IActionResult GetProductDescs(long productID = 0)
+        {
+            ProductFieldDesc[] descs = null;
+
+            try
+            {
+                descs = _dbi.GetProductDescs(productID);
+
+                return Json(descs == null ? new object[0] : descs.Select(l => l.Simplify()).ToArray());
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                descs = null;
+            }
+        }
+
+
         [HttpPost]
         [Access]
         [MenuRequirement("products>crud")]
@@ -249,6 +273,13 @@ namespace AnahitaProp.BackOffice
                                         .Select(l => l.SetRecordState(RecordState.Added).AddCommand("Product_Id", getProdIdQuery)));
                             }
 
+                            if (product.Descs != null)
+                            {
+                                toSave.AddRange(
+                                        product.Descs
+                                        .Select(l => l.SetRecordState(RecordState.Added).AddCommand("Product_Id", getProdIdQuery)));
+                            }
+
                             toSave.Add(new ProductSalePeriod()
                             {
                                 RecordState = RecordState.Added,
@@ -269,6 +300,18 @@ namespace AnahitaProp.BackOffice
                     {
                         toSave.AddRange(
                                 product.Names
+                                .Where(l => l.RecordState == RecordState.Deleted || l.RecordState == RecordState.Updated)
+                                .Select(l =>
+                                {
+                                    l.Product_Id = product.ID;
+                                    return l;
+                                }));
+                    }
+
+                    if (product.Descs != null)
+                    {
+                        toSave.AddRange(
+                                product.Descs
                                 .Where(l => l.RecordState == RecordState.Deleted || l.RecordState == RecordState.Updated)
                                 .Select(l =>
                                 {

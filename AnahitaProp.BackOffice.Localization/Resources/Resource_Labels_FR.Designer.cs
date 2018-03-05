@@ -395,6 +395,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string lbl_Desc {
+            get {
+                return ResourceManager.GetString("lbl_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DDN.
         /// </summary>
         public static string lbl_Dob {
@@ -409,6 +418,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Done {
             get {
                 return ResourceManager.GetString("lbl_Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page Détail.
+        /// </summary>
+        public static string lbl_DtlPg {
+            get {
+                return ResourceManager.GetString("lbl_DtlPg", resourceCulture);
             }
         }
         
@@ -1034,6 +1052,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Abrégée (Liste).
+        /// </summary>
+        public static string lbl_ShortDesc {
+            get {
+                return ResourceManager.GetString("lbl_ShortDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Se Connecter.
         /// </summary>
         public static string lbl_SignIn {
@@ -1093,6 +1120,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Status {
             get {
                 return ResourceManager.GetString("lbl_Status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string lbl_Type {
+            get {
+                return ResourceManager.GetString("lbl_Type", resourceCulture);
             }
         }
         

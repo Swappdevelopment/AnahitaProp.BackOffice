@@ -8,6 +8,7 @@ import PageActions from '../../PageComponents/PageActions/PageActions';
 import ProductDetail1 from './ProductDetail1';
 import ProductDetail2 from './ProductDetail2';
 import ProductDetail3 from './ProductDetail3';
+import ProductDetail4 from './ProductDetail4';
 
 
 class ProductDetail extends React.Component {
@@ -149,7 +150,13 @@ class ProductDetail extends React.Component {
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail3 viewModel={this.viewModel} errorHandler={this.errorHandler} rootContainer={this}/>
+                                    <ProductDetail3 viewModel={this.viewModel} errorHandler={this.errorHandler} rootContainer={this} />
+                                </div>
+                            </LazyLoad>
+                            <br />
+                            <LazyLoad debounce={false}>
+                                <div className="s-portlet" style={{ padding: '30px 40px' }}>
+                                    <ProductDetail4 viewModel={this.viewModel} errorHandler={this.errorHandler} />
                                 </div>
                             </LazyLoad>
                         </Col>
