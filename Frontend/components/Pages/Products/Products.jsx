@@ -22,6 +22,8 @@ class Products extends React.Component {
     constructor(props) {
         super(props);
 
+        this.scrollPos = 0;
+
         this.state = { isModalShown: false };
 
         this.pageViewModel = props.pageViewModel;
@@ -50,8 +52,22 @@ class Products extends React.Component {
 
     componentWillMount() {
 
+        this.viewModel.bindOnSelectedValueChange(this.selectedValueChanged);
+
         this.getProducts();
         this.getLookups();
+    }
+
+    componentWillUnmount() {
+
+        this.viewModel.unbindOnSelectedValueChange(this.selectedValueChanged);
+    }
+
+    selectedValueChanged = () => {
+
+        if (this.viewModel.selectedValue === null) {
+            document.documentElement.scrollTop = this.scrollPos;
+        }
     }
 
     getLookups = () => {
@@ -344,6 +360,8 @@ class Products extends React.Component {
                     <td
                         className="s-td-cell-name-short"
                         onClick={e => {
+
+                            this.scrollPos = document.documentElement.scrollTop;
 
                             this.viewModel.execAction(self => {
                                 self.selectedValue = value.id;

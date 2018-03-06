@@ -179,6 +179,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apparaît sur Détail.
+        /// </summary>
+        public static string lbl_AprDtl {
+            get {
+                return ResourceManager.GetString("lbl_AprDtl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retour.
         /// </summary>
         public static string lbl_Back {
@@ -661,6 +670,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_LotSize {
             get {
                 return ResourceManager.GetString("lbl_LotSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image Liste.
+        /// </summary>
+        public static string lbl_LstImg {
+            get {
+                return ResourceManager.GetString("lbl_LstImg", resourceCulture);
             }
         }
         

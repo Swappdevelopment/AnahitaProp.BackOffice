@@ -1,4 +1,4 @@
-import { types } from 'mobx-state-tree';
+import { types, detach, destroy } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
 import ItemFieldModel from './ItemFieldModel';
@@ -6,6 +6,9 @@ import ProdFamilyModel from './ProdFamilyModel';
 import PropertyModel from './PropertyModel';
 import ProjectModel from './ProjectModel';
 import FlagLinkModel from './FlagLinkModel';
+import EntityFileModelWrapper from './EntityFileModelWrapper';
+
+import Helper from '../Helper/Helper';
 
 
 const getObject = () => {
@@ -35,10 +38,14 @@ const getObject = () => {
             originalValue: types.optional(types.frozen, null),
             property: types.maybe(types.reference(PropertyModel), types.null),
             project: types.maybe(types.reference(ProjectModel), types.null),
-            flags: types.optional(types.array(FlagLinkModel), [])
+            flags: types.optional(types.array(FlagLinkModel), []),
+            files: types.optional(types.array(EntityFileModelWrapper), [])
         },
         BaseModel.getBaseObject());
 };
+
+
+const reorderSessions = [];
 
 
 const ProductModel = types.model(
@@ -135,6 +142,158 @@ const ProductModel = types.model(
             if (value) {
 
                 self.originalValue = Object.assign({}, self.originalValue, value);
+            }
+        },
+        sortFilesOnRank: file => {
+
+            if (file && file.wrapper) {
+
+                const index = self.files.indexOf(file.wrapper);
+
+                if (index >= 0) {
+
+                    let tempArray = self.files
+                        .map((f, i) => ({ f: f.model, i }))
+                        .filter(item =>
+                            item.f !== file
+                            && item.f.detailRank >= file.detailRank
+                            && item.f.detailRank <= file.detailRank);
+
+
+                    const targetIndex = tempArray.length > 0 ? tempArray[0].i : 0;
+
+                    if (targetIndex !== index && targetIndex >= 0) {
+
+                        for (let i = 0; i < self.files.length; i++) {
+
+                            if (index > targetIndex) {
+
+                                if (i >= targetIndex && i < index) {
+
+                                    self.files[i].model.execAction(selfFile => selfFile.detailRank += 1);
+                                }
+                            }
+                            else {
+
+                                if (i > index && i <= targetIndex) {
+
+                                    self.files[i].model.execAction(selfFile => selfFile.detailRank -= 1);
+                                }
+                            }
+                        }
+
+                        detach(file.wrapper);
+
+                        self.files.splice(targetIndex, 0, file.wrapper);
+
+
+                        const sessionCollection = self.files.map(f => {
+                            const result = f.getValue();
+                            result.recordState = 20;
+                            return result;
+                        });
+
+                        reorderSessions.push(sessionCollection);
+
+                        self.saveReorderSession();
+                    }
+                }
+            }
+        },
+        saveReorderSession: () => {
+
+            if (reorderSessions.length > 0) {
+
+                let idCounter = -1;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromisePost(
+                            '/products/saveProductFiles/', { files: reorderSessions[0] }),
+                        success: data => {
+
+                            for (let item of reorderSessions[0]) {
+
+                                const value = self.flags.find(f => f.model && f.model.id === item.id);
+
+                                if (value && value.originalValue) {
+
+                                    value.setOriginalValueProperty({ detailRank: item.detailRank });
+                                }
+                            }
+                        },
+                        incrementSession: () => {
+
+                            self.saveReorderSessionPromiseID = self.saveReorderSessionPromiseID ? (self.saveReorderSessionPromiseID + 1) : 1;
+                            idCounter = self.saveReorderSessionPromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.saveReorderSessionPromiseID;
+                        }
+                    },
+                    error => {
+                    },
+                    () => {
+
+                        reorderSessions.splice(0, 1);
+
+                        self.saveReorderSession();
+                    }
+                );
+            }
+        },
+        deleteProductFile: prodFile => {
+
+            if (!prodFile.isSaving) {
+
+                let idCounter = -1;
+
+                prodFile.execAction(self => self.isSaving = true);
+
+                const param = {
+                    files: [prodFile.getValue()]
+                };
+
+                param.files[0].recordState = 30;
+
+                let success = false;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromisePost(
+                            '/products/saveProductFiles/', param),
+                        success: data => {
+
+                            if (prodFile.wrapper) {
+
+                                self.execAction(() => {
+
+                                    destroy(prodFile.wrapper);
+                                });
+
+                                success = true;
+                            }
+                        },
+                        incrementSession: () => {
+
+                            self.deleteProductFilePromiseID = self.deleteProductFilePromiseID ? (self.deleteProductFilePromiseID + 1) : 1;
+                            idCounter = self.deleteProductFilePromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.deleteProductFilePromiseID;
+                        }
+                    },
+                    error => {
+                    },
+                    () => {
+
+                        if (!success) {
+
+                            prodFile.execAction(self => self.isSaving = false);
+                        }
+                    });
             }
         }
     })).views(

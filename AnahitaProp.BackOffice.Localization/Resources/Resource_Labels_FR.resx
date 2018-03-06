@@ -504,4 +504,10 @@
   <data name="lbl_Type" xml:space="preserve">
     <value>Type</value>
   </data>
+  <data name="lbl_AprDtl" xml:space="preserve">
+    <value>Apparaît sur Détail</value>
+  </data>
+  <data name="lbl_LstImg" xml:space="preserve">
+    <value>Image Liste</value>
+  </data>
 </root>

@@ -54,6 +54,10 @@
                 cacheVersion: '@(this.GetViewData<string>("CacheVersion"))',
                 dbVersion: '@(this.GetViewData<string>("DbVersion"))',
                 countriesVersion: '@(this.GetViewData<string>("CountriesVersion"))',
+            },
+            domains: {
+
+                assets: '@(this.GetViewData<string>("AssetsDomain"))'
             }
         };
 

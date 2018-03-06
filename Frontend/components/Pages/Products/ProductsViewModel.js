@@ -7,6 +7,8 @@ import ProjectModel from '../../../Models/ProjectModel';
 import FlagModel from '../../../Models/FlagModel';
 import FlagLinkModel from '../../../Models/FlagLinkModel';
 import ItemFieldModel from '../../../Models/ItemFieldModel';
+import EntityFileModelWrapper from '../../../Models/EntityFileModelWrapper';
+import EntityFileModel from '../../../Models/EntityFileModel';
 
 import Helper from '../../../Helper/Helper';
 
@@ -23,6 +25,7 @@ const ProductsViewModel = types.model(
         isGettingProjects: false,
         isGettingFlags: false,
         isGettingDescs: false,
+        isGettingFiles: false,
         selectedValue: types.maybe(types.reference(ProductModel), types.null),
         searchText: types.optional(types.string, ''),
         products: types.optional(types.array(ProductModel), []),
@@ -374,7 +377,7 @@ const ProductsViewModel = types.model(
         },
 
         getDescs: () => {
-            
+
             const prodModel = self.selectedValue;
 
             if (prodModel && !prodModel.isGettingDescs) {
@@ -425,6 +428,66 @@ const ProductsViewModel = types.model(
             }
         },
 
+        getFiles: () => {
+
+            const prodModel = self.selectedValue;
+
+            if (prodModel && !prodModel.isGettingFiles) {
+
+                prodModel.execAction(() => {
+                    prodModel.isGettingFiles = true;
+                    prodModel.files.length = 0;
+                });
+
+                let idCounter = -1;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromiseGet('/products/getProductFiles', { productID: prodModel.id }),
+                        success: data => {
+
+                            if (data) {
+
+                                if (data.length > 0) {
+
+                                    prodModel.execAction(() =>
+                                        prodModel.files.push(...data
+                                            .map((v, i) => {
+
+                                                const result = EntityFileModelWrapper.init(++self.idGenerator, EntityFileModel.init(v, ++self.idGenerator));
+
+                                                result.model.setOriginalValueProperty({ product_Id: prodModel.id });
+                                                result.model.product_Id = prodModel.id;
+
+                                                return result;
+                                            })));
+                                }
+                            }
+                        },
+                        incrementSession: () => {
+
+                            self.getProductFilesPromiseID = self.getProductFilesPromiseID ? (self.getProductFilesPromiseID + 1) : 1;
+                            idCounter = self.getProductFilesPromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.getProductFilesPromiseID;
+                        }
+                    },
+                    error => {
+
+                        if (self.showPromiseError) {
+                            self.showPromiseError(error);
+                        }
+                    },
+                    () => {
+
+                        prodModel.execAction(() => prodModel.isGettingFiles = false);
+                    }
+                );
+            }
+        },
+
         bindOnSelectedValueChange: callback => {
 
             if (callback) {
@@ -453,6 +516,22 @@ const ProductsViewModel = types.model(
             }
 
             return -1;
+        },
+
+        genNewProductFile: () => {
+
+            const result = EntityFileModelWrapper.init(
+                ++self.idGenerator,
+                EntityFileModel.init({
+                    id: --self.counterNewProdFile,
+                    isListImage: false,
+                    isFeaturedImage: false,
+                    appearDetail: false,
+                    detailRank: -1
+                },
+                    ++self.idGenerator));
+
+            return result;
         }
     }));
 
@@ -463,6 +542,8 @@ ProductsViewModel.init = () => {
     const self = ProductsViewModel.create({});
     self.idGenerator = 0;
     self.statusType = 1;
+
+    self.counterNewProdFile = -1;
 
     self.syncProduct = (value, activeLangCode) => ProductModel.init(value, ++self.idGenerator, activeLangCode);
 

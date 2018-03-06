@@ -361,6 +361,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Télécharger Image(s).
+        /// </summary>
+        public static string msg_UploadImgs {
+            get {
+                return ResourceManager.GetString("msg_UploadImgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cet Identifiant est déjà utilisé.
         /// </summary>
         public static string msg_UsrnmAlrdUsed {

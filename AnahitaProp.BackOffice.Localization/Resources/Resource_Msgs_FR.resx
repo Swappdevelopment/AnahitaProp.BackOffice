@@ -236,4 +236,7 @@ Si vous ne voulez pas changer votre mot de passe, ignorez ce message.</value>
   <data name="msg_ReqConfrmtn" xml:space="preserve">
     <value>Requiert une confirmation</value>
   </data>
+  <data name="msg_UploadImgs" xml:space="preserve">
+    <value>Télécharger Image(s)</value>
+  </data>
 </root>

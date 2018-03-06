@@ -237,4 +237,7 @@ If you don't want to reset your password, please ignore this message and your pa
   <data name="msg_ReqConfrmtn" xml:space="preserve">
     <value>Requires Confirmation</value>
   </data>
+  <data name="msg_UploadImgs" xml:space="preserve">
+    <value>Upload Image(s)</value>
+  </data>
 </root>

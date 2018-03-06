@@ -362,6 +362,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Upload Image(s).
+        /// </summary>
+        public static string msg_UploadImgs {
+            get {
+                return ResourceManager.GetString("msg_UploadImgs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User name already used.
         /// </summary>
         public static string msg_UsrnmAlrdUsed {

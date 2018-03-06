@@ -26,11 +26,14 @@ const GridRowToolbar =
                     if (this.currentValue) {
 
                         return (
-                            <Popover id="popDelete" className={`popDelete-${this.currentValue.genId}`} title={
-                                <div>
-                                    <span className="la la-exclamation-circle">&nbsp;</span>
-                                    {this.props.deleteTitle}
-                                </div>}>
+                            <Popover
+                                id={`popDelete-${this.currentValue.genId}`}
+                                className={`popDelete-${this.currentValue.genId}`}
+                                title={
+                                    <div>
+                                        <span className="la la-exclamation-circle">&nbsp;</span>
+                                        {this.props.deleteTitle}
+                                    </div>}>
 
                                 <p>{this.activeLang.msgs['msg_SureDelete'].replace('{1}', this.props.displayName)}</p>
 
@@ -47,7 +50,7 @@ const GridRowToolbar =
                                     >{this.activeLang.labels['lbl_Delete']}</Button>
                                 </div>
 
-                            </Popover >
+                            </Popover>
                         );
                     }
                 }
@@ -116,7 +119,6 @@ const GridRowToolbar =
                                                     </OverlayTrigger>
 
                                                     <OverlayTrigger
-                                                        ref={r => this.deleteOverlay = r}
                                                         rootClose
                                                         trigger="click"
                                                         placement="left"

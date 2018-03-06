@@ -9,6 +9,10 @@ using Swapp.Data;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using CoreFtp;
+using CoreFtp.Enum;
 
 namespace AnahitaProp.BackOffice
 {
@@ -163,6 +167,30 @@ namespace AnahitaProp.BackOffice
         }
 
 
+        [HttpGet]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public IActionResult GetProductFiles(long productID = 0)
+        {
+            ProductFile[] result = null;
+
+            try
+            {
+                result = _dbi.GetProductFiles(productID);
+
+                return Json(result == null ? new object[0] : result.Select(l => l.Simplify(true)).ToArray());
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                result = null;
+            }
+        }
+
+
         [HttpPost]
         [Access]
         [MenuRequirement("products>crud")]
@@ -221,6 +249,79 @@ namespace AnahitaProp.BackOffice
             finally
             {
                 product = null;
+            }
+        }
+
+
+        [HttpPost]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public IActionResult ChangeProductFileBoolean([FromBody]JObject param)
+        {
+            ProductFile productFile = null;
+
+            try
+            {
+                long id = param.JGetPropVal<long>("id");
+                long productId = param.JGetPropVal<long>("productId");
+                string action = param.JGetPropVal<string>("action");
+                bool? appearDetail = param.JGetPropVal<bool?>("appearDetail");
+                bool? isListImage = param.JGetPropVal<bool?>("isListImage");
+                short? status = param.JGetPropVal<short?>("status");
+
+                if (id > 0 && !string.IsNullOrEmpty(action))
+                {
+                    productFile = _dbi.GetProductFiles(productId, productFileID: id).FirstOrDefault();
+
+                    if (productFile != null)
+                    {
+                        productFile.RegisterForRecordStateChange();
+
+                        switch (action.ToLower())
+                        {
+                            case "appeardetail":
+
+                                if (appearDetail != null)
+                                {
+                                    productFile.AppearDetail = appearDetail.Value;
+                                }
+
+                                break;
+
+                            case "islistimage":
+
+                                if (isListImage != null)
+                                {
+                                    productFile.IsListImage = isListImage.Value;
+                                }
+
+                                break;
+
+                            case "status":
+
+                                if (status != null)
+                                {
+                                    productFile.Status = (ModelStatus)status.Value;
+                                }
+
+                                break;
+                        }
+
+                        productFile.RegisterForRecordStateChange();
+
+                        productFile = _dbi.ManageModel(productFile);
+                    }
+                }
+
+                return Json(productFile == null ? new { notFound = true } : productFile.Simplify());
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                productFile = null;
             }
         }
 
@@ -470,6 +571,166 @@ namespace AnahitaProp.BackOffice
                 toSave = null;
                 product = null;
                 propertyFlags = null;
+            }
+        }
+
+
+        [HttpPost]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public IActionResult SaveProductFiles([FromBody]JObject param)
+        {
+            ProductFile[] files = null;
+
+            List<IdentityModel> toSave = null;
+
+            try
+            {
+                files = param?.JGetPropVal<ProductFile[]>("files")?.Where(l => l.RecordState != RecordState.None).ToArray();
+
+                if (files != null && files.Length > 0)
+                {
+                    toSave = new List<IdentityModel>(files);
+
+                    toSave.AddRange(files
+                                        .Where(l =>
+                                            l.RecordState == RecordState.Deleted
+                                            && l.File != null && l.File.ID > 0)
+                                        .Select(l => l.File.SetRecordState(RecordState.Deleted)));
+
+
+                    _dbi.ManageIdentityModels(toSave.ToArray());
+                }
+
+
+                return Json(new { });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                toSave?.Clear();
+                toSave = null;
+
+                files = null;
+            }
+        }
+
+
+        [HttpPost]
+        [Access]
+        [MenuRequirement("products>crud")]
+        public async Task<IActionResult> UploadProductImage(string data = null)
+        {
+            ProductFile prodFile = null;
+            Data.Models.File file = null;
+            IFormFile formFile = null;
+
+            string fileName = null, fileFormat = null;
+
+            try
+            {
+                if (Request != null
+                    && Request.Form != null
+                    && Request.Form.Keys != null
+                    && Request.Form.Keys.Count > 0
+                    && Request.Form != null
+                    && Request.Form.Files != null)
+                {
+                    string key = Request.Form.Keys.FirstOrDefault(l => l.StartsWith("ProdFileID"));
+
+                    if (!string.IsNullOrEmpty(key))
+                    {
+                        prodFile = Helper.JSonCamelDeserializeObject<ProductFile>(Request.Form[key]);
+
+                        if (prodFile != null && prodFile.Product_Id > 0)
+                        {
+                            formFile = Request.Form.Files.FirstOrDefault(f => f.Name == key);
+
+                            if (formFile != null && !string.IsNullOrEmpty(formFile.FileName))
+                            {
+                                int offset = 0;
+
+                                if (Request.Form.Keys.Any(k => k == "offset"))
+                                {
+                                    if (!int.TryParse(Request.Form["offset"].ToString(), out offset))
+                                    {
+                                        offset = 0;
+                                    }
+                                }
+
+                                fileName = _dbi.GetProductFileName(prodFile.Product_Id, offset: offset);
+                                fileFormat = Path.GetExtension(formFile.FileName);
+                                fileFormat = fileFormat.StartsWith(".") ? fileFormat : $".{fileFormat}";
+
+                                file = new Data.Models.File()
+                                {
+                                    RecordState = RecordState.Added,
+                                    UID = fileName.ToSlug(),
+                                    Name = fileName,
+                                    Format = fileFormat,
+                                    IsImage = true,
+                                    IsUploaded = false
+                                };
+
+                                file = _dbi.ManageModel(file);
+
+                                prodFile.File_Id = file.ID;
+                                prodFile.RecordState = RecordState.Added;
+                                prodFile = _dbi.ManageModel(prodFile);
+
+                                prodFile.File = file;
+
+
+
+                                string ftpHost = _config["Ftp:assets:host"];
+                                string ftpUserName = _config["Ftp:assets:user"];
+                                string ftppassword = _config["Ftp:assets:password"];
+                                bool ftpIgnoreCertificateErrors = true;
+
+
+                                using (var ftpClient = new FtpClient(
+                                                    new FtpClientConfiguration()
+                                                    {
+                                                        Host = ftpHost,
+                                                        Username = ftpUserName,
+                                                        Password = ftppassword,
+                                                        EncryptionType = FtpEncryption.Implicit,
+                                                        IgnoreCertificateErrors = ftpIgnoreCertificateErrors
+                                                    }))
+                                {
+                                    await ftpClient.LoginAsync();
+
+                                    using (var fileStream = formFile.OpenReadStream())
+                                    {
+                                        string ftpFilePath = $"/wwwroot/images/{file.UID}/optz/{fileName}{fileFormat}";
+
+                                        using (var writeStream = await ftpClient.OpenFileWriteStreamAsync(ftpFilePath))
+                                        {
+                                            await fileStream.CopyToAsync(writeStream);
+                                        }
+                                    }
+                                }
+
+                                file.IsUploaded = true;
+                                file = _dbi.ManageModel(file);
+                            }
+                        }
+                    }
+                }
+
+                return Json(prodFile.Simplify(true));
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+            finally
+            {
+                prodFile = null;
+                formFile = null;
             }
         }
     }

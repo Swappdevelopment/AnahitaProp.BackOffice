@@ -39,6 +39,7 @@ namespace AnahitaProp.BackOffice
                 this.ViewData["CacheVersion"] = _config["App:CacheVersion"];
                 this.ViewData["DbVersion"] = _config["App:DbVersion"];
                 this.ViewData["CountriesVersion"] = _config["App:CountriesVersion"];
+                this.ViewData["AssetsDomain"] = _config["App:domain:assets"];
 
                 versions = _dbi.GetSysParDetails(SysParMaster.LOOKUP_VERSIONS_CODE);
 

@@ -1,4 +1,4 @@
-import { types } from 'mobx-state-tree';
+import { types, clone } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
 
@@ -7,16 +7,19 @@ const getObject = () => {
 
     return Object.assign(
         {
+            uid: types.optional(types.string, ''),
             name: types.optional(types.string, ''),
-            account_Id: types.maybe(types.number, types.null),
-            role_Id: types.maybe(types.number, types.null)
+            format: types.optional(types.string, ''),
+            isImage: types.optional(types.boolean, false),
+            isUploaded: types.optional(types.boolean, false),
+            optzUrl: types.optional(types.string, '')
         },
         BaseModel.getBaseObject());
 };
 
 
-const RoleModel = types.model(
-    'RoleModel',
+const FileModel = types.model(
+    'FileModel',
     Object.assign(
         {
             isSaving: false
@@ -43,11 +46,11 @@ const RoleModel = types.model(
     }));
 
 
-RoleModel.getObject = getObject;
+FileModel.getObject = getObject;
 
-RoleModel.init = (value, genId) => {
+FileModel.init = (value, genId) => {
 
-    const self = RoleModel.create({
+    const self = FileModel.create({
         id: value && value.id >= 0 ? value.id : 0
     });
 
@@ -63,13 +66,16 @@ RoleModel.init = (value, genId) => {
         return Object.assign(
             BaseModel.getValueFromSelf(self),
             {
+                uid: self.uid,
                 name: self.name,
-                account_Id: self.account_Id,
-                role_Id: self.role_Id
+                format: self.format,
+                isImage: self.isImage,
+                isUploaded: self.isUploaded,
+                optzUrl: self.optzUrl
             });
     };
 
     return self;
 };
 
-export default RoleModel;
+export default FileModel;
