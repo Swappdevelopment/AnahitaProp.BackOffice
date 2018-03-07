@@ -49,7 +49,7 @@ const NavbarItem =
                         <li className={this.wrapper.isActive || this.props.currentSlug === this.wrapper.slug ? 's-nav-list-item active' : 's-nav-list-item'}>
                             <NavLink className="s-nav-link" to={'/' + this.wrapper.slug} onClick={this.onClick}>
                                 <span>{title}</span>
-                                {/* <span className={this.wrapper.isActive || this.props.currentSlug === this.wrapper.slug ? 's-nav-link-active' : ''}></span> */}
+                                <span className={this.wrapper.isActive || this.props.currentSlug === this.wrapper.slug ? 's-nav-link-active' : ''}></span>
                             </NavLink>
 
                         </li>

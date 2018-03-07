@@ -39,9 +39,8 @@ class RowLazyWaitContent extends React.Component {
     render() {
 
         return (
-
             <div className="row-lazy-load">
-                <span className={this.props.spin ? 'spinner ' : ''}></span>
+                <span className={this.props.spin ? 'spinner' : ''}></span>
             </div>
 
         );

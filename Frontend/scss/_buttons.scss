@@ -48,6 +48,26 @@
             }
         }
 
+        &-secondary{
+            @extend .s-btn-small;
+            color: $white;
+            background-color: $secondary;
+            border-color: $secondary;
+            box-shadow: 0px 5px 10px 2px rgba(230,136,53, 0.2);
+            
+            &:hover,
+            &:focus,
+            &:active,
+            &:active:focus{
+                color: $white;
+                background-color: $secondaryDark;
+                border-color: $secondaryDark;
+                box-shadow: 0px 5px 10px 2px rgba(207,122,47,0.2);
+                transition: all ease 300ms;
+                outline: none;
+            }
+        }
+
         &-search{
             @extend .s-btn-small;
             position: absolute;
@@ -87,7 +107,7 @@
             &:active,
             &:active:focus{
                 color: $white;
-                background-color: $blue;
+                background-color: $secondary;
                 background-color: transparent;
                 border: none;
                 outline: none;
@@ -135,9 +155,9 @@
             }
         }
 
-        &-blue-empty{
+        &-secondary-empty{
             @extend .s-btn-small;
-            color: $blue;
+            color: $secondary;
             background-color: transparent;
             border-color: transparent;
             box-shadow: none;      
@@ -146,7 +166,7 @@
             &:focus,
             &:active,
             &:active:focus{
-                color: $blueDark;
+                color: $secondaryDark;
                 background-color: transparent;
                 border-color: transparent;
                 transition: all ease 300ms;
@@ -258,7 +278,7 @@
 
         &-popover-add{
             color: $white;
-            background-color: $blue;
+            background-color: $secondary;
             border: none;
             box-shadow: 0px 5px 10px 2px rgba(22,65,105, 0.2);
             margin-left: 5px;
@@ -269,7 +289,7 @@
             &:active,
             &:active:focus{
                 color: $white;
-                background-color: $blueDark;
+                background-color: $secondaryDark;
                 border: none;
                 box-shadow: 0px 5px 10px 2px rgba(19,58,94, 0.2);
                 transition: all ease 300ms;
@@ -322,11 +342,11 @@
             }
         }
 
-        &-blue{
+        &-secondary{
             @extend .s-btn-medium;
             color: $white;
-            background-color: $blue;
-            border-color: $blue;
+            background-color: $secondary;
+            border-color: $secondary;
             box-shadow: 0px 5px 10px 2px rgba(22,65,105, 0.2);
             
             &:hover,
@@ -334,15 +354,15 @@
             &:active,
             &:active:focus{
                 color: $white;
-                background-color: $blueDark;
-                border-color: $blueDark;
+                background-color: $secondaryDark;
+                border-color: $secondaryDark;
                 box-shadow: 0px 5px 10px 2px rgba(19,58,94, 0.2);
                 transition: all ease 300ms;
                 outline: none;
             }
         }
 
-        &-gray-empty-blue{
+        &-gray-empty-secondary{
             @extend .s-btn-medium;
             color: $lightgray4;
             background-color: transparent;
@@ -355,8 +375,8 @@
             &:active,
             &:active:focus{
                 color: $white;
-                background-color: $blue;
-                border-color: $blue;
+                background-color: $secondary;
+                border-color: $secondary;
                 transition: all ease 300ms;
                 box-shadow: 0px 3px 20px 0px rgba(22,65,105, 0.2) !important;
                 outline: none;

@@ -73,7 +73,7 @@ class ProductDetail2 extends React.Component {
             <span>
                 <span
                     className={'la ' + (isTabActive ? 'la-check-circle' : 'la-circle')}
-                    style={{ marginRight: 5, fontSize: '1.3em' }}>
+                    style={{ marginRight: 5 }}>
                 </span>
                 <span>{label}</span>
                 {
@@ -107,33 +107,37 @@ class ProductDetail2 extends React.Component {
                                 <Col md={4}>
                                     {
                                         prodModel.isSaving ?
-                                            <WaitBlock fullWidth height={34} />
+                                            <WaitBlock fullWidth height={38} />
                                             :
-                                            <DropdownEditor
-                                                id="drpProdProp"
-                                                className="form-control s-input s-ellipsis"
-                                                title={prodModel.property.code}>
-                                                {
-                                                    this.viewModel.properties.map((v, i) => {
+                                            <div className="s-dropdown-modal">
+                                                <div className="form-group s-form-group">
+                                                    <DropdownEditor
+                                                        id="drpProdProp"
+                                                        className="form-control s-input s-ellipsis"
+                                                        title={prodModel.property.code}>
+                                                        {
+                                                            this.viewModel.properties.map((v, i) => {
 
-                                                        return (
-                                                            <DropdownEditorMenu
-                                                                active={v.id === prodModel.property_Id}
-                                                                key={v.id}
-                                                                onClick={e => {
+                                                                return (
+                                                                    <DropdownEditorMenu
+                                                                        active={v.id === prodModel.property_Id}
+                                                                        key={v.id}
+                                                                        onClick={e => {
 
-                                                                    prodModel.execAction(self => {
+                                                                            prodModel.execAction(self => {
 
-                                                                        self.property_Id = v.id;
-                                                                        self.property = v.id;
-                                                                    });
-                                                                }}>
-                                                                {v.code}
-                                                            </DropdownEditorMenu>
-                                                        );
-                                                    })
-                                                }
-                                            </DropdownEditor>
+                                                                                self.property_Id = v.id;
+                                                                                self.property = v.id;
+                                                                            });
+                                                                        }}>
+                                                                        {v.code}
+                                                                    </DropdownEditorMenu>
+                                                                );
+                                                            })
+                                                        }
+                                                    </DropdownEditor>
+                                                </div>
+                                            </div>
                                     }
                                 </Col>
                             </div>
@@ -144,13 +148,16 @@ class ProductDetail2 extends React.Component {
                                 <Col md={4}>
                                     {
                                         prodModel.isSaving ?
-                                            <WaitBlock fullWidth height={34} />
+                                            <WaitBlock fullWidth height={38} />
                                             :
-                                            <input
-                                                type="number"
-                                                className="form-control s-input"
-                                                value={prodModel.property.lotSize}
-                                                onChange={e => prodModel.property.execAction(self => self.lotSize = parseFloat(e.target.value))} />
+                                            <div className="form-group s-form-group">
+                                                <input
+                                                    type="number"
+                                                    className="form-control s-input"
+                                                    value={prodModel.property.lotSize}
+                                                    onChange={e => prodModel.property.execAction(self => self.lotSize = parseFloat(e.target.value))} />
+                                            </div>
+
                                     }
                                 </Col>
                             </div>
@@ -168,37 +175,41 @@ class ProductDetail2 extends React.Component {
                             <Col md={4}>
                                 {
                                     prodModel.isSaving ?
-                                        <WaitBlock fullWidth height={34} />
+                                        <WaitBlock fullWidth height={38} />
                                         :
-                                        <DropdownEditor
-                                            id="drpProdProp"
-                                            className="form-control s-input s-ellipsis"
-                                            disabled={prodModel.isSaving}
-                                            title={prodModel.project ? prodModel.project.getName() : ''}>
-                                            {
-                                                (projectsFilter ?
-                                                    this.viewModel.projects.filter(projectsFilter)
-                                                    :
-                                                    this.viewModel.projects).map((v, i) => {
+                                        <div className="s-dropdown-modal">
+                                            <div className="form-group s-form-group">
+                                                <DropdownEditor
+                                                    id="drpProdProp"
+                                                    className="form-control s-input s-ellipsis"
+                                                    disabled={prodModel.isSaving}
+                                                    title={prodModel.project ? prodModel.project.getName() : ''}>
+                                                    {
+                                                        (projectsFilter ?
+                                                            this.viewModel.projects.filter(projectsFilter)
+                                                            :
+                                                            this.viewModel.projects).map((v, i) => {
 
-                                                        return (
-                                                            <DropdownEditorMenu
-                                                                active={v.id === prodModel.project_Id}
-                                                                key={v.id}
-                                                                onClick={e => {
+                                                                return (
+                                                                    <DropdownEditorMenu
+                                                                        active={v.id === prodModel.project_Id}
+                                                                        key={v.id}
+                                                                        onClick={e => {
 
-                                                                    prodModel.execAction(self => {
+                                                                            prodModel.execAction(self => {
 
-                                                                        self.project_Id = v.id;
-                                                                        self.project = v.id;
-                                                                    });
-                                                                }}>
-                                                                {v.getName()}
-                                                            </DropdownEditorMenu>
-                                                        );
-                                                    })
-                                            }
-                                        </DropdownEditor>
+                                                                                self.project_Id = v.id;
+                                                                                self.project = v.id;
+                                                                            });
+                                                                        }}>
+                                                                        {v.getName()}
+                                                                    </DropdownEditorMenu>
+                                                                );
+                                                            })
+                                                    }
+                                                </DropdownEditor>
+                                            </div>
+                                        </div>
                                 }
                             </Col>
                         </div>
@@ -218,7 +229,7 @@ class ProductDetail2 extends React.Component {
 
         return (
             <div style={{ minHeight: 250 }}>
-                <Tabs id="tab_product_type"
+                <Tabs id="tab_product_type" className="s-tabs"
                     defaultActiveKey={this.getTabIndex()}
                     onSelect={this.onTabSelect}>
                     <Tab

@@ -22,33 +22,33 @@
         text-align: left !important;
         font-weight: bold;
         cursor: pointer;
-        color: $primary !important;
+        color: $secondary !important;
 
         &:hover,
         &:focus,
         &:active,
         &:active:focus{
-            color: $primaryDark !important;
+            color: $secondaryDark !important;
         }
     }
     .s-td-cell-namenl{
         text-align: left !important;
         font-weight: bold;
-        color: $primary !important;
+        color: $secondary !important;
         min-width: 170px;
     }
     .s-td-cell-name-short{
         text-align: left !important;
         font-weight: bold;
         cursor: pointer;
-        color: $primary !important;
+        color: $secondary !important;
         width: 600px;
 
         &:hover,
         &:focus,
         &:active,
         &:active:focus{
-            color: $primaryDark !important;
+            color: $secondaryDark !important;
         }
     }
 
@@ -56,18 +56,16 @@
         text-align: left !important;
         font-weight: bold;
         cursor: pointer;
-        color: $primary !important;
+        color: $secondary !important;
         max-width: 300px;
 
         &:hover,
         &:focus,
         &:active,
         &:active:focus{
-            color: $primaryDark !important;
+            color: $secondaryDark !important;
         }
     }
-
-
     .s-th-cell-status{
         width: 15px !important;
         border-bottom: none !important;
@@ -98,8 +96,8 @@
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background-color: $blue;
-            border-color: $blue;
+            background-color: $secondary;
+            border-color: $secondary;
         }
     }
 

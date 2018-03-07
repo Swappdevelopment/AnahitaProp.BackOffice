@@ -53,13 +53,16 @@ class ProductDetail3 extends React.Component {
                             <Col md={params2 ? 4 : (params1.smallInput ? 4 : 8)}>
                                 {
                                     params1.isDisabled() ?
-                                        <WaitBlock fullWidth height={34} />
+                                        <WaitBlock fullWidth height={38} />
                                         :
-                                        <input
-                                            type={params1.inputType ? params1.inputType : 'text'}
-                                            className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
-                                            value={params1.getValue()}
-                                            onChange={params1.setValue} />
+                                        <div className="form-group s-form-group">
+                                            <input
+                                                type={params1.inputType ? params1.inputType : 'text'}
+                                                className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
+                                                value={params1.getValue()}
+                                                onChange={params1.setValue} />
+                                        </div>
+
                                 }
                                 {
                                     !params1.isValid || params1.isValid() ?
@@ -82,13 +85,15 @@ class ProductDetail3 extends React.Component {
                             <Col md={4}>
                                 {
                                     params1.isDisabled() ?
-                                        <WaitBlock fullWidth height={34} />
+                                        <WaitBlock fullWidth height={38} />
                                         :
-                                        <input
-                                            type={params2.inputType ? params2.inputType : 'text'}
-                                            className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
-                                            value={params2.getValue()}
-                                            onChange={params2.setValue} />
+                                        <div className="form-group s-form-group">
+                                            <input
+                                                type={params2.inputType ? params2.inputType : 'text'}
+                                                className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
+                                                value={params2.getValue()}
+                                                onChange={params2.setValue} />
+                                        </div>
                                 }
                                 {
                                     !params2.isValid || params2.isValid() ?
@@ -173,58 +178,54 @@ class ProductDetail3 extends React.Component {
                                         <div className="s-row-center row">
                                             <Col md={2}>
                                                 <label>{this.activeLang.labels['lbl_Views']}</label>
+                                                <OverlayTrigger
+                                                    rootClose
+                                                    trigger="click"
+                                                    placement="top"
+                                                    container={this.props.rootContainer}
+                                                    overlay={
+                                                        <Popover id="popViews">
+                                                            {
+                                                                this.viewModel.flags.filter(f => {
+                                                                    return !flViews.find(flv => flv.flag && flv.flag.id === f.id);
+                                                                }).map((f, i) => (
+                                                                    <Button
+                                                                        key={i}
+                                                                        className={'s-btn-small-secondary'}
+                                                                        style={{
+                                                                            borderBottomLeftRadius: 5,
+                                                                            borderBottomRightRadius: 5,
+                                                                            borderTopLeftRadius: 5,
+                                                                            borderTopRightRadius: 5,
+                                                                            marginRight: 5,
+                                                                            marginBottom: 5
+                                                                        }}
+                                                                        onClick={e => propModel.addViewFlag(f.getValue())}>
+                                                                        <span className="la la-plus"></span>
+                                                                        <span style={{ marginLeft: 10, color: 'white' }}>
+                                                                            {f.getType()}
+                                                                        </span>
+                                                                    </Button>
+                                                                ))
+                                                            }
+                                                        </Popover>
+                                                    }>
+                                                    <Button
+                                                        style={{ padding: '0 12px' }}
+                                                        className="s-btn-small-secondary-empty">
+                                                        <i className="flaticon-add"></i>
+                                                    </Button>
+                                                </OverlayTrigger>
                                             </Col>
-                                            <Col md={6}>
+                                            <Col md={10}>
                                                 {
                                                     prodModel.isSaving ?
-                                                        <WaitBlock fullWidth height={34} />
+                                                        <WaitBlock fullWidth height={38} />
                                                         :
-                                                        <table>
+                                                        <table className="table-responsive">
                                                             <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <OverlayTrigger
-                                                                            rootClose
-                                                                            trigger="click"
-                                                                            placement="top"
-                                                                            container={this.props.rootContainer}
-                                                                            overlay={
-                                                                                <Popover id="popoverViews">
-                                                                                    <div style={{ minHeight: 200 }}>
-                                                                                        <Row>
-                                                                                            {
-                                                                                                this.viewModel.flags.filter(f => {
-                                                                                                    return !flViews.find(flv => flv.flag && flv.flag.id === f.id);
-                                                                                                }).map((f, i) => (
-                                                                                                    <Col md={4} key={f.genId}>
-                                                                                                        <Button
-                                                                                                            className={'s-btn-small-red'}
-                                                                                                            style={{
-                                                                                                                borderBottomLeftRadius: 5,
-                                                                                                                borderBottomRightRadius: 5,
-                                                                                                                borderTopLeftRadius: 5,
-                                                                                                                borderTopRightRadius: 5
-                                                                                                            }}
-                                                                                                            onClick={e => propModel.addViewFlag(f.getValue())}>
-                                                                                                            <span className="la la-plus"></span>
-                                                                                                            <span style={{ marginLeft: 10, color: 'white' }}>
-                                                                                                                {f.getType()}
-                                                                                                            </span>
-                                                                                                        </Button>
-                                                                                                    </Col>
-                                                                                                ))
-                                                                                            }
-                                                                                        </Row>
-                                                                                    </div>
-                                                                                </Popover>
-                                                                            }>
-                                                                            <Button
-                                                                                style={{ padding: '0 12px' }}
-                                                                                className="s-btn-small-blue-empty">
-                                                                                <i className="flaticon-add"></i>
-                                                                            </Button>
-                                                                        </OverlayTrigger>
-                                                                    </td>
+                                                                <tr style={{ display: 'block' }}>
+
                                                                     {
                                                                         flViews.map((v, i) => {
 
@@ -242,7 +243,7 @@ class ProductDetail3 extends React.Component {
                                                                                 return (
                                                                                     <td
                                                                                         key={v.genId}
-                                                                                        style={{ paddingLeft: 8 }}>
+                                                                                        style={{ paddingRight: 8, paddingBottom: 8, float: 'left' }}>
                                                                                         <Button
                                                                                             className={'s-btn-small-' + (v.recordState === 30 ? 'red' : 'primary')}
                                                                                             style={{

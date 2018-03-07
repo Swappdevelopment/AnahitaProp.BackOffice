@@ -33,7 +33,7 @@ const TelNumbers =
                                     placement="right"
                                     rootClose
                                     overlay={Helper.getTooltip('tltpTelAdd', this.activeLang.labels['lbl_Add'])}>
-                                    <Button className="s-btn-small-blue-empty"
+                                    <Button className="s-btn-small-secondary-empty"
                                         onClick={this.props.onAdd}>
                                         <i className="flaticon-add"></i>
                                     </Button>

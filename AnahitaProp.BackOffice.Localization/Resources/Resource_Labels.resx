@@ -507,4 +507,7 @@
   <data name="lbl_LstImg" xml:space="preserve">
     <value>List Image</value>
   </data>
+  <data name="lbl_Upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
 </root>

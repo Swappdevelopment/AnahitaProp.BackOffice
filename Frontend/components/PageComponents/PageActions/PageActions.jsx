@@ -93,7 +93,7 @@ const PageActions = inject("store")(
                                             this.activeLang.labels["lbl_Refresh"]
                                         )}>
                                         <Button
-                                            className="s-btn-small-blue-empty"
+                                            className="s-btn-small-secondary-empty"
                                             onClick={e => {
 
                                                 if (this.props.paRefresh)
@@ -116,7 +116,7 @@ const PageActions = inject("store")(
                                             this.activeLang.labels["lbl_Add"]
                                         )}>
                                         <Button
-                                            className="s-btn-small-blue-empty"
+                                            className="s-btn-small-secondary-empty"
                                             onClick={e => {
 
                                                 if (this.props.paOnAdd)
@@ -133,7 +133,7 @@ const PageActions = inject("store")(
 
                                     <DropdownButton
                                         id="drpStatus"
-                                        className="s-btn-medium-gray-empty-blue"
+                                        className="s-btn-medium-gray-empty-secondary"
                                         bsStyle="none"
                                         noCaret
                                         title={
@@ -202,7 +202,7 @@ const PageActions = inject("store")(
                                         )}>
                                         <DropdownButton
                                             id="drpStatus"
-                                            className="s-btn-small-blue-empty"
+                                            className="s-btn-small-secondary-empty"
                                             bsStyle="none"
                                             noCaret
                                             title={
@@ -298,14 +298,12 @@ const PageActions = inject("store")(
                                                         <div
                                                             className={this.props.hidePrev ? 'hidden' : 's-page-action-prev hidden-xs hidden-sm'}
                                                             onClick={sideScrollNav.onLeftClick}>
-                                                            <span>{sideScrollNav.getLeftLabel ? sideScrollNav.getLeftLabel() : ''}</span>
                                                             <i className="la la-arrow-left"></i>
                                                         </div>
                                                     </OverlayTrigger>
                                                     :
                                                     null
                                             }
-
                                             {
                                                 sideScrollNav.isRightVisible && sideScrollNav.isRightVisible() ?
                                                     <OverlayTrigger
@@ -319,7 +317,6 @@ const PageActions = inject("store")(
                                                             className={this.props.hideNext ? 'hidden' : 's-page-action-next hidden-xs hidden-sm'}
                                                             onClick={sideScrollNav.onRightClick}>
                                                             <i className="la la-arrow-right"></i>
-                                                            <span>{sideScrollNav.getRightLabel ? sideScrollNav.getRightLabel() : ''}</span>
                                                         </div>
                                                     </OverlayTrigger>
                                                     :

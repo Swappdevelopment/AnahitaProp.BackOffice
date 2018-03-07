@@ -48,11 +48,14 @@ class ProductDetail4 extends React.Component {
                             params.isDisabled() ?
                                 <WaitBlock fullWidth height={params.minHeight ? params.minHeight : 200} />
                                 :
-                                <textarea
-                                    className={'form-control s-input' + (!params.isValid || params.isValid() ? '' : '-error')}
-                                    style={{ minHeight: params.minHeight ? params.minHeight : 200 }}
-                                    value={params.getValue()}
-                                    onChange={params.setValue} />
+                                <div className="form-group s-form-group">
+                                    <textarea
+                                        className={'form-control s-input' + (!params.isValid || params.isValid() ? '' : '-error')}
+                                        style={{ minHeight: params.minHeight ? params.minHeight : 200 }}
+                                        value={params.getValue()}
+                                        onChange={params.setValue} />
+                                </div>
+
                         }
                         {
                             !params.isValid || params.isValid() ?
@@ -97,7 +100,7 @@ class ProductDetail4 extends React.Component {
 
             return (
                 <div>
-                    <Tabs id="tab_product_desc"
+                    <Tabs id="tab_product_desc" className="s-tabs"
                         defaultActiveKey={0}
                         onSelect={this.onTabSelect}>
                         {

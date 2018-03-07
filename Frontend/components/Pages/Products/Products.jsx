@@ -318,7 +318,7 @@ class Products extends React.Component {
 
             return (
                 <tr key={value.genId}>
-                    <RowLazyWait colSpan={7} spin={true} onAppear={() => {
+                    <RowLazyWait colSpan={9} spin={true} onAppear={() => {
 
                         this.offset += this.limit;
                         this.getProducts();
@@ -358,7 +358,7 @@ class Products extends React.Component {
                         </div>
                     </td>
                     <td
-                        className="s-td-cell-name-short"
+                        className="s-td-cell-name"
                         onClick={e => {
 
                             this.scrollPos = document.documentElement.scrollTop;
@@ -413,36 +413,6 @@ class Products extends React.Component {
 
                     </td>
 
-                    {/* <td className="s-td-cell-active">
-                        {
-                            value.isChangingStatus ?
-                                <span className="spinner"></span>
-                                :
-                                <Checkbox className="s-checkbox"
-
-                                    defaultChecked={value.status === 1}
-                                    onChange={e => {
-
-                                        if (value.id > 0) {
-
-                                            let tempValue = value.status;
-
-                                            value.execAction(self => {
-
-                                                self.status = e.target.checked ? 1 : 0;
-                                            });
-
-                                            if (tempValue !== value.status) {
-
-                                                this.changeBoolean(value, 'status');
-                                            }
-                                        }
-
-                                    }}>
-                                </Checkbox>
-                        }
-
-                    </td> */}
 
                     <GridRowToolbar hideEdit
                         currentValue={value}
@@ -680,7 +650,6 @@ class Products extends React.Component {
                             <th>{this.activeLang.labels["lbl_Currency"]}</th>
                             <th>{this.activeLang.labels["lbl_Price"]}</th>
                             <th>{this.activeLang.labels["lbl_Family"]}</th>
-                            {/* <th className="s-th-cell-active">{this.activeLang.labels["lbl_HideInWs"]}</th> */}
                             <th className="s-th-cell-active">{this.activeLang.labels["lbl_Active"]}</th>
                             <th className="s-th-cell-controls" />
                         </tr>

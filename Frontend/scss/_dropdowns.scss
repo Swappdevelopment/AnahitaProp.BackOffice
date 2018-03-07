@@ -205,7 +205,7 @@
                     &.active{
 
                         a{
-                            color: $blue;
+                            color: $secondary;
                         }
                     }
 
@@ -218,7 +218,7 @@
                         &:focus,
                         &:active,
                         &:active:focus{
-                            color: $blue;
+                            color: $secondary;
                             outline: none;
                         }
                     }

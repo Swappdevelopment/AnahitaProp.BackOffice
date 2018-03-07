@@ -5,8 +5,6 @@ import { Row, Col, Button, Image, Checkbox, OverlayTrigger, Popover } from "reac
 
 import scrollToComponent from 'react-scroll-to-component';
 
-import WaitBlock from '../../WaitBlock/WaitBlock';
-
 import Helper from '../../../Helper/Helper';
 
 
@@ -281,6 +279,7 @@ class ProductDetail5 extends React.Component {
                         }}>
                             <div>
                                 <Button
+                                    className="s-btn-small-secondary-empty"
                                     disabled={this.state.changingBoolean}
                                     bsSize="xsmall"
                                     onClick={e => {
@@ -294,6 +293,7 @@ class ProductDetail5 extends React.Component {
                             </div>
                             <div>
                                 <Button
+                                    className="s-btn-small-secondary-empty"
                                     disabled={this.state.changingBoolean}
                                     bsSize="xsmall"
                                     onClick={e => {
@@ -473,6 +473,7 @@ class ProductDetail5 extends React.Component {
                                 rootClose
                                 overlay={Helper.getTooltip('tltpUploadImg', this.activeLang.msgs["msg_UploadImgs"])}>
                                 <Button
+                                    className="s-btn-small-secondary"
                                     disabled={this.state.uploading}
                                     onClick={e => {
                                         if (btnBrowse) {
@@ -480,6 +481,7 @@ class ProductDetail5 extends React.Component {
                                         }
                                     }}>
                                     <span className="la la-upload"></span>
+                                    {this.activeLang.labels['lbl_Upload']}
                                 </Button>
                             </OverlayTrigger>
 

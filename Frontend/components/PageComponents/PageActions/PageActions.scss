@@ -41,7 +41,7 @@
             text-overflow: ellipsis;
         }
         span {
-            color: $primary;
+            color: $secondary;
         }
     }
     .s-page-action-refresh {
@@ -68,24 +68,8 @@
         border-radius: 10px;
         cursor: pointer;
         z-index: 999;
-        transition: all ease 300ms;
         padding: 5px 10px;
         display: flex;
-        &:hover {
-            width: 200px;
-            transition: all ease 300ms;
-        }
-        &:hover i {
-            transition: all ease 300ms;
-            justify-content: flex-start;
-            width: auto;
-            margin-right: 10px;
-        }
-        &:hover span {
-            display: block;
-            margin-top: 12px;
-            transition: all ease 300ms;
-        }
         i {
             position: relative;
             width: 50px;
@@ -94,16 +78,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: all ease 300ms;
-        }
-        span {
-            color: $white;
-            line-height: 16px;
-            width: auto;
-            display: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
             transition: all ease 300ms;
         }
     }
@@ -117,28 +91,8 @@
         border-radius: 10px;
         cursor: pointer;
         z-index: 999;
-        transition: all ease 300ms;
         padding: 5px 10px;
         display: flex;
-        &:hover {
-            width: 200px;
-            transition: all ease 300ms;
-            justify-content: flex-end;
-        }
-        &:hover i {
-            transition: all ease 300ms;
-            justify-content: flex-end;
-            width: auto;
-            margin-left: 10px;
-        }
-        &:hover span {
-            display: block;
-            margin-top: 12px;
-            transition: all ease 300ms;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
         i {
             position: relative;
             width: 50px;
@@ -149,13 +103,7 @@
             align-items: center;
             transition: all ease 300ms;
         }
-        span {
-            color: $white;
-            line-height: 16px;
-            width: auto;
-            display: none;
-            transition: all ease 300ms;
-        }
+       
     }
     .search {
         text-align: center;

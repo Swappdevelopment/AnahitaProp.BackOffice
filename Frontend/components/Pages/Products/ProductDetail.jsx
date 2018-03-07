@@ -138,7 +138,7 @@ class ProductDetail extends React.Component {
 
                 <div className="container">
                     <Row>
-                        <Col md={8} mdOffset={2}>
+                        <Col md={9} mdOffset={1}>
                             <div className="s-portlet" style={{ padding: '30px 40px' }}>
                                 <ProductDetail1 viewModel={this.viewModel} errorHandler={this.errorHandler} />
                             </div>

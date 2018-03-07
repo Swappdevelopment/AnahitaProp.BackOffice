@@ -26,6 +26,20 @@ class ProductDetail1 extends React.Component {
 
         if (params1) {
 
+            //     <Row className="s-row-center">
+            //     <Col xs={4} md={3}>
+            //         <span>{this.activeLang.labels['lbl_LName']}</span>
+            //     </Col>
+            //     <Col xs={8} md={6}>
+            // <div className="form-group s-form-group">
+            //     <input
+            //         className="form-control s-input"
+            //         value={this.viewModel.lName}
+            //         onChange={e => { this.onValueChange(e, 'lName') }} />
+            // </div>
+            //     </Col>
+            // </Row>
+
             return (
                 <div className="s-row-center row" key={params1.key}>
                     <Col md={2}>
@@ -41,13 +55,16 @@ class ProductDetail1 extends React.Component {
                             <Col md={params2 ? 4 : (params1.smallInput ? 4 : 8)}>
                                 {
                                     params1.isDisabled() ?
-                                        <WaitBlock fullWidth height={34} />
+                                        <WaitBlock fullWidth height={38} />
                                         :
-                                        <input
-                                            type={params1.inputType ? params1.inputType : 'text'}
-                                            className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
-                                            value={params1.getValue()}
-                                            onChange={params1.setValue} />
+                                        <div className="form-group s-form-group">
+                                            <input
+                                                type={params1.inputType ? params1.inputType : 'text'}
+                                                className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
+                                                value={params1.getValue()}
+                                                onChange={params1.setValue} />
+                                        </div>
+
                                 }
                                 {
                                     !params1.isValid || params1.isValid() ?
@@ -70,13 +87,15 @@ class ProductDetail1 extends React.Component {
                             <Col md={4}>
                                 {
                                     params1.isDisabled() ?
-                                        <WaitBlock fullWidth height={34} />
+                                        <WaitBlock fullWidth height={38} />
                                         :
-                                        <input
-                                            type={params2.inputType ? params2.inputType : 'text'}
-                                            className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
-                                            value={params2.getValue()}
-                                            onChange={params2.setValue} />
+                                        <div className="form-group s-form-group">
+                                            <input
+                                                type={params2.inputType ? params2.inputType : 'text'}
+                                                className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
+                                                value={params2.getValue()}
+                                                onChange={params2.setValue} />
+                                        </div>
                                 }
                                 {
                                     !params2.isValid || params2.isValid() ?
@@ -155,55 +174,61 @@ class ProductDetail1 extends React.Component {
                                                 <td style={{ width: 75 }}>
                                                     {
                                                         prodModel.isSaving ?
-                                                            <WaitBlock fullWidth height={34} />
+                                                            <WaitBlock fullWidth height={38} />
                                                             :
-                                                            <DropdownEditor
-                                                                id="drpCurrency"
-                                                                className="form-control s-input s-ellipsis"
-                                                                disabled={prodModel.isSaving}
-                                                                title={prodModel.currencyCode}>
-                                                                {
-                                                                    this.viewModel.currencies.map((v, i) => {
+                                                            <div className="s-dropdown-modal">
+                                                                <div className="form-group s-form-group">
+                                                                    <DropdownEditor
+                                                                        id="drpCurrency"
+                                                                        className="form-control s-input s-ellipsis"
+                                                                        disabled={prodModel.isSaving}
+                                                                        title={prodModel.currencyCode}>
+                                                                        {
+                                                                            this.viewModel.currencies.map((v, i) => {
 
-                                                                        return (
-                                                                            <DropdownEditorMenu
-                                                                                active={v.id === prodModel.currency_Id}
-                                                                                key={v.id}
-                                                                                onClick={e => {
+                                                                                return (
+                                                                                    <DropdownEditorMenu
+                                                                                        active={v.id === prodModel.currency_Id}
+                                                                                        key={v.id}
+                                                                                        onClick={e => {
 
-                                                                                    prodModel.execAction(self => {
+                                                                                            prodModel.execAction(self => {
 
-                                                                                        self.currency_Id = v.id;
-                                                                                        self.currencyCode = v.code;
-                                                                                    });
-                                                                                }}>
-                                                                                {v.code}
-                                                                            </DropdownEditorMenu>
-                                                                        );
-                                                                    })
-                                                                }
-                                                            </DropdownEditor>
+                                                                                                self.currency_Id = v.id;
+                                                                                                self.currencyCode = v.code;
+                                                                                            });
+                                                                                        }}>
+                                                                                        {v.code}
+                                                                                    </DropdownEditorMenu>
+                                                                                );
+                                                                            })
+                                                                        }
+                                                                    </DropdownEditor>
+                                                                </div>
+                                                            </div>
                                                     }
                                                 </td>
                                                 <td style={{ paddingLeft: 10 }}>
                                                     {
                                                         prodModel.isSaving ?
-                                                            <WaitBlock fullWidth height={34} />
+                                                            <WaitBlock fullWidth height={38} />
                                                             :
-                                                            <Cleave
-                                                                type="text"
-                                                                className={'form-control s-input' + (prodModel.isPriceAndCurrencyValid() ? '' : '-error')}
-                                                                disabled={prodModel.isSaving}
-                                                                options={{
-                                                                    numeral: true,
-                                                                    numeralThousandsGroupStyle: 'thousand',
-                                                                    numeralDecimalScale: 2
-                                                                }}
-                                                                value={prodModel.price}
-                                                                onChange={e => prodModel.execAction(self => {
+                                                            <div className="form-group s-form-group">
+                                                                <Cleave
+                                                                    type="text"
+                                                                    className={'form-control s-input' + (prodModel.isPriceAndCurrencyValid() ? '' : '-error')}
+                                                                    disabled={prodModel.isSaving}
+                                                                    options={{
+                                                                        numeral: true,
+                                                                        numeralThousandsGroupStyle: 'thousand',
+                                                                        numeralDecimalScale: 2
+                                                                    }}
+                                                                    value={prodModel.price}
+                                                                    onChange={e => prodModel.execAction(self => {
 
-                                                                    self.price = parseFloat(e.target.rawValue);
-                                                                })} />
+                                                                        self.price = parseFloat(e.target.rawValue);
+                                                                    })} />
+                                                            </div>
                                                     }
                                                 </td>
                                             </tr>
