@@ -8,10 +8,11 @@ const ROOT_PATH = path.resolve(__dirname, 'wwwroot');
 const FEND_PATH = path.resolve(__dirname, 'Frontend');
 
 const isProd = (process.argv.indexOf('-p') >= 0);
+const minify = true;
 
 const plugins = [
     new ExtractTextPlugin({
-        filename: isProd ? '[name].min.css' : '[name].css',
+        filename: isProd && minify ? '[name].min.css' : '[name].css',
         allChunks: true
     }),
     new OptimizeCssAssetsPlugin({
@@ -25,7 +26,7 @@ const plugins = [
 ];
 
 
-if (isProd) {
+if (isProd || isDevLib) {
 
     console.log('Is Production');
 
@@ -55,7 +56,7 @@ const config = {
     },
     output: {
         path: ROOT_PATH + '/dist',
-        filename: isProd ? '[name].min.js' : '[name].js',
+        filename: isProd && minify ? '[name].min.js' : '[name].js',
         publicPath: '/dist/'
     },
     module: {
