@@ -8,7 +8,9 @@ const ROOT_PATH = path.resolve(__dirname, 'wwwroot');
 const FEND_PATH = path.resolve(__dirname, 'Frontend');
 
 const isProd = (process.argv.indexOf('-p') >= 0);
-const minify = true;
+
+let minify = true;
+minify = minify && isProd;
 
 const plugins = [
     new ExtractTextPlugin({
@@ -26,7 +28,7 @@ const plugins = [
 ];
 
 
-if (isProd || isDevLib) {
+if (isProd) {
 
     console.log('Is Production');
 
