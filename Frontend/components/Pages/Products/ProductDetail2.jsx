@@ -8,6 +8,9 @@ import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
 import WaitBlock from '../../WaitBlock/WaitBlock';
 
+import ProductDetailToolBar from './ProductDetailToolBar';
+import UndoManager from '../../../Helper/UndoManager';
+
 
 class ProductDetail2 extends React.Component {
 
@@ -18,41 +21,52 @@ class ProductDetail2 extends React.Component {
         this.viewModel = props.viewModel;
 
         this.activeLang = this.props.store.langStore.active;
+
+        this.undoManager = new UndoManager();
     }
 
-    onTabSelect = key => {
+    onTabSelect = (prodModel, key) => {
 
-        if (this.viewModel.selectedValue) {
+        if (prodModel) {
 
-            this.viewModel.selectedValue.execAction(self => self.type = (key + 1) * 10);
+            const undoItem = {
+                key: 'type',
+                value: prodModel.type,
+                model: prodModel
+            };
+
+            prodModel.execAction(self => self.type = key);
+
+            if (undoItem.value !== prodModel.type) {
+
+                this.undoManager.pushToStack(undoItem);
+            }
+
 
             switch (key) {
 
                 case 0:
 
-                    if (this.viewModel.selectedValue.originalValue) {
+                    if (prodModel.originalValue) {
 
-                        this.viewModel.selectedValue.execAction(self => {
+                        prodModel.execAction(self => {
 
                             self.project_Id = self.originalValue.project_Id ? self.originalValue.project_Id : 0;
                             self.project = self.project_Id > 0 ? self.project_Id : null;
                         });
                     }
-
-                    //this.viewModel.getProperties(this.activeLang.code);
                     break;
 
                 case 1:
 
-                    //this.viewModel.getProperties(this.activeLang.code);
                     this.viewModel.getProjects(this.activeLang.code);
                     break;
 
                 case 2:
 
-                    if (this.viewModel.selectedValue.originalValue) {
+                    if (prodModel.originalValue) {
 
-                        this.viewModel.selectedValue.execAction(self => {
+                        prodModel.execAction(self => {
 
                             self.property_Id = self.originalValue.property_Id ? self.originalValue.property_Id : 0;
                             self.property = self.property_Id > 0 ? self.property_Id : null;
@@ -65,9 +79,9 @@ class ProductDetail2 extends React.Component {
         }
     }
 
-    getTabHeader = (label, index, showSpinnerAction) => {
+    getTabHeader = (prodModel, label, index, showSpinnerAction) => {
 
-        const isTabActive = this.getTabIndex() === index;
+        const isTabActive = prodModel.type === index;
 
         return (
             <span>
@@ -157,7 +171,6 @@ class ProductDetail2 extends React.Component {
                                                     value={prodModel.property.lotSize}
                                                     onChange={e => prodModel.property.execAction(self => self.lotSize = parseFloat(e.target.value))} />
                                             </div>
-
                                     }
                                 </Col>
                             </div>
@@ -219,88 +232,98 @@ class ProductDetail2 extends React.Component {
         );
     }
 
-    getTabIndex = () => (this.viewModel.selectedValue ? (this.viewModel.selectedValue.type / 10) - 1 : -1)
 
     render() {
 
         const prodModel = this.viewModel.selectedValue;
 
-        this.onTabSelect(this.getTabIndex());
+        if (prodModel) {
 
-        return (
-            <div style={{ minHeight: 250 }}>
-                <Tabs id="tab_product_type" className="s-tabs"
-                    defaultActiveKey={this.getTabIndex()}
-                    onSelect={this.onTabSelect}>
-                    <Tab
-                        disabled={prodModel.isSaving}
-                        eventKey={0}
-                        title={this.getTabHeader(this.activeLang.labels['lbl_Rsl'], 0, () => this.viewModel.isGettingProperties)}>
-                        {
-                            this.viewModel.isGettingProperties ?
-                                null
-                                :
-                                (() => {
+            this.onTabSelect(prodModel);
 
-                                    if (prodModel.property) {
+            return (
+                <div style={{ minHeight: 250 }}>
 
-                                        return this.getPropertyChoiceContent({ prodModel, hideProject: true });
-                                    }
+                    <ProductDetailToolBar
+                        activeLang={this.activeLang}
+                        undoManager={this.undoManager} />
 
-                                    return null;
-                                })()
-                        }
-                    </Tab>
-                    <Tab
-                        disabled={prodModel.isSaving}
-                        eventKey={1}
-                        title={this.getTabHeader(this.activeLang.labels['lbl_Lfs'], 1, () => this.viewModel.isGettingProperties || this.viewModel.isGettingProjects)}>
-                        {
-                            this.viewModel.isGettingProperties || this.viewModel.isGettingProjects ?
-                                null
-                                :
-                                (() => {
+                    <Tabs id="tab_product_type" className="s-tabs"
+                        defaultActiveKey={prodModel.type}
+                        onSelect={key => this.onTabSelect(prodModel, key)}>
+                        <Tab
+                            disabled={prodModel.isSaving}
+                            eventKey={10}
+                            title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Rsl'], 10, () => this.viewModel.isGettingProperties)}>
+                            {
+                                this.viewModel.isGettingProperties ?
+                                    null
+                                    :
+                                    (() => {
 
-                                    if (prodModel.property) {
+                                        if (prodModel.property) {
 
-                                        return this.getPropertyChoiceContent(
-                                            {
-                                                prodModel,
-                                                projectsFilter: (v, i) => v.type === 10
-                                            });
-                                    }
+                                            return this.getPropertyChoiceContent({ prodModel, hideProject: true });
+                                        }
 
-                                    return null;
-                                })()
-                        }
-                    </Tab>
-                    <Tab
-                        disabled={prodModel.isSaving}
-                        eventKey={2}
-                        title={this.getTabHeader(this.activeLang.labels['lbl_Prj'], 2, () => this.viewModel.isGettingProjects)}>
-                        {
-                            this.viewModel.isGettingProjects ?
-                                null
-                                :
-                                (() => {
+                                        return null;
+                                    })()
+                            }
+                        </Tab>
+                        <Tab
+                            disabled={prodModel.isSaving}
+                            eventKey={20}
+                            title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Lfs'], 20, () => this.viewModel.isGettingProperties || this.viewModel.isGettingProjects)}>
+                            {
+                                this.viewModel.isGettingProperties || this.viewModel.isGettingProjects ?
+                                    null
+                                    :
+                                    (() => {
 
-                                    if (prodModel.property) {
+                                        if (prodModel.property) {
 
-                                        return this.getPropertyChoiceContent(
-                                            {
-                                                prodModel,
-                                                hideProperty: true,
-                                                projectsFilter: (v, i) => v.type !== 10
-                                            });
-                                    }
+                                            return this.getPropertyChoiceContent(
+                                                {
+                                                    prodModel,
+                                                    projectsFilter: (v, i) => v.type === 10
+                                                });
+                                        }
 
-                                    return null;
-                                })()
-                        }
-                    </Tab>
-                </Tabs>
-            </div>
-        );
+                                        return null;
+                                    })()
+                            }
+                        </Tab>
+                        <Tab
+                            disabled={prodModel.isSaving}
+                            eventKey={30}
+                            title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Prj'], 30, () => this.viewModel.isGettingProjects)}>
+                            {
+                                this.viewModel.isGettingProjects ?
+                                    null
+                                    :
+                                    (() => {
+
+                                        if (prodModel.property) {
+
+                                            return this.getPropertyChoiceContent(
+                                                {
+                                                    prodModel,
+                                                    hideProperty: true,
+                                                    projectsFilter: (v, i) => v.type !== 10
+                                                });
+                                        }
+
+                                        return null;
+                                    })()
+                            }
+                        </Tab>
+                    </Tabs>
+                </div>
+            );
+        }
+
+
+        return null;
     }
 }
 

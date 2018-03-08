@@ -248,7 +248,7 @@ export default class Helper {
 
         if (value) {
 
-            value = value.replace(/\r/g, '<~>').replace(/\n/g, '<~>').replace(/<~><~>/g, '<~>');
+            value = value.replace(/\r\n/g, '<~>').replace(/\r/g, '<~>').replace(/\n/g, '<~>').replace(/<~><~>/g, '<~>');
 
             return value.split('<~>').map((v, i) => <p key={i}>{v}</p>);
         }

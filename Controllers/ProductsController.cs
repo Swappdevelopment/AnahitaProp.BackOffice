@@ -41,7 +41,7 @@ namespace AnahitaProp.BackOffice
                 await Task.WhenAll(
                     Helper.GetFunc(() =>
                     {
-                        products = _dbi.GetListProducts(withNames: true, withoutGroupsAndSubs: true, statusFilter: statusFilter, offset: offset, limit: limit);
+                        products = _dbi.GetListProducts(productID: productID, withNames: true, withoutGroupsAndSubs: true, statusFilter: statusFilter, offset: offset, limit: limit);
 
                         return Task.CompletedTask;
                     })(),

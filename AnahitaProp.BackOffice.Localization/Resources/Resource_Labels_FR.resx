@@ -262,7 +262,7 @@
     <value>Réessayer</value>
   </data>
   <data name="lbl_Revert" xml:space="preserve">
-    <value>Revenir</value>
+    <value>Restorer</value>
   </data>
   <data name="lbl_RmbrMe" xml:space="preserve">
     <value>Se souvenir de moi</value>
@@ -512,5 +512,8 @@
   </data>
   <data name="lbl_Upload" xml:space="preserve">
     <value>Télécharger</value>
+  </data>
+  <data name="lbl_Undo" xml:space="preserve">
+    <value>Annuler</value>
   </data>
 </root>

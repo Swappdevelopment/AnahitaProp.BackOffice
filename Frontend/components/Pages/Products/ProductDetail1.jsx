@@ -10,6 +10,9 @@ import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
 import WaitBlock from '../../WaitBlock/WaitBlock';
 
+import ProductDetailToolBar from './ProductDetailToolBar';
+import UndoManager from '../../../Helper/UndoManager';
+
 
 class ProductDetail1 extends React.Component {
 
@@ -20,25 +23,13 @@ class ProductDetail1 extends React.Component {
         this.viewModel = props.viewModel;
 
         this.activeLang = this.props.store.langStore.active;
+
+        this.undoManager = new UndoManager();
     }
 
     getInputElement = (params1, params2) => {
 
         if (params1) {
-
-            //     <Row className="s-row-center">
-            //     <Col xs={4} md={3}>
-            //         <span>{this.activeLang.labels['lbl_LName']}</span>
-            //     </Col>
-            //     <Col xs={8} md={6}>
-            // <div className="form-group s-form-group">
-            //     <input
-            //         className="form-control s-input"
-            //         value={this.viewModel.lName}
-            //         onChange={e => { this.onValueChange(e, 'lName') }} />
-            // </div>
-            //     </Col>
-            // </Row>
 
             return (
                 <div className="s-row-center row" key={params1.key}>
@@ -123,8 +114,12 @@ class ProductDetail1 extends React.Component {
 
             return (
                 <div>
-                    <Row>
 
+                    <ProductDetailToolBar
+                        activeLang={this.activeLang}
+                        undoManager={this.undoManager} />
+
+                    <Row>
                         {
                             this.getInputElement({
                                 smallInput: true,
@@ -132,7 +127,17 @@ class ProductDetail1 extends React.Component {
                                 isValid: prodModel.isCodeValid,
                                 isDisabled: () => prodModel.isSaving,
                                 getValue: () => prodModel.code,
-                                setValue: e => prodModel.execAction(self => self.code = e.target.value)
+                                setValue: e => {
+
+                                    this.undoManager.pushToStack(
+                                        {
+                                            key: 'code',
+                                            value: prodModel.code,
+                                            model: prodModel
+                                        });
+
+                                    prodModel.execAction(self => self.code = e.target.value);
+                                }
                             })
                         }
                         {
@@ -144,7 +149,17 @@ class ProductDetail1 extends React.Component {
                                     isValid: prodName.isValueValid,
                                     isDisabled: () => prodModel.isSaving,
                                     getValue: () => prodName.value,
-                                    setValue: e => prodName.execAction(self => self.value = e.target.value)
+                                    setValue: e => {
+
+                                        this.undoManager.pushToStack(
+                                            {
+                                                key: 'value',
+                                                value: prodName.value,
+                                                model: prodName
+                                            });
+
+                                        prodName.execAction(self => self.value = e.target.value);
+                                    }
                                 }))
                         }
                         {
@@ -153,14 +168,34 @@ class ProductDetail1 extends React.Component {
                                 inputType: 'number',
                                 isDisabled: () => prodModel.isSaving,
                                 getValue: () => prodModel.netSize,
-                                setValue: e => prodModel.execAction(self => self.netSize = parseFloat(e.target.value))
+                                setValue: e => {
+
+                                    this.undoManager.pushToStack(
+                                        {
+                                            key: 'netSize',
+                                            value: prodModel.netSize,
+                                            model: prodModel
+                                        });
+
+                                    prodModel.execAction(self => self.netSize = parseFloat(e.target.value));
+                                }
                             },
                                 {
                                     label: this.activeLang.labels['lbl_GrossSize'],
                                     inputType: 'number',
                                     isDisabled: () => prodModel.isSaving,
                                     getValue: () => prodModel.grossSize,
-                                    setValue: e => prodModel.execAction(self => self.grossSize = parseFloat(e.target.value))
+                                    setValue: e => {
+
+                                        this.undoManager.pushToStack(
+                                            {
+                                                key: 'grossSize',
+                                                value: prodModel.grossSize,
+                                                model: prodModel
+                                            });
+
+                                        prodModel.execAction(self => self.grossSize = parseFloat(e.target.value));
+                                    }
                                 })
                         }
                         {
@@ -191,6 +226,20 @@ class ProductDetail1 extends React.Component {
                                                                                         active={v.id === prodModel.currency_Id}
                                                                                         key={v.id}
                                                                                         onClick={e => {
+
+                                                                                            this.undoManager.pushToStack(
+                                                                                                [
+                                                                                                    {
+                                                                                                        key: 'currency_Id',
+                                                                                                        value: prodModel.currency_Id,
+                                                                                                        model: prodModel
+                                                                                                    },
+                                                                                                    {
+                                                                                                        key: 'currencyCode',
+                                                                                                        value: prodModel.currencyCode,
+                                                                                                        model: prodModel
+                                                                                                    }
+                                                                                                ]);
 
                                                                                             prodModel.execAction(self => {
 
@@ -225,6 +274,13 @@ class ProductDetail1 extends React.Component {
                                                                     }}
                                                                     value={prodModel.price}
                                                                     onChange={e => prodModel.execAction(self => {
+
+                                                                        this.undoManager.pushToStack(
+                                                                            {
+                                                                                key: 'price',
+                                                                                value: prodModel.price,
+                                                                                model: prodModel
+                                                                            });
 
                                                                         self.price = parseFloat(e.target.rawValue);
                                                                     })} />

@@ -19,6 +19,7 @@ class ProductDetail extends React.Component {
         super(props);
 
         this.viewModel = props.viewModel;
+        this.activeLang = this.props.store.langStore.active;
         this.errorHandler = props.errorHandler;
     }
 
@@ -131,6 +132,7 @@ class ProductDetail extends React.Component {
                             self.selectedValue = null;
                         });
                     }}
+                    paRefresh={() => this.viewModel.getProduct(this.activeLang.code, this.viewModel.selectedValue)}
                     paShowSaveButton={() => true}
                     saveBtnDisabled={() => !this.viewModel.selectedValue || !this.viewModel.selectedValue.requiresSave()}
                     paGlobalSaveOnClick={() => this.viewModel.saveProduct(this.viewModel.selectedValue)}

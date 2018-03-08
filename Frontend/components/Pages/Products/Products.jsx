@@ -38,6 +38,11 @@ class Products extends React.Component {
                     break;
             }
         };
+        this.viewModel.triggerPageBlur = activate => {
+
+            this.pageViewModel.pageBlurPixels = activate ? 3 : 0;
+            this.pageViewModel.showPageWaitControl = activate ? true : false;
+        };
 
         this.modalHandler = new ModalHandler();
         this.activeLang = this.props.store.langStore.active;
@@ -234,8 +239,7 @@ class Products extends React.Component {
 
                 this.viewModel.clearProducts();
 
-                this.pageViewModel.pageBlurPixels = 3;
-                this.pageViewModel.showPageWaitControl = true;
+                this.viewModel.triggerPageBlur(true);
             }
             else {
 
@@ -301,8 +305,9 @@ class Products extends React.Component {
                     }
                 },
                 () => {
-                    this.pageViewModel.pageBlurPixels = 0;
-                    this.pageViewModel.showPageWaitControl = false;
+
+                    this.viewModel.triggerPageBlur(false);
+
 
                     this.viewModel.setPropsValue({ isLazyLoading: false });
 

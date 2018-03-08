@@ -53,6 +53,7 @@ const ProductModel = types.model(
     Object.assign(
         {
             receivedInput: false,
+            isRefreshing: false,
             isSaving: false,
             isLazyWait: false,
             isGettingFlags: false,
@@ -113,6 +114,9 @@ const ProductModel = types.model(
             BaseModel.setPropsValue(self, value);
 
             self.names.length = 0;
+            self.descs.length = 0;
+            self.flags.length = 0;
+            self.files.length = 0;
 
             if (value.names && value.names.length > 0) {
 

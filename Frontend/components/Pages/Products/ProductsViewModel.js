@@ -1,4 +1,4 @@
-import { types, destroy, onPatch } from 'mobx-state-tree';
+import { types, destroy, detach, onPatch } from 'mobx-state-tree';
 
 import BaseModel from '../../../Models/BaseModel';
 import ProductModel from '../../../Models/ProductModel';
@@ -146,6 +146,56 @@ const ProductsViewModel = types.model(
             if (data) {
 
                 self.properties.push(...data.map((mv, i) => PropertyModel.init(mv, ++self.idGenerator, activeLangCode)));
+            }
+        },
+
+        getProduct: (activeLangCode, prodModel) => {
+
+            if (prodModel && !prodModel.isRefreshing) {
+
+                self.triggerPageBlur(true);
+                prodModel.execAction(self => self.isRefreshing = true);
+
+                let idCounter = -1, destroyed = false;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromiseGet('/products/get/', { productID: prodModel.id }),
+                        success: data => {
+
+                            if (data && data.products && data.products.length > 0) {
+
+                                const index = self.products.indexOf(prodModel);
+
+                                if (index >= 0) {
+
+                                    prodModel.sync(data.products[0]);
+                                    _triggeronSelectedValueChanged();
+                                }
+                            }
+                        },
+                        incrementSession: () => {
+
+                            self.getProductPromiseID = self.getProductPromiseID ? (self.getProductPromiseID + 1) : 1;
+                            idCounter = self.getProductPromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.getProductPromiseID;
+                        }
+                    },
+                    error => {
+
+                        if (self.showPromiseError) {
+                            self.showPromiseError(error);
+                        }
+                    },
+                    () => {
+
+                        prodModel.execAction(self => self.isRefreshing = false);
+                        self.triggerPageBlur(false);
+                    }
+                );
             }
         },
 
@@ -536,6 +586,15 @@ const ProductsViewModel = types.model(
     }));
 
 
+const _triggeronSelectedValueChanged = () => {
+
+    for (const cb of _onSelectedValueChangeCallbacks) {
+
+        if (cb) {
+            cb();
+        }
+    }
+}
 
 ProductsViewModel.init = () => {
 
@@ -580,12 +639,7 @@ ProductsViewModel.init = () => {
                     });
                 }
 
-                for (const cb of _onSelectedValueChangeCallbacks) {
-
-                    if (cb) {
-                        cb();
-                    }
-                }
+                _triggeronSelectedValueChanged();
                 break;
         }
     });

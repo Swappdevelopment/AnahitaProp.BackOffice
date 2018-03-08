@@ -935,7 +935,7 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Revenir.
+        ///   Looks up a localized string similar to Restorer.
         /// </summary>
         public static string lbl_Revert {
             get {
@@ -1151,6 +1151,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Annuler.
+        /// </summary>
+        public static string lbl_Undo {
+            get {
+                return ResourceManager.GetString("lbl_Undo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inconnu.
         /// </summary>
         public static string lbl_Unknown {
@@ -1165,6 +1174,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_UpdateProfile {
             get {
                 return ResourceManager.GetString("lbl_UpdateProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Télécharger.
+        /// </summary>
+        public static string lbl_Upload {
+            get {
+                return ResourceManager.GetString("lbl_Upload", resourceCulture);
             }
         }
         
