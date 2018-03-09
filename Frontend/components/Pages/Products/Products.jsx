@@ -13,6 +13,8 @@ import RowLazyWait from "../../RowLazyWait/RowLazyWait";
 import GridRowToolbar from "../../GridRowToolbar/GridRowToolbar";
 import PageComponent from "../../PageComponents/PageComponent";
 
+import ProductRow from "./ProductRow";
+
 import ProductsViewModel from "./ProductsViewModel";
 import ProductDetail from "./ProductDetail";
 
@@ -22,14 +24,20 @@ class Products extends React.Component {
     constructor(props) {
         super(props);
 
-        this.scrollPos = 0;
+        this.prodsScrollPos = 0;
+        this.groupsScrollPos = 0;
 
-        this.state = { isModalShown: false };
+        this.state = {
+            tabKey: 0,
+            isModalShown: false
+        };
 
         this.pageViewModel = props.pageViewModel;
         this.errorHandler = props.errorHandler;
 
-        this.viewModel = ProductsViewModel.init();
+        this.activeLang = this.props.store.langStore.active;
+
+        this.viewModel = ProductsViewModel.init(this.activeLang);
         this.viewModel.showPromiseError = error => {
 
             switch (error.exceptionID) {
@@ -45,14 +53,13 @@ class Products extends React.Component {
         };
 
         this.modalHandler = new ModalHandler();
-        this.activeLang = this.props.store.langStore.active;
 
-        this.getProducts = this.getProducts.bind(this);
-        this.getProductsRow = this.getProductsRow.bind(this);
-        this.saveProducts = this.saveProducts.bind(this);
 
-        this.limit = Helper.LAZY_LOAD_LIMIT + 20;
-        this.offset = 0;
+        this.prodsLimit = Helper.LAZY_LOAD_LIMIT + 20;
+        this.prodsOffset = 0;
+
+        this.groupsLimit = Helper.LAZY_LOAD_LIMIT + 20;
+        this.groupsOffset = 0;
     }
 
     componentWillMount() {
@@ -60,7 +67,7 @@ class Products extends React.Component {
         this.viewModel.bindOnSelectedValueChange(this.selectedValueChanged);
 
         this.getProducts();
-        this.getLookups();
+        this.viewModel.getLookups();
     }
 
     componentWillUnmount() {
@@ -68,434 +75,99 @@ class Products extends React.Component {
         this.viewModel.unbindOnSelectedValueChange(this.selectedValueChanged);
     }
 
+    clearAndQuery = () => {
+
+        switch (this.state.tabKey) {
+
+            case 0:
+
+                this.prodsOffset = 0;
+                this.getProducts();
+                break;
+
+            case 1:
+
+                this.groupsOffset = 0;
+                this.getProducts('groups');
+                break;
+        }
+    }
+
+    getProducts = (action) => {
+
+        this.viewModel.getProducts(
+            action === 'groups' ? this.groupsLimit : this.prodsLimit,
+            action === 'groups' ? this.groupsOffset : this.prodsOffset,
+            action);
+    }
+
     selectedValueChanged = () => {
 
         if (this.viewModel.selectedValue === null) {
-            document.documentElement.scrollTop = this.scrollPos;
+            document.documentElement.scrollTop = this.selectedValueChanged.tabKey === 0 ? this.prodsScrollPos : this.groupsScrollPos;
         }
     }
 
-    getLookups = () => {
-
-        if (!this.gettingLookups) {
-
-            const promises = [];
-
-            if (this.viewModel.prodFamilyTypes.length === 0) {
-
-                let idCounter = -1;
-
-                promises.push(
-                    {
-                        promise: Helper.FetchPromiseGet(
-                            '/lookup/GetProductFamilyTypes/'),
-                        success: data => {
-
-                            if (data && data.length > 0) {
-
-                                this.viewModel.execAction(self => {
-
-                                    self.prodFamilyTypes.push(...data.map((v, i) => {
-
-                                        const name = v.names ?
-                                            v.names.find(nm => (nm.language_Code ? nm.language_Code.toLowerCase() : '') == this.activeLang.code)
-                                            :
-                                            null;
-
-                                        return Object.assign(v, {
-                                            name: name ? name.value : null
-                                        });
-                                    }));
-                                });
-                            }
-                        },
-                        incrementSession: () => {
-
-                            this.getProductFamilyTypesPromiseID = this.getProductFamilyTypesPromiseID ? (this.getProductFamilyTypesPromiseID + 1) : 1;
-                            idCounter = this.getProductFamilyTypesPromiseID;
-                        },
-                        sessionValid: () => {
-
-                            return idCounter === this.getProductFamilyTypesPromiseID;
-                        }
-                    });
-            }
-
-            if (this.viewModel.prodFamilies.length === 0) {
-
-                let idCounter = -1;
-
-                promises.push(
-                    {
-                        promise: Helper.FetchPromiseGet(
-                            '/lookup/GetProductFamilies/'),
-                        success: data => {
-
-                            if (data && data.length > 0) {
-
-                                this.viewModel.execAction(self => {
-
-                                    self.prodFamilies.push(...data.map((v, i) => {
-
-                                        const name = v.names ?
-                                            v.names.find(nm => (nm.language_Code ? nm.language_Code.toLowerCase() : '') == this.activeLang.code)
-                                            :
-                                            null;
-
-                                        return Object.assign(v, {
-                                            name: name ? name.value : null
-                                        });
-                                    }));
-                                });
-                            }
-                        },
-                        incrementSession: () => {
-
-                            this.getProductFamiliesPromiseID = this.getProductFamiliesPromiseID ? (this.getProductFamiliesPromiseID + 1) : 1;
-                            idCounter = this.getProductFamiliesPromiseID;
-                        },
-                        sessionValid: () => {
-
-                            return idCounter === this.getProductFamiliesPromiseID;
-                        }
-                    });
-            }
-
-            if (this.viewModel.currencies.length === 0) {
-
-                let idCounter = -1;
-
-                promises.push(
-                    {
-                        promise: Helper.FetchPromiseGet(
-                            '/lookup/GetCurrencies/'),
-                        success: data => {
-
-                            if (data && data.length > 0) {
-
-                                this.viewModel.execAction(self => {
-
-                                    self.currencies.push(...data);
-                                });
-                            }
-                        },
-                        incrementSession: () => {
-
-                            this.getCurrenciesPromiseID = this.getCurrenciesPromiseID ? (this.getCurrenciesPromiseID + 1) : 1;
-                            idCounter = this.getCurrenciesPromiseID;
-                        },
-                        sessionValid: () => {
-
-                            return idCounter === this.getCurrenciesPromiseID;
-                        }
-                    });
-            }
-
-
-            if (promises.length > 0) {
-
-                this.gettingLookups = true;
-
-                let idCounter = -1;
-
-                Helper.RunPromise(
-                    {
-                        options: promises,
-                        incrementSession: () => {
-
-                            this.getLookupsPromiseID = this.getLookupsPromiseID ? (this.getLookupsPromiseID + 1) : 1;
-                            idCounter = this.getLookupsPromiseID;
-                        },
-                        sessionValid: () => {
-
-                            return idCounter === this.getLookupsPromiseID;
-                        }
-                    },
-                    error => {
-
-                        switch (error.exceptionID) {
-                            default:
-                                this.errorHandler.showFromLang(this.activeLang);
-                                break;
-                        }
-                    },
-                    () => {
-
-                        this.gettingLookups = false;
-                    });
-            }
-        }
-    }
-
-    getProducts() {
-
-        if (!this.isGettingProducts) {
-
-            this.isGettingProducts = true;
-
-            const isFullRefresh = this.offset === 0;
-
-            if (isFullRefresh) {
-
-                this.viewModel.clearProducts();
-
-                this.viewModel.triggerPageBlur(true);
-            }
-            else {
-
-                this.viewModel.setPropsValue({ isLazyLoading: true });
-            }
-
-            const params = {
-                limit: this.limit,
-                offset: this.offset,
-                statusFilter: this.viewModel.statusType,
-                withProperties: (this.viewModel.properties.length === 0)
-            };
-
-            if (this.viewModel.searchText) {
-
-                params['nameFilter'] = this.viewModel.searchText;
-            }
-
-            let idCounter = -1;
-
-            Helper.RunPromise(
-                {
-                    promise: Helper.FetchPromiseGet('/products/get/', params),
-                    success: data => {
-
-                        if (data) {
-
-                            if (data.properties && data.properties.length > 0) {
-
-                                this.viewModel.syncProperties(this.activeLang.code, data.properties);
-                            }
-
-                            if (data.products && data.products.length > 0) {
-
-                                this.viewModel.removeLazyWaitRecord();
-
-                                const temp = [...data.products.map((v, i) => this.viewModel.syncProduct(v, this.activeLang.code))];
-                                temp.push(this.viewModel.getLazyWaitRecord());
-
-                                this.viewModel.pushProduct(...temp);
-                            }
-                            else {
-
-                                this.viewModel.removeLazyWaitRecord();
-                            }
-                        }
-                    },
-                    incrementSession: () => {
-
-                        this.getProductsPromiseID = this.getProductsPromiseID ? (this.getProductsPromiseID + 1) : 1;
-                        idCounter = this.getProductsPromiseID;
-                    },
-                    sessionValid: () => {
-
-                        return idCounter === this.getProductsPromiseID;
-                    }
-                },
-                error => {
-                    switch (error.exceptionID) {
-                        default:
-                            this.errorHandler.showFromLang(this.activeLang);
-                            break;
-                    }
-                },
-                () => {
-
-                    this.viewModel.triggerPageBlur(false);
-
-
-                    this.viewModel.setPropsValue({ isLazyLoading: false });
-
-                    this.isGettingProducts = false;
+    getProductsRow = (value, index) => (
+        <ProductRow
+            key={value.genId}
+            value={value}
+            index={index}
+            activeLang={this.activeLang}
+            loadLazy={() => {
+                this.prodsOffset += this.prodsLimit;
+                this.getProducts();
+            }}
+            onRowClick={() => {
+
+                switch (this.state.tabKey) {
+
+                    case 0:
+                        this.prodsScrollPos = document.documentElement.scrollTop;
+                        break;
+
+                    case 1:
+                        this.groupsScrollPos = document.documentElement.scrollTop;
+                        break;
                 }
-            );
-        }
-    }
 
-    getProductsRow(value, index) {
+                this.viewModel.execAction(self => {
+                    self.selectedValue = value.id;
+                });
+            }}
+            changeBoolean={this.changeBoolean} />
+    )
 
-        if (value.isLazyWait) {
+    getGroupsRow = (value, index) => (
+        <ProductRow
+            key={value.genId}
+            isGroupRow
+            value={value}
+            index={index}
+            activeLang={this.activeLang}
+            loadLazy={() => {
+                this.groupsOffset += this.groupsLimit;
+                this.getProducts('groups');
+            }}
+            onRowClick={() => {
 
-            return (
-                <tr key={value.genId}>
-                    <RowLazyWait colSpan={9} spin={true} onAppear={() => {
+                switch (this.state.tabKey) {
 
-                        this.offset += this.limit;
-                        this.getProducts();
-                    }} />
-                </tr>
-            );
-        }
-        else {
+                    case 0:
+                        this.prodsScrollPos = document.documentElement.scrollTop;
+                        break;
 
-            let ovtObjectivesTarget = null;
-            let statusColor = null;
+                    case 1:
+                        this.groupsScrollPos = document.documentElement.scrollTop;
+                        break;
+                }
 
-            switch (value.recordState) {
-
-                case 10:
-                    statusColor = 's-status-add';
-                    break;
-
-                case 30:
-                    statusColor = 's-status-delete';
-                    break;
-
-                default:
-
-                    if (value.isModified()) {
-
-                        statusColor = 's-status-edit';
-                    }
-                    break;
-            }
-
-            return (
-                <tr key={value.genId}>
-
-                    <td className="s-td-cell-status">
-                        <div className={statusColor}>
-                        </div>
-                    </td>
-                    <td
-                        className="s-td-cell-name"
-                        onClick={e => {
-
-                            this.scrollPos = document.documentElement.scrollTop;
-
-                            this.viewModel.execAction(self => {
-                                self.selectedValue = value.id;
-                            });
-                        }}>{value.getNameAndCode()}</td>
-
-                    <td>{
-                        value.type === 10 ? this.activeLang.labels['lbl_Rsl']
-                            :
-                            (value.type === 20 ? this.activeLang.labels['lbl_Lfs']
-                                :
-                                (value.type === 30 ? this.activeLang.labels['lbl_Prj'] : ''))
-                    }</td>
-
-                    <td>{value.netSize.format(0, 3)}</td>
-                    <td>{value.grossSize.format(0, 3)}</td>
-                    <td>{value.currencyCode}</td>
-                    <td style={{ textAlign: 'right' }}>{value.price.format(2, 3)}</td>
-                    <td>{value.productFamily ? value.productFamily.getName() : 'No Family'}</td>
-
-                    <td className="s-td-cell-active">
-                        {
-                            value.isChangingHideSearch ?
-                                <span className="spinner"></span>
-                                :
-                                <Checkbox className="s-checkbox"
-
-                                    defaultChecked={value.hideSearch ? false : true}
-                                    onChange={e => {
-
-                                        if (value.id > 0) {
-
-                                            let tempValue = value.hideSearch;
-
-                                            value.execAction(self => {
-
-                                                self.hideSearch = e.target.checked ? false : true;
-                                            });
-
-                                            if (tempValue !== value.hideSearch) {
-
-                                                this.changeBoolean(value, 'hideSearch');
-                                            }
-                                        }
-
-                                    }}>
-                                </Checkbox>
-                        }
-
-                    </td>
-
-
-                    <GridRowToolbar hideEdit
-                        currentValue={value}
-                        displayName={value ? value.title : ''}
-                        onEdit={e => {
-
-                            this.getProductsObjectives(value);
-                            this.viewModel.selectedValue = value;
-                            this.modalHandler.show();
-                        }}
-                        onDelete={e => {
-
-                            // if (value.recordState === 10) {
-
-                            //     this.viewModel.removeProducts(value);
-                            // }
-                            // else {
-
-                            //     value.recordState = 30;
-                            //     this.saveProducts();
-                            // }
-                        }}
-                        deleteTitle={this.activeLang.labels["lbl_DeleteProducts"]} />
-                </tr >
-            );
-        }
-    }
-
-    saveProducts() {
-
-        let idCounter = -1;
-
-        const savePromises = {
-            options: this.viewModel.products
-                .filter((v, i) => v.recordState && v.recordState !== 0 && !v.isSaving)
-                .map((toSave, index) => {
-
-                    toSave.isSaving = true;
-
-                    return {
-                        promise: Helper.FetchPromisePost('/products/Save', toSave.getValue()),
-                        success: data => {
-
-                            if (data) {
-
-                                if (toSave.recordState === 30) {
-
-                                    this.viewModel.removeProducts(toSave);
-                                }
-                                else if (!data.ok) {
-
-                                    toSave.sync(data);
-                                }
-                            }
-                        },
-                        failure: error => {
-
-                            toSave.error = this.activeLang.msgs['errMsg_Aplgs'];
-                        },
-                        complete: () => {
-
-                            toSave.isSaving = false;
-                        }
-                    };
-                }),
-            incrementSession: () => {
-
-                this.saveProductsPromiseID = this.saveProductsPromiseID ? (this.saveProductsPromiseID + 1) : 1;
-                idCounter = this.saveProductsPromiseID;
-            },
-            sessionValid: () => {
-
-                return idCounter === this.saveProductsPromiseID;
-            }
-        };
-
-        Helper.RunPromise(savePromises);
-    }
+                this.viewModel.execAction(self => {
+                    self.selectedValue = value.id;
+                });
+            }}
+            changeBoolean={this.changeBoolean} />
+    )
 
     changeBoolean = (value, action) => {
 
@@ -590,17 +262,80 @@ class Products extends React.Component {
 
     render() {
 
+        const topButtonsSidePadding = 40;
+
         return (
 
             <PageComponent
 
-                paTitle={this.activeLang.labels["lbl_Menu_products"]}
+                paTitle={
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <Button
+                                        className={'s-btn-empty' + (this.state.tabKey === 0 ? ' border-bottom-primary' : '')}
+                                        style={{
+                                            borderBottom: this.state.tabKey === 0 ? undefined : 'lightgray solid 1px',
+                                            borderBottomLeftRadius: 0,
+                                            borderBottomRightRadius: 0,
+                                            paddingLeft: topButtonsSidePadding,
+                                            paddingRight: topButtonsSidePadding,
+                                        }}
+                                        onClick={e => {
+
+                                            this.groupsScrollPos = document.documentElement.scrollTop;
+                                            this.setState({ tabKey: 0 });
+                                            setTimeout(() => document.documentElement.scrollTop = this.prodsScrollPos, 250);
+                                        }}>
+                                        {
+                                            this.state.tabKey === 0 ?
+                                                <h4>{this.activeLang.labels["lbl_Menu_products"]}</h4>
+                                                :
+                                                this.activeLang.labels["lbl_Menu_products"]
+                                        }
+                                    </Button>
+                                </td>
+                                <td>
+                                    <Button
+                                        className={'s-btn-empty' + (this.state.tabKey === 1 ? ' border-bottom-primary' : '')}
+                                        style={{
+                                            borderBottom: this.state.tabKey === 1 ? undefined : 'lightgray solid 1px',
+                                            borderBottomLeftRadius: 0,
+                                            borderBottomRightRadius: 0,
+                                            paddingLeft: topButtonsSidePadding,
+                                            paddingRight: topButtonsSidePadding,
+                                        }}
+                                        onClick={e => {
+
+                                            if (this.viewModel.groups.length === 0) {
+
+                                                this.getProducts('groups');
+                                            }
+
+                                            this.prodsScrollPos = document.documentElement.scrollTop;
+                                            this.setState({ tabKey: 1 });
+
+                                            setTimeout(() => document.documentElement.scrollTop = this.groupsScrollPos, 250);
+                                        }}>
+                                        {
+                                            this.state.tabKey === 1 ?
+                                                <h4>{this.activeLang.labels["lbl_Groups"]}</h4>
+                                                :
+                                                this.activeLang.labels["lbl_Groups"]
+                                        }
+                                    </Button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
                 paSearchPlaceholder={this.activeLang.labels["lbl_SearchProducts"]}
                 paSearchValue={this.viewModel.searchText}
                 paOnSearchValueChange={e => this.viewModel.searchText = e.target.value}
                 paOnSearch={e => {
-                    this.offset = 0;
-                    this.getProducts();
+
+                    this.clearAndQuery();
                 }}
                 paClearSearchValue={e => this.viewModel.searchText = ''}
                 paOnAdd={e => {
@@ -613,55 +348,69 @@ class Products extends React.Component {
                     return !this.viewModel.isModalShown && temp;
                 }}
                 paGlobalSaveOnClick={e => {
-                    this.saveProducts();
+                    this.viewModel.saveProducts();
                 }}
                 paRefresh={e => {
 
-                    this.offset = 0;
-                    this.getProducts();
+                    this.clearAndQuery();
                 }}
                 paStatusAll={e => {
 
                     this.viewModel.statusType = null;
-                    this.offset = 0;
-                    this.getProducts();
-
+                    this.clearAndQuery();
                 }}
                 paStatusActive={e => {
 
                     this.viewModel.statusType = 1;
-                    this.offset = 0;
-                    this.getProducts();
-
+                    this.clearAndQuery();
                 }}
                 paStatusInactive={e => {
 
                     this.viewModel.statusType = 0;
-                    this.offset = 0;
-                    this.getProducts();
-
+                    this.clearAndQuery();
                 }}
 
                 getTableHeaders={() => {
 
-                    return (
+                    switch (this.state.tabKey) {
 
-                        <tr>
-                            <th className="s-th-cell-status"></th>
-                            <th className="s-th-cell-name">{this.activeLang.labels["lbl_Name"]}</th>
-                            <th>{this.activeLang.labels["lbl_Type"]}</th>
-                            <th>{this.activeLang.labels["lbl_NetSize"]}</th>
-                            <th>{this.activeLang.labels["lbl_GrossSize"]}</th>
-                            <th>{this.activeLang.labels["lbl_Currency"]}</th>
-                            <th>{this.activeLang.labels["lbl_Price"]}</th>
-                            <th>{this.activeLang.labels["lbl_Family"]}</th>
-                            <th className="s-th-cell-active">{this.activeLang.labels["lbl_Active"]}</th>
-                            <th className="s-th-cell-controls" />
-                        </tr>
+                        case 0:
+                            return (
 
-                    );
+                                <tr>
+                                    <th className="s-th-cell-status"></th>
+                                    <th className="s-th-cell-name">{this.activeLang.labels["lbl_Name"]}</th>
+                                    <th>{this.activeLang.labels["lbl_Type"]}</th>
+                                    <th>{this.activeLang.labels["lbl_NetSize"]}</th>
+                                    <th>{this.activeLang.labels["lbl_GrossSize"]}</th>
+                                    <th>{this.activeLang.labels["lbl_Currency"]}</th>
+                                    <th>{this.activeLang.labels["lbl_Price"]}</th>
+                                    <th>{this.activeLang.labels["lbl_Family"]}</th>
+                                    <th className="s-th-cell-active">{this.activeLang.labels["lbl_Active"]}</th>
+                                </tr>
+
+                            );
+
+                        case 1:
+                            return (
+
+                                <tr>
+                                    <th className="s-th-cell-status"></th>
+                                    <th className="s-th-cell-name">{this.activeLang.labels["lbl_Name"]}</th>
+                                    <th>{this.activeLang.labels["lbl_NetSize"]}</th>
+                                    <th>{this.activeLang.labels["lbl_GrossSize"]}</th>
+                                    <th>{this.activeLang.labels["lbl_Currency"]}</th>
+                                    <th>{this.activeLang.labels["lbl_Family"]}</th>
+                                    <th className="s-th-cell-active">{this.activeLang.labels["lbl_Active"]}</th>
+                                    <th></th>
+                                </tr>
+
+                            );
+                    }
                 }}
-                getTableRows={() => this.viewModel.products.map(this.getProductsRow)}
+                getTableRows={() => this.state.tabKey === 0
+                    ? this.viewModel.products.map(this.getProductsRow)
+                    : this.viewModel.groups.map(this.getGroupsRow)}
                 hideNext
                 hidePrev
 

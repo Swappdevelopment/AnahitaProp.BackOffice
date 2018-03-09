@@ -1,0 +1,138 @@
+import React from 'react';
+import { Checkbox, Button, OverlayTrigger } from "react-bootstrap";
+
+import RowLazyWait from "../../RowLazyWait/RowLazyWait";
+
+import Helper from '../../../Helper/Helper';
+
+
+export default class ProductRow extends React.Component {
+
+    render() {
+
+        const { value, index, activeLang, loadLazy, onRowClick, changeBoolean, isGroupRow } = this.props;
+
+        if (value && index >= 0) {
+
+            if (value.isLazyWait) {
+
+                return (
+                    <tr>
+                        <RowLazyWait colSpan={9} spin={true} onAppear={loadLazy} />
+                    </tr>
+                );
+            }
+            else {
+
+                let statusColor = null;
+
+                switch (value.recordState) {
+
+                    case 10:
+                        statusColor = 's-status-add';
+                        break;
+
+                    case 30:
+                        statusColor = 's-status-delete';
+                        break;
+
+                    default:
+
+                        if (value.isModified()) {
+
+                            statusColor = 's-status-edit';
+                        }
+                        break;
+                }
+
+                return (
+                    <tr>
+                        <td className="s-td-cell-status">
+                            <div className={statusColor}>
+                            </div>
+                        </td>
+                        <td
+                            className="s-td-cell-name"
+                            onClick={onRowClick}>
+                            {value.getNameAndCode()}
+                        </td>
+
+                        {
+                            isGroupRow ?
+                                null
+                                :
+                                <td>
+                                    {
+                                        value.type === 10 ? activeLang.labels['lbl_Rsl']
+                                            :
+                                            (value.type === 20 ? activeLang.labels['lbl_Lfs']
+                                                :
+                                                (value.type === 30 ? activeLang.labels['lbl_Prj'] : ''))
+                                    }
+                                </td>
+                        }
+
+                        <td>{value.netSize.format(0, 3)}</td>
+                        <td>{value.grossSize.format(0, 3)}</td>
+                        <td>{value.currencyCode}</td>
+                        {
+                            isGroupRow ?
+                                null
+                                :
+                                <td style={{ textAlign: 'right' }}>{value.price.format(2, 3)}</td>
+                        }
+                        <td>{value.productFamily ? value.productFamily.getName() : 'No Family'}</td>
+
+                        <td className="s-td-cell-active">
+                            {
+                                value.isChangingHideSearch ?
+                                    <span className="spinner"></span>
+                                    :
+                                    <Checkbox className="s-checkbox"
+
+                                        defaultChecked={value.hideSearch ? false : true}
+                                        onChange={e => {
+
+                                            if (value.id > 0) {
+
+                                                let tempValue = value.hideSearch;
+
+                                                value.execAction(self => {
+
+                                                    self.hideSearch = e.target.checked ? false : true;
+                                                });
+
+                                                if (tempValue !== value.hideSearch) {
+
+                                                    if (changeBoolean) changeBoolean(value, 'hideSearch');
+                                                }
+                                            }
+
+                                        }}>
+                                    </Checkbox>
+                            }
+
+                        </td>
+                        {
+                            isGroupRow ?
+                                <td>
+                                    <OverlayTrigger
+                                        placement="top"
+                                        rootClose
+                                        overlay={Helper.getTooltip(`tltp-VwSubProds-${value.genId}`, activeLang.labels["lbl_VwSubProds"])}>
+
+                                        <Button className="s-btn-empty">
+                                            <span className="la la-arrow-right"></span>
+                                        </Button>
+
+                                    </OverlayTrigger>
+                                </td>
+                                :
+                                null
+                        }
+                    </tr >
+                );
+            }
+        }
+    }
+}

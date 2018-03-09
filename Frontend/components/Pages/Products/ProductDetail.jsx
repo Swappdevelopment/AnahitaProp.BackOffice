@@ -23,6 +23,11 @@ class ProductDetail extends React.Component {
         this.errorHandler = props.errorHandler;
     }
 
+    componentWillMount() {
+
+        document.documentElement.scrollTop = 0;
+    }
+
 
     getSideScrollNav = () => {
 
@@ -132,7 +137,7 @@ class ProductDetail extends React.Component {
                             self.selectedValue = null;
                         });
                     }}
-                    paRefresh={() => this.viewModel.getProduct(this.activeLang.code, this.viewModel.selectedValue)}
+                    paRefresh={() => this.viewModel.getProduct(this.viewModel.selectedValue)}
                     paShowSaveButton={() => true}
                     saveBtnDisabled={() => !this.viewModel.selectedValue || !this.viewModel.selectedValue.requiresSave()}
                     paGlobalSaveOnClick={() => this.viewModel.saveProduct(this.viewModel.selectedValue)}

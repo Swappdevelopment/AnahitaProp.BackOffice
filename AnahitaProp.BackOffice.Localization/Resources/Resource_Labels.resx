@@ -513,4 +513,10 @@
   <data name="lbl_Undo" xml:space="preserve">
     <value>Undo</value>
   </data>
+  <data name="lbl_Groups" xml:space="preserve">
+    <value>Groups</value>
+  </data>
+  <data name="lbl_VwSubProds" xml:space="preserve">
+    <value>View Sub Products</value>
+  </data>
 </root>

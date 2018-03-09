@@ -27,8 +27,10 @@ const ProductsViewModel = types.model(
         isGettingDescs: false,
         isGettingFiles: false,
         selectedValue: types.maybe(types.reference(ProductModel), types.null),
+        selectedGroup: types.maybe(types.reference(ProductModel), types.null),
         searchText: types.optional(types.string, ''),
         products: types.optional(types.array(ProductModel), []),
+        groups: types.optional(types.array(ProductModel), []),
         properties: types.optional(types.array(PropertyModel), []),
         projects: types.optional(types.array(ProjectModel), []),
         currencies: types.optional(types.array(types.frozen), []),
@@ -50,11 +52,6 @@ const ProductsViewModel = types.model(
             BaseModel.setPropsValue(self, value);
         },
 
-        clearProducts: () => {
-
-            self.products.length = 0;
-        },
-
         addNewProduct: value => {
 
             if (value) {
@@ -65,14 +62,6 @@ const ProductsViewModel = types.model(
             return value;
         },
 
-        pushProduct: (...product) => {
-
-            if (product) {
-
-                self.products.push(...product);
-            }
-        },
-
         removeProduct: product => {
 
             if (product) {
@@ -81,19 +70,40 @@ const ProductsViewModel = types.model(
             }
         },
 
-        removeLazyWaitRecord: () => {
+        removeLazyWaitRecord: action => {
 
-            if (self.products
-                && self.products.length > 0
-                && self.products[self.products.length - 1].isLazyWait) {
+            switch (action) {
 
-                destroy(self.products[self.products.length - 1]);
+                case 'groups':
+
+                    if (self.groups
+                        && self.groups.length > 0
+                        && self.groups[self.groups.length - 1].isLazyWait) {
+
+                        destroy(self.groups[self.groups.length - 1]);
+                    }
+                    break;
+
+                case 'subgroups':
+
+                    break;
+
+                default:
+
+                    if (self.products
+                        && self.products.length > 0
+                        && self.products[self.products.length - 1].isLazyWait) {
+
+                        destroy(self.products[self.products.length - 1]);
+                    }
+                    break;
             }
+
         },
 
         saveProduct: value => {
 
-            if (value && !value.isSaving && (value.recordState > 0 || value.isModified())) {
+            if (value && !value.isSaving && (value.recordState > 0 || value.isModified()) && value.isValid && value.isValid()) {
 
                 value.execAction(prod => prod.isSaving = true);
 
@@ -141,15 +151,305 @@ const ProductsViewModel = types.model(
             }
         },
 
-        syncProperties: (activeLangCode, data) => {
+        syncProperties: data => {
 
             if (data) {
 
-                self.properties.push(...data.map((mv, i) => PropertyModel.init(mv, ++self.idGenerator, activeLangCode)));
+                self.properties.push(...data.map((mv, i) => PropertyModel.init(mv, ++self.idGenerator, self.activeLang.code)));
             }
         },
 
-        getProduct: (activeLangCode, prodModel) => {
+        getLookups: () => {
+
+            if (!self.gettingLookups) {
+
+                const promises = [];
+
+                if (self.prodFamilyTypes.length === 0) {
+
+                    let idCounter = -1;
+
+                    promises.push(
+                        {
+                            promise: Helper.FetchPromiseGet(
+                                '/lookup/GetProductFamilyTypes/'),
+                            success: data => {
+
+                                if (data && data.length > 0) {
+
+                                    self.execAction(() => {
+
+                                        self.prodFamilyTypes.push(...data.map((v, i) => {
+
+                                            const name = v.names ?
+                                                v.names.find(nm => (nm.language_Code ? nm.language_Code.toLowerCase() : '') == self.activeLang.code)
+                                                :
+                                                null;
+
+                                            return Object.assign(v, {
+                                                name: name ? name.value : null
+                                            });
+                                        }));
+                                    });
+                                }
+                            },
+                            incrementSession: () => {
+
+                                self.getProductFamilyTypesPromiseID = self.getProductFamilyTypesPromiseID ? (self.getProductFamilyTypesPromiseID + 1) : 1;
+                                idCounter = self.getProductFamilyTypesPromiseID;
+                            },
+                            sessionValid: () => {
+
+                                return idCounter === self.getProductFamilyTypesPromiseID;
+                            }
+                        });
+                }
+
+                if (self.prodFamilies.length === 0) {
+
+                    let idCounter = -1;
+
+                    promises.push(
+                        {
+                            promise: Helper.FetchPromiseGet(
+                                '/lookup/GetProductFamilies/'),
+                            success: data => {
+
+                                if (data && data.length > 0) {
+
+                                    self.execAction(() => {
+
+                                        self.prodFamilies.push(...data.map((v, i) => {
+
+                                            const name = v.names ?
+                                                v.names.find(nm => (nm.language_Code ? nm.language_Code.toLowerCase() : '') == self.activeLang.code)
+                                                :
+                                                null;
+
+                                            return Object.assign(v, {
+                                                name: name ? name.value : null
+                                            });
+                                        }));
+                                    });
+                                }
+                            },
+                            incrementSession: () => {
+
+                                self.getProductFamiliesPromiseID = self.getProductFamiliesPromiseID ? (self.getProductFamiliesPromiseID + 1) : 1;
+                                idCounter = self.getProductFamiliesPromiseID;
+                            },
+                            sessionValid: () => {
+
+                                return idCounter === self.getProductFamiliesPromiseID;
+                            }
+                        });
+                }
+
+                if (self.currencies.length === 0) {
+
+                    let idCounter = -1;
+
+                    promises.push(
+                        {
+                            promise: Helper.FetchPromiseGet(
+                                '/lookup/GetCurrencies/'),
+                            success: data => {
+
+                                if (data && data.length > 0) {
+
+                                    self.execAction(() => {
+
+                                        self.currencies.push(...data);
+                                    });
+                                }
+                            },
+                            incrementSession: () => {
+
+                                self.getCurrenciesPromiseID = self.getCurrenciesPromiseID ? (self.getCurrenciesPromiseID + 1) : 1;
+                                idCounter = self.getCurrenciesPromiseID;
+                            },
+                            sessionValid: () => {
+
+                                return idCounter === self.getCurrenciesPromiseID;
+                            }
+                        });
+                }
+
+
+                if (promises.length > 0) {
+
+                    self.gettingLookups = true;
+
+                    let idCounter = -1;
+
+                    Helper.RunPromise(
+                        {
+                            options: promises,
+                            incrementSession: () => {
+
+                                self.getLookupsPromiseID = self.getLookupsPromiseID ? (self.getLookupsPromiseID + 1) : 1;
+                                idCounter = self.getLookupsPromiseID;
+                            },
+                            sessionValid: () => {
+
+                                return idCounter === self.getLookupsPromiseID;
+                            }
+                        },
+                        error => {
+
+                            if (self.showPromiseError) {
+                                self.showPromiseError(error);
+                            }
+                        },
+                        () => {
+
+                            self.gettingLookups = false;
+                        });
+                }
+            }
+        },
+
+        getProducts: (limit, offset, action) => {
+
+            if ((action === 'groups' && !self.isGettingGroups)
+                || (action === 'subgroups' && !self.isGettingSubGroups)
+                || !self.isGettingProjects) {
+
+
+                const isFullRefresh = offset === 0;
+
+                if (isFullRefresh) {
+
+                    switch (action) {
+
+                        case 'groups':
+
+                            self.isGettingGroups = true;
+                            self.groups.length = 0;
+                            break;
+
+                        case 'subgroups':
+
+                            self.isGettingSubGroups = true;
+                            break;
+
+                        default:
+
+                            self.isGettingProducts = true;
+                            self.products.length = 0;
+                            break;
+                    }
+
+                    self.triggerPageBlur(true);
+                }
+                else {
+
+                    self.isLazyLoading = true;
+                }
+
+                const params = {
+                    limit,
+                    offset,
+                    hideSearchFilter: self.statusType === 1 ? false : (self.statusType === 0 ? true : null),
+                    withGroups: action === 'groups',
+                    withSubGroups: action === 'subgroups',
+                    withProperties: (self.properties.length === 0)
+                };
+
+                if (self.searchText) {
+
+                    params['nameFilter'] = self.searchText;
+                }
+
+                let idCounter = -1;
+
+                Helper.RunPromise(
+                    {
+                        promise: Helper.FetchPromiseGet('/products/get/', params),
+                        success: data => {
+
+                            if (data) {
+
+                                if (data.properties && data.properties.length > 0) {
+
+                                    self.syncProperties(data.properties);
+                                }
+
+                                if (data.products && data.products.length > 0) {
+
+                                    self.removeLazyWaitRecord(action);
+
+                                    const temp = [...data.products.map((v, i) => self.syncProduct(v))];
+                                    temp.push(self.getLazyWaitRecord());
+
+
+                                    switch (action) {
+
+                                        case 'groups':
+
+                                            self.execAction(() => self.groups.push(...temp));
+                                            break;
+
+                                        case 'subgroups':
+
+                                            break;
+
+                                        default:
+
+                                            self.execAction(() => self.products.push(...temp));
+                                            break;
+                                    }
+                                }
+                                else {
+
+                                    self.removeLazyWaitRecord(action);
+                                }
+                            }
+                        },
+                        incrementSession: () => {
+
+                            self.getProductsPromiseID = self.getProductsPromiseID ? (self.getProductsPromiseID + 1) : 1;
+                            idCounter = self.getProductsPromiseID;
+                        },
+                        sessionValid: () => {
+
+                            return idCounter === self.getProductsPromiseID;
+                        }
+                    },
+                    error => {
+                        if (self.showPromiseError) {
+                            self.showPromiseError(error);
+                        }
+                    },
+                    () => {
+
+                        self.triggerPageBlur(false);
+
+                        self.execAction(() => self.isLazyLoading = false);
+
+                        switch (action) {
+
+                            case 'groups':
+
+                                self.isGettingGroups = false;
+                                break;
+
+                            case 'subgroups':
+
+                                self.isGettingSubGroups = false;
+                                break;
+
+                            default:
+
+                                self.isGettingProducts = false;
+                                break;
+                        }
+                    }
+                );
+            }
+        },
+
+        getProduct: prodModel => {
 
             if (prodModel && !prodModel.isRefreshing) {
 
@@ -199,7 +499,58 @@ const ProductsViewModel = types.model(
             }
         },
 
-        getProperties: activeLangCode => {
+        saveProducts: () => {
+
+            let idCounter = -1;
+
+            const savePromises = {
+                options: self.products
+                    .filter((v, i) => v.recordState && v.recordState !== 0 && !v.isSaving)
+                    .map((toSave, index) => {
+
+                        toSave.isSaving = true;
+
+                        return {
+                            promise: Helper.FetchPromisePost('/products/Save', toSave.getValue()),
+                            success: data => {
+
+                                if (data) {
+
+                                    if (toSave.recordState === 30) {
+
+                                        self.removeProducts(toSave);
+                                    }
+                                    else if (!data.ok) {
+
+                                        toSave.sync(data);
+                                    }
+                                }
+                            },
+                            failure: error => {
+
+                                toSave.execAction(() => toSave.error = self.activeLang.msgs['errMsg_Aplgs']);
+                            },
+                            complete: () => {
+
+                                toSave.execAction(() => toSave.isSaving = false);
+                            }
+                        };
+                    }),
+                incrementSession: () => {
+
+                    self.saveProductsPromiseID = self.saveProductsPromiseID ? (self.saveProductsPromiseID + 1) : 1;
+                    idCounter = self.saveProductsPromiseID;
+                },
+                sessionValid: () => {
+
+                    return idCounter === self.saveProductsPromiseID;
+                }
+            };
+
+            Helper.RunPromise(savePromises);
+        },
+
+        getProperties: () => {
 
             if (self.properties.length === 0 && !self.isGettingProperties) {
 
@@ -216,7 +567,7 @@ const ProductsViewModel = types.model(
 
                                 self.execAction(() => {
 
-                                    self.properties.push(...data.map((mv, i) => PropertyModel.init(mv, ++self.idGenerator, activeLangCode)));
+                                    self.properties.push(...data.map((mv, i) => PropertyModel.init(mv, ++self.idGenerator, self.activeLang.code)));
 
                                     if (self.selectedValue && self.selectedValue.property_Id > 0) {
 
@@ -249,7 +600,7 @@ const ProductsViewModel = types.model(
             }
         },
 
-        getProjects: activeLangCode => {
+        getProjects: () => {
 
             if (self.projects.length === 0 && !self.isGettingProjects) {
 
@@ -266,7 +617,7 @@ const ProductsViewModel = types.model(
 
                                 self.execAction(() => {
 
-                                    self.projects.push(...data.map((mv, i) => ProjectModel.init(mv, ++self.idGenerator, activeLangCode)));
+                                    self.projects.push(...data.map((mv, i) => ProjectModel.init(mv, ++self.idGenerator, self.activeLang.code)));
 
                                     if (self.selectedValue && self.selectedValue.project_Id > 0) {
 
@@ -299,7 +650,7 @@ const ProductsViewModel = types.model(
             }
         },
 
-        getFlags: activeLangCode => {
+        getFlags: () => {
 
             if (!self.isGettingFlags && self.flags.length === 0) {
 
@@ -317,7 +668,7 @@ const ProductsViewModel = types.model(
                                 self.execAction(() => {
 
                                     self.flags.push(...data
-                                        .map((v, i) => FlagModel.init(v, i + 1, activeLangCode))
+                                        .map((v, i) => FlagModel.init(v, i + 1, self.activeLang.code))
                                         .sort((a, b) => {
 
                                             if (a && b) {
@@ -391,14 +742,14 @@ const ProductsViewModel = types.model(
 
                                     prodModel.execAction(() =>
                                         prodModel.flags.push(...data.productFlags
-                                            .map((v, i) => FlagLinkModel.init(v, ++self.idGenerator, activeLangCode))));
+                                            .map((v, i) => FlagLinkModel.init(v, ++self.idGenerator, self.activeLang.code))));
                                 }
 
                                 if (propModel && data.propertyFlags && data.propertyFlags.length > 0) {
 
                                     propModel.execAction(() =>
                                         propModel.flags.push(...data.propertyFlags
-                                            .map((v, i) => FlagLinkModel.init(v, ++self.idGenerator, activeLangCode))));
+                                            .map((v, i) => FlagLinkModel.init(v, ++self.idGenerator, self.activeLang.code))));
                                 }
                             }
                         },
@@ -426,9 +777,7 @@ const ProductsViewModel = types.model(
             }
         },
 
-        getDescs: () => {
-
-            const prodModel = self.selectedValue;
+        getDescs: prodModel => {
 
             if (prodModel && !prodModel.isGettingDescs) {
 
@@ -596,15 +945,17 @@ const _triggeronSelectedValueChanged = () => {
     }
 }
 
-ProductsViewModel.init = () => {
+ProductsViewModel.init = (activeLang) => {
 
     const self = ProductsViewModel.create({});
+
+    self.activeLang = activeLang;
     self.idGenerator = 0;
     self.statusType = 1;
 
     self.counterNewProdFile = -1;
 
-    self.syncProduct = (value, activeLangCode) => ProductModel.init(value, ++self.idGenerator, activeLangCode);
+    self.syncProduct = value => ProductModel.init(value, ++self.idGenerator, self.activeLang.code);
 
     self.getNewProduct = () => {
 

@@ -19,12 +19,6 @@ const ItemFieldModel = types.model(
                 func(self);
             }
         },
-        setPropsValue: (value, listenForChange) => {
-
-            BaseModel.setPropsValue(self, value, listenForChange);
-
-            self.recievedInput = listenForChange ? true : false;
-        },
         resetOriginalValue: () => {
 
             const value = self.getValue();
@@ -44,13 +38,6 @@ const ItemFieldModel = types.model(
                     self.recordState = nrs;
                     break;
             }
-        },
-        resetOriginalValue: () => {
-
-            const value = self.getValue();
-            delete value.recordState;
-
-            self.originalValue = value;
         }
     })).views(self => ({
         isModified: () => {
@@ -71,10 +58,12 @@ ItemFieldModel.init = (value, genId) => {
     const self = ItemFieldModel.create({ recordState: 0 });
 
     self.genId = genId;
-    
-    self.execAction(() => self.originalValue = value);
 
-    self.setPropsValue(value);
+    self.execAction(() => {
+
+        self.originalValue = value;
+        BaseModel.setPropsValue(self, value);
+    });
 
     self.id = value.id;
     self.status = value.status;

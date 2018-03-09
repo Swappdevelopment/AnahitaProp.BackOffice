@@ -31,7 +31,15 @@ namespace AnahitaProp.BackOffice
         [HttpGet]
         [Access]
         [MenuRequirement("products>crud")]
-        public async Task<IActionResult> Get(long productID = 0, short? statusFilter = null, int offset = 0, int limit = 0, bool withProperties = false)
+        public async Task<IActionResult> Get(
+            long productID = 0,
+            short? statusFilter = null,
+            bool? hideSearchFilter = null,
+            int offset = 0,
+            int limit = 0,
+            bool? withGroups = null,
+            bool? withSubGroups = null,
+            bool withProperties = false)
         {
             Product[] products = null;
             Property[] properties = null;
@@ -41,7 +49,15 @@ namespace AnahitaProp.BackOffice
                 await Task.WhenAll(
                     Helper.GetFunc(() =>
                     {
-                        products = _dbi.GetListProducts(productID: productID, withNames: true, withoutGroupsAndSubs: true, statusFilter: statusFilter, offset: offset, limit: limit);
+                        products = _dbi.GetListProducts(
+                            productID: productID,
+                            withNames: true,
+                            withGroups: withGroups,
+                            withSubGroups: withSubGroups,
+                            statusFilter: statusFilter,
+                            hideSearchFilter: hideSearchFilter,
+                            offset: offset,
+                            limit: limit);
 
                         return Task.CompletedTask;
                     })(),
@@ -541,7 +557,7 @@ namespace AnahitaProp.BackOffice
                     {
                         if (product.RecordState == RecordState.Added)
                         {
-                            product = _dbi.GetListProducts(uid: product.UID, withNames: true, withoutGroupsAndSubs: true)?.FirstOrDefault();
+                            product = _dbi.GetListProducts(uid: product.UID, withNames: true)?.FirstOrDefault();
 
                             clearProduct = false;
                         }

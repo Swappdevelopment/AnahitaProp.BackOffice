@@ -26,6 +26,7 @@ const PropertyModel = types.model(
     Object.assign(
         {
             isSaving: false,
+            recievedInput: false,
             originalValue: types.optional(types.frozen, null),
         },
         getObject())
@@ -128,7 +129,22 @@ const PropertyModel = types.model(
             }
 
             return modified;
-        }
+        },
+        getFullName() {
+
+            if (self.neighbourhood) {
+                return `${self.neighbourhood.getName()} - ${self.code.toUpperCase()}`;
+            }
+
+            return self.code;
+        },
+        isLotSizeValid: () => self.recievedInput ? (self.lotSize >= 0 ? true : false) : true,
+        isValid: () => {
+
+            self.recievedInput = true;
+
+            return self.isLotSizeValid();
+        },
     }));
 
 

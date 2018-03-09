@@ -252,7 +252,7 @@ export default class DropdownEditor extends React.Component {
                         }}
                         disabled={this.props.disabled}
                         className={this.props.className}
-                        value={this.state.inputValue}
+                        value={this.state.inputValue ? this.state.inputValue : ''}
                         onKeyDown={this.handleKeyDown}
                         onChange={e => {
 

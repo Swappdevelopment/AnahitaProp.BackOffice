@@ -57,6 +57,7 @@ const ProductModel = types.model(
             isSaving: false,
             isLazyWait: false,
             isGettingFlags: false,
+            isGettingDescs: false,
             isChangingStatus: false,
             isChangingHideSearch: false
         },
@@ -346,14 +347,43 @@ const ProductModel = types.model(
             return `${self.getName()}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`;
         },
         isCodeValid: () => self.recievedInput ? (self.code ? true : false) : true,
-        isPriceAndCurrencyValid: () => self.recievedInput ? ((self.currency_Id > 0 && self.price > 0) ? true : false) : true,
+        isNetSizeValid: () => self.recievedInput ? (self.netSize >= 0 ? true : false) : true,
+        isGrossSizeValid: () => self.recievedInput ? (self.grossSize >= 0 ? true : false) : true,
+        isCurrencyValid: () => self.recievedInput ? (self.currency_Id > 0 ? true : false) : true,
+        isPriceValid: () => self.recievedInput ? (self.price >= 0 ? true : false) : true,
+        isPropertyValid: () => {
+
+            if (self.recievedInput
+                && (!self.type || self.type === 10 || self.type === 20)) {
+
+                return self.property_Id > 0;
+            }
+
+            return true;
+        },
+        isProjectValid: () => {
+
+            if (self.recievedInput
+                && (!self.type || self.type === 20 || self.type === 30)) {
+
+                return self.project_Id > 0;
+            }
+
+            return true;
+        },
         isValid: () => {
 
             self.recievedInput = true;
 
             return self.isCodeValid()
-                && self.isPriceAndCurrencyValid()
-                && (self.names.filter((v, i) => !v.isValid()).length === 0);
+                && self.isNetSizeValid()
+                && self.isGrossSizeValid()
+                && self.isCurrencyValid()
+                && self.isPriceValid()
+                && self.isPropertyValid()
+                && self.isProjectValid()
+                && (!self.property || self.property.isValid())
+                && !self.names.find((v, i) => !v.isValid());
         },
         getPropertyFlags: colRefFilter => {
 

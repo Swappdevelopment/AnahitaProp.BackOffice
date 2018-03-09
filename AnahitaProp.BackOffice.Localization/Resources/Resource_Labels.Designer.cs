@@ -611,6 +611,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Groups.
+        /// </summary>
+        public static string lbl_Groups {
+            get {
+                return ResourceManager.GetString("lbl_Groups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello.
         /// </summary>
         public static string lbl_Hello {
@@ -1228,6 +1237,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Views {
             get {
                 return ResourceManager.GetString("lbl_Views", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View Sub Products.
+        /// </summary>
+        public static string lbl_VwSubProds {
+            get {
+                return ResourceManager.GetString("lbl_VwSubProds", resourceCulture);
             }
         }
         

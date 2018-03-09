@@ -373,8 +373,6 @@ const UserManagement =
 
                         <PageComponent
                             paTitle={this.activeLang.labels["lbl_Menu_usermanagement"]}
-                            paSearchPlaceholder={this.activeLang.labels["lbl_SearchUsers"]}
-                            paSearchValue={this.viewModel.searchText}
                             paOnSearchValueChange={e => this.viewModel.searchText = e.target.value}
                             paOnSearch={e => this.getUsers(this.viewModel.searchText)}
                             paClearSearchValue={e => this.viewModel.searchText = ''}

@@ -72,7 +72,7 @@ const GridRowToolbar =
                                     <OverlayTrigger
                                         placement="top"
                                         rootClose
-                                        overlay={Helper.getTooltip(`tltpSaving-${this.currentValue.genId} tltpSaving`, `${this.activeLang.labels["lbl_Saving"]}...`)}>
+                                        overlay={Helper.getTooltip(`tltpSaving-${this.currentValue.genId}`, `${this.activeLang.labels["lbl_Saving"]}...`)}>
                                         <i style={{ position: 'absolute', top: '10px', right: '44px' }} className="spinner"></i>
                                     </OverlayTrigger>
                                     :
@@ -102,41 +102,51 @@ const GridRowToolbar =
                                                 :
                                                 <div>
 
-                                                    <OverlayTrigger
-                                                        placement="top"
-                                                        rootClose
-                                                        overlay={Helper.getTooltip(
-                                                            `tltpEdit-${this.currentValue.genId}`,
-                                                            this.props.tltpEdit ? this.props.tltpEdit : this.activeLang.labels["lbl_Edit"]
-                                                        )}>
-                                                        <Button
-                                                            className={this.props.hideEdit ? 'hidden' : 's-btn-small-edit'}
-                                                            disabled={this.props.editButtonDisabled}
-                                                            onClick={this.props.onEdit}>
-                                                            <span className="la la-pencil" />
-                                                        </Button>
+                                                    {
+                                                        this.props.hideEdit ?
+                                                            null
+                                                            :
+                                                            <OverlayTrigger
+                                                                placement="top"
+                                                                rootClose
+                                                                overlay={Helper.getTooltip(
+                                                                    `tltpEdit-${this.currentValue.genId}`,
+                                                                    this.props.tltpEdit ? this.props.tltpEdit : this.activeLang.labels["lbl_Edit"]
+                                                                )}>
+                                                                <Button
+                                                                    className="s-btn-small-edit"
+                                                                    disabled={this.props.editButtonDisabled}
+                                                                    onClick={this.props.onEdit}>
+                                                                    <span className="la la-pencil" />
+                                                                </Button>
 
-                                                    </OverlayTrigger>
+                                                            </OverlayTrigger>
+                                                    }
 
-                                                    <OverlayTrigger
-                                                        rootClose
-                                                        trigger="click"
-                                                        placement="left"
-                                                        overlay={this.popDeleteConfirm(this.currentValue)}>
-                                                        <OverlayTrigger
-                                                            placement="top"
-                                                            rootClose
-                                                            overlay={Helper.getTooltip(
-                                                                `tltpDelete-${this.currentValue.genId}`,
-                                                                this.activeLang.labels["lbl_Delete"]
-                                                            )}>
-                                                            <Button
-                                                                className="s-btn-small-delete"
-                                                                disabled={this.props.deleteButtonDisabled}>
-                                                                <span className="la la-remove" />
-                                                            </Button>
-                                                        </OverlayTrigger>
-                                                    </OverlayTrigger>
+                                                    {
+                                                        this.props.hideDelete ?
+                                                            null
+                                                            :
+                                                            <OverlayTrigger
+                                                                rootClose
+                                                                trigger="click"
+                                                                placement="left"
+                                                                overlay={this.popDeleteConfirm(this.currentValue)}>
+                                                                <OverlayTrigger
+                                                                    placement="top"
+                                                                    rootClose
+                                                                    overlay={Helper.getTooltip(
+                                                                        `tltpDelete-${this.currentValue.genId}`,
+                                                                        this.activeLang.labels["lbl_Delete"]
+                                                                    )}>
+                                                                    <Button
+                                                                        className="s-btn-small-delete"
+                                                                        disabled={this.props.deleteButtonDisabled}>
+                                                                        <span className="la la-remove" />
+                                                                    </Button>
+                                                                </OverlayTrigger>
+                                                            </OverlayTrigger>
+                                                    }
                                                 </div>
 
                                         }

@@ -235,6 +235,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Valeur Invalide.
+        /// </summary>
+        public static string msg_InvldValue {
+            get {
+                return ResourceManager.GetString("msg_InvldValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Le lien que vous utilisez a expiré.
         ///Certains de nos liens ont des dates d&apos;expirations pour des mesures de sécurité..
         /// </summary>

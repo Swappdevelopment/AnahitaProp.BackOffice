@@ -25,7 +25,8 @@ const FlagLinkModel = types.model(
     'FlagLinkModel',
     Object.assign(
         {
-            isSaving: false
+            isSaving: false,
+            recievedInput: false
         },
         getObject())
 ).actions(
@@ -62,9 +63,18 @@ const FlagLinkModel = types.model(
         isModified: () => BaseModel.isSelfModified(self, self.originalValue),
         isBedNumberValueValid: () => {
 
-            if (self.flag && self.flag.colValueRef === GlobalValues.constants.FLAG_NUM_BEDROOMS_REF) {
+            if (self.recievedInput && self.flag && self.flag.colValueRef === GlobalValues.constants.FLAG_NUM_BEDROOMS_REF) {
 
                 return self.valueInt > 0;
+            }
+
+            return true;
+        },
+        isRoomDenNumberValueValid: () => {
+
+            if (self.recievedInput && self.flag && self.flag.colValueRef === GlobalValues.constants.FLAG_OPTION_ROOM_DEN) {
+
+                return self.valueInt >= 0;
             }
 
             return true;

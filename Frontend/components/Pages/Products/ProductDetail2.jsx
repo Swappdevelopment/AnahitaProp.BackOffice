@@ -29,23 +29,25 @@ class ProductDetail2 extends React.Component {
 
         if (prodModel) {
 
-            const undoItem = {
-                key: 'type',
-                value: prodModel.type,
-                model: prodModel
-            };
+            if (self.type !== key) {
 
-            prodModel.execAction(self => self.type = key);
+                const undoItem = {
+                    key: 'type',
+                    value: prodModel.type,
+                    model: prodModel
+                };
 
-            if (undoItem.value !== prodModel.type) {
+                prodModel.execAction(self => self.type = key);
 
-                this.undoManager.pushToStack(undoItem);
+                if (undoItem.value !== prodModel.type) {
+
+                    this.undoManager.pushToStack(undoItem);
+                }
             }
-
 
             switch (key) {
 
-                case 0:
+                case 10:
 
                     if (prodModel.originalValue) {
 
@@ -54,15 +56,17 @@ class ProductDetail2 extends React.Component {
                             self.project_Id = self.originalValue.project_Id ? self.originalValue.project_Id : 0;
                             self.project = self.project_Id > 0 ? self.project_Id : null;
                         });
+
+                        this.undoManager.clearStack('project_Id');
                     }
                     break;
 
-                case 1:
+                case 20:
 
-                    this.viewModel.getProjects(this.activeLang.code);
+                    this.viewModel.getProjects();
                     break;
 
-                case 2:
+                case 30:
 
                     if (prodModel.originalValue) {
 
@@ -71,15 +75,17 @@ class ProductDetail2 extends React.Component {
                             self.property_Id = self.originalValue.property_Id ? self.originalValue.property_Id : 0;
                             self.property = self.property_Id > 0 ? self.property_Id : null;
                         });
+
+                        this.undoManager.clearStack('property_Id');
                     }
 
-                    this.viewModel.getProjects(this.activeLang.code);
+                    this.viewModel.getProjects();
                     break;
             }
         }
     }
 
-    getTabHeader = (prodModel, label, index, showSpinnerAction) => {
+    getTabHeader = (prodModel, label, index) => {
 
         const isTabActive = prodModel.type === index;
 
@@ -90,12 +96,6 @@ class ProductDetail2 extends React.Component {
                     style={{ marginRight: 5 }}>
                 </span>
                 <span>{label}</span>
-                {
-                    isTabActive && showSpinnerAction && showSpinnerAction() ?
-                        <span className="spinner" />
-                        :
-                        null
-                }
             </span>
         );
     }
@@ -127,8 +127,8 @@ class ProductDetail2 extends React.Component {
                                                 <div className="form-group s-form-group">
                                                     <DropdownEditor
                                                         id="drpProdProp"
-                                                        className="form-control s-input s-ellipsis"
-                                                        title={prodModel.property.code}>
+                                                        className={'form-control s-input' + (prodModel.isPropertyValid() ? '' : '-error') + ' s-ellipsis'}
+                                                        title={prodModel.property ? prodModel.property.getFullName() : null}>
                                                         {
                                                             this.viewModel.properties.map((v, i) => {
 
@@ -138,13 +138,27 @@ class ProductDetail2 extends React.Component {
                                                                         key={v.id}
                                                                         onClick={e => {
 
+                                                                            this.undoManager.pushToStack([
+                                                                                {
+                                                                                    key: 'property_Id',
+                                                                                    value: prodModel.property_Id,
+                                                                                    model: prodModel
+                                                                                },
+                                                                                {
+                                                                                    key: 'property',
+                                                                                    value: prodModel.property_Id,
+                                                                                    model: prodModel
+                                                                                }
+                                                                            ]);
+
                                                                             prodModel.execAction(self => {
 
                                                                                 self.property_Id = v.id;
                                                                                 self.property = v.id;
+                                                                                self.recievedInput = true;
                                                                             });
                                                                         }}>
-                                                                        {v.code}
+                                                                        {v.getFullName()}
                                                                     </DropdownEditorMenu>
                                                                 );
                                                             })
@@ -152,6 +166,12 @@ class ProductDetail2 extends React.Component {
                                                     </DropdownEditor>
                                                 </div>
                                             </div>
+                                    }
+                                    {
+                                        prodModel.isSaving || prodModel.isPropertyValid() ?
+                                            null
+                                            :
+                                            <small className="s-label-error">{this.activeLang.msgs['msg_InvldValue']}</small>
                                     }
                                 </Col>
                             </div>
@@ -167,10 +187,29 @@ class ProductDetail2 extends React.Component {
                                             <div className="form-group s-form-group">
                                                 <input
                                                     type="number"
-                                                    className="form-control s-input"
-                                                    value={prodModel.property.lotSize}
-                                                    onChange={e => prodModel.property.execAction(self => self.lotSize = parseFloat(e.target.value))} />
+                                                    min={0}
+                                                    className={'form-control s-input' + (!prodModel.property || prodModel.property.isLotSizeValid() ? '' : '-error')}
+                                                    value={prodModel.property && prodModel.property.lotSize ? prodModel.property.lotSize : 0}
+                                                    onChange={e => {
+
+                                                        this.undoManager.pushToStack({
+                                                            key: 'lotSize',
+                                                            value: prodModel.property.lotSize,
+                                                            model: prodModel.property
+                                                        });
+                                                        prodModel.property.execAction(self => {
+
+                                                            self.lotSize = parseFloat(e.target.value);
+                                                            self.recievedInput = true;
+                                                        });
+                                                    }} />
                                             </div>
+                                    }
+                                    {
+                                        !prodModel.property || prodModel.property.isLotSizeValid() ?
+                                            null
+                                            :
+                                            <small className="s-label-error">{this.activeLang.msgs['msg_InvldValue']}</small>
                                     }
                                 </Col>
                             </div>
@@ -194,7 +233,7 @@ class ProductDetail2 extends React.Component {
                                             <div className="form-group s-form-group">
                                                 <DropdownEditor
                                                     id="drpProdProp"
-                                                    className="form-control s-input s-ellipsis"
+                                                    className={'form-control s-input' + (prodModel.isProjectValid() ? '' : '-error') + ' s-ellipsis'}
                                                     disabled={prodModel.isSaving}
                                                     title={prodModel.project ? prodModel.project.getName() : ''}>
                                                     {
@@ -209,10 +248,24 @@ class ProductDetail2 extends React.Component {
                                                                         key={v.id}
                                                                         onClick={e => {
 
+                                                                            this.undoManager.pushToStack([
+                                                                                {
+                                                                                    key: 'project_Id',
+                                                                                    value: prodModel.project_Id,
+                                                                                    model: prodModel
+                                                                                },
+                                                                                {
+                                                                                    key: 'project',
+                                                                                    value: prodModel.project_Id,
+                                                                                    model: prodModel
+                                                                                }
+                                                                            ]);
+
                                                                             prodModel.execAction(self => {
 
                                                                                 self.project_Id = v.id;
                                                                                 self.project = v.id;
+                                                                                self.recievedInput = true;
                                                                             });
                                                                         }}>
                                                                         {v.getName()}
@@ -223,6 +276,12 @@ class ProductDetail2 extends React.Component {
                                                 </DropdownEditor>
                                             </div>
                                         </div>
+                                }
+                                {
+                                    prodModel.isSaving || prodModel.isProjectValid() ?
+                                        null
+                                        :
+                                        <small className="s-label-error">{this.activeLang.msgs['msg_InvldValue']}</small>
                                 }
                             </Col>
                         </div>
@@ -239,7 +298,7 @@ class ProductDetail2 extends React.Component {
 
         if (prodModel) {
 
-            this.onTabSelect(prodModel);
+            this.onTabSelect(prodModel, prodModel.type);
 
             return (
                 <div style={{ minHeight: 250 }}>
@@ -250,71 +309,48 @@ class ProductDetail2 extends React.Component {
 
                     <Tabs id="tab_product_type" className="s-tabs"
                         defaultActiveKey={prodModel.type}
+                        activeKey={prodModel.type}
                         onSelect={key => this.onTabSelect(prodModel, key)}>
                         <Tab
                             disabled={prodModel.isSaving}
                             eventKey={10}
-                            title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Rsl'], 10, () => this.viewModel.isGettingProperties)}>
+                            title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Rsl'], 10)}>
                             {
                                 this.viewModel.isGettingProperties ?
-                                    null
+                                    <span className="spinner" />
                                     :
-                                    (() => {
-
-                                        if (prodModel.property) {
-
-                                            return this.getPropertyChoiceContent({ prodModel, hideProject: true });
-                                        }
-
-                                        return null;
-                                    })()
+                                    this.getPropertyChoiceContent({ prodModel, hideProject: true })
                             }
                         </Tab>
                         <Tab
                             disabled={prodModel.isSaving}
                             eventKey={20}
-                            title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Lfs'], 20, () => this.viewModel.isGettingProperties || this.viewModel.isGettingProjects)}>
+                            title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Lfs'], 20)}>
                             {
                                 this.viewModel.isGettingProperties || this.viewModel.isGettingProjects ?
-                                    null
+                                    <span className="spinner" />
                                     :
-                                    (() => {
-
-                                        if (prodModel.property) {
-
-                                            return this.getPropertyChoiceContent(
-                                                {
-                                                    prodModel,
-                                                    projectsFilter: (v, i) => v.type === 10
-                                                });
-                                        }
-
-                                        return null;
-                                    })()
+                                    this.getPropertyChoiceContent(
+                                        {
+                                            prodModel,
+                                            projectsFilter: (v, i) => v.type === 10
+                                        })
                             }
                         </Tab>
                         <Tab
                             disabled={prodModel.isSaving}
                             eventKey={30}
-                            title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Prj'], 30, () => this.viewModel.isGettingProjects)}>
+                            title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Prj'], 30)}>
                             {
                                 this.viewModel.isGettingProjects ?
-                                    null
+                                    <span className="spinner" />
                                     :
-                                    (() => {
-
-                                        if (prodModel.property) {
-
-                                            return this.getPropertyChoiceContent(
-                                                {
-                                                    prodModel,
-                                                    hideProperty: true,
-                                                    projectsFilter: (v, i) => v.type !== 10
-                                                });
-                                        }
-
-                                        return null;
-                                    })()
+                                    this.getPropertyChoiceContent(
+                                        {
+                                            prodModel,
+                                            hideProperty: true,
+                                            projectsFilter: (v, i) => v.type !== 10
+                                        })
                             }
                         </Tab>
                     </Tabs>

@@ -6,6 +6,9 @@ import { Row, Col, Button, OverlayTrigger, Popover } from "react-bootstrap";
 import WaitBlock from '../../WaitBlock/WaitBlock';
 import WaitControl from '../../WaitControl/WaitControl';
 
+import ProductDetailToolBar from './ProductDetailToolBar';
+import UndoManager from '../../../Helper/UndoManager';
+
 
 class ProductDetail3 extends React.Component {
 
@@ -16,22 +19,19 @@ class ProductDetail3 extends React.Component {
         this.viewModel = props.viewModel;
 
         this.activeLang = this.props.store.langStore.active;
+
+        this.undoManager = new UndoManager();
     }
 
     componentWillMount() {
 
-        this.viewModel.bindOnSelectedValueChange(this.getFlags);
+        this.viewModel.bindOnSelectedValueChange(this.viewModel.getFlags);
 
-        this.getFlags();
+        this.viewModel.getFlags();
     }
 
     componentWillUnmount() {
-        this.viewModel.unbindOnSelectedValueChange(this.getFlags);
-    }
-
-    getFlags = () => {
-
-        this.viewModel.getFlags(this.activeLang.code);
+        this.viewModel.unbindOnSelectedValueChange(this.viewModel.getFlags);
     }
 
     getInputElement = (params1, params2) => {
@@ -58,6 +58,7 @@ class ProductDetail3 extends React.Component {
                                         <div className="form-group s-form-group">
                                             <input
                                                 type={params1.inputType ? params1.inputType : 'text'}
+                                                min={params1.inputType === 'number' ? params1.min : undefined}
                                                 className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
                                                 value={params1.getValue()}
                                                 onChange={params1.setValue} />
@@ -90,6 +91,7 @@ class ProductDetail3 extends React.Component {
                                         <div className="form-group s-form-group">
                                             <input
                                                 type={params2.inputType ? params2.inputType : 'text'}
+                                                min={params2.inputType === 'number' ? params2.min : undefined}
                                                 className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
                                                 value={params2.getValue()}
                                                 onChange={params2.setValue} />
@@ -144,17 +146,35 @@ class ProductDetail3 extends React.Component {
 
                     return (
                         <div>
+
+                            <ProductDetailToolBar
+                                activeLang={this.activeLang}
+                                undoManager={this.undoManager} />
+
                             <Row>
                                 {
                                     flBedRoomCount ?
                                         this.getInputElement({
                                             inputType: 'number',
+                                            min: 0,
                                             smallInput: true,
                                             label: this.activeLang.labels['lbl_BdRmsCnt'],
                                             isValid: flBedRoomCount.isBedNumberValueValid,
                                             isDisabled: () => prodModel.isSaving,
-                                            getValue: () => flBedRoomCount.valueInt,
-                                            setValue: e => flBedRoomCount.execAction(self => self.valueInt = parseInt(e.target.value))
+                                            getValue: () => flBedRoomCount.valueInt ? flBedRoomCount.valueInt : 0,
+                                            setValue: e => {
+
+                                                this.undoManager.pushToStack({
+                                                    key: 'valueInt',
+                                                    value: flBedRoomCount.valueInt,
+                                                    model: flBedRoomCount
+                                                });
+
+                                                flBedRoomCount.execAction(self => {
+                                                    self.valueInt = parseInt(e.target.value);
+                                                    self.recievedInput = true;
+                                                });
+                                            }
                                         })
                                         :
                                         null
@@ -163,12 +183,25 @@ class ProductDetail3 extends React.Component {
                                     flOptnDen ?
                                         this.getInputElement({
                                             inputType: 'number',
+                                            min: 0,
                                             smallInput: true,
                                             label: this.activeLang.labels['lbl_OptnRmDen'],
-                                            isValid: flOptnDen.isBedNumberValueValid,
+                                            isValid: flOptnDen.isRoomDenNumberValueValid,
                                             isDisabled: () => prodModel.isSaving,
-                                            getValue: () => flOptnDen.valueInt,
-                                            setValue: e => flOptnDen.execAction(self => self.valueInt = parseInt(e.target.value))
+                                            getValue: () => flOptnDen.valueInt ? flOptnDen.valueInt : 0,
+                                            setValue: e => {
+
+                                                this.undoManager.pushToStack({
+                                                    key: 'valueInt',
+                                                    value: flOptnDen.valueInt,
+                                                    model: flOptnDen
+                                                });
+
+                                                flOptnDen.execAction(self => {
+                                                    self.valueInt = parseInt(e.target.value);
+                                                    self.recievedInput = true;
+                                                });
+                                            }
                                         })
                                         :
                                         null
@@ -200,7 +233,20 @@ class ProductDetail3 extends React.Component {
                                                                             marginRight: 5,
                                                                             marginBottom: 5
                                                                         }}
-                                                                        onClick={e => propModel.addViewFlag(f.getValue())}>
+                                                                        onClick={e => {
+
+                                                                            const fValue = f.getValue();
+
+                                                                            this.undoManager.pushToStack({
+                                                                                key: 'flags',
+                                                                                value: fValue.id,
+                                                                                propKey: 'flag_Id',
+                                                                                action: 'remove',
+                                                                                model: propModel
+                                                                            });
+
+                                                                            propModel.addViewFlag(fValue);
+                                                                        }}>
                                                                         <span className="la la-plus"></span>
                                                                         <span style={{ marginLeft: 10, color: 'white' }}>
                                                                             {f.getType()}
@@ -245,7 +291,10 @@ class ProductDetail3 extends React.Component {
                                                                                         key={v.genId}
                                                                                         style={{ paddingRight: 8, paddingBottom: 8, float: 'left' }}>
                                                                                         <Button
-                                                                                            className={'s-btn-small-' + (v.recordState === 30 ? 'red' : 'primary')}
+                                                                                            className={'s-btn-small-' +
+                                                                                                (v.recordState === 30
+                                                                                                    ? 'red'
+                                                                                                    : (v.recordState === 10 ? 'secondary' : 'primary'))}
                                                                                             style={{
                                                                                                 borderBottomLeftRadius: 5,
                                                                                                 borderBottomRightRadius: 5,
@@ -258,6 +307,12 @@ class ProductDetail3 extends React.Component {
                                                                                                     switch (self.recordState) {
 
                                                                                                         case 0:
+
+                                                                                                            this.undoManager.pushToStack({
+                                                                                                                key: 'recordState',
+                                                                                                                value: self.recordState,
+                                                                                                                model: self
+                                                                                                            });
                                                                                                             self.recordState = 30;
                                                                                                             break;
 

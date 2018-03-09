@@ -6,6 +6,9 @@ import { Row, Col, Button, Tabs, Tab } from "react-bootstrap";
 import WaitBlock from '../../WaitBlock/WaitBlock';
 import WaitControl from '../../WaitControl/WaitControl';
 
+import ProductDetailToolBar from './ProductDetailToolBar';
+import UndoManager from '../../../Helper/UndoManager';
+
 
 class ProductDetail4 extends React.Component {
 
@@ -13,25 +16,31 @@ class ProductDetail4 extends React.Component {
 
         super(props);
 
+        this.state = { tabKey: 0 };
+
         this.viewModel = props.viewModel;
 
         this.activeLang = this.props.store.langStore.active;
+
+        this.undoManager = new UndoManager();
     }
 
     componentWillMount() {
 
+        this.undoManager.bindUndoing(this.onUndoing);
         this.viewModel.bindOnSelectedValueChange(this.getDescs);
 
         this.getDescs();
     }
 
     componentWillUnmount() {
+        this.undoManager.unbindUndoing(this.onUndoing);
         this.viewModel.unbindOnSelectedValueChange(this.getDescs);
     }
 
     getDescs = () => {
 
-        this.viewModel.getDescs();
+        this.viewModel.getDescs(this.viewModel.selectedValue);
     }
 
     getInputElement = params => {
@@ -72,16 +81,25 @@ class ProductDetail4 extends React.Component {
     }
 
 
-    render() {
+    onUndoing = (undoItem, e) => {
 
-        if (this.viewModel.isGettingDescs) {
+        if (undoItem && undoItem.tabKey >= 0) {
 
-            return <WaitControl show={true} />;
+            this.setState({ tabKey: undoItem.tabKey });
         }
+    }
+
+
+    render() {
 
         const prodModel = this.viewModel.selectedValue;
 
         if (prodModel) {
+
+            if (prodModel.isGettingDescs) {
+
+                return <WaitControl show={true} />;
+            }
 
             const groups = [];
 
@@ -98,11 +116,19 @@ class ProductDetail4 extends React.Component {
                 }
             }
 
+            debugger;
+            
             return (
                 <div>
+
+                    <ProductDetailToolBar
+                        activeLang={this.activeLang}
+                        undoManager={this.undoManager} />
+
                     <Tabs id="tab_product_desc" className="s-tabs"
                         defaultActiveKey={0}
-                        onSelect={this.onTabSelect}>
+                        activeKey={this.state.tabKey}
+                        onSelect={key => this.setState({ tabKey: key })}>
                         {
                             groups.map((g, i) => {
 
@@ -121,8 +147,18 @@ class ProductDetail4 extends React.Component {
                                                         label: this.activeLang.labels['lbl_ShortDesc'],
                                                         minHeight: 120,
                                                         isDisabled: () => prodModel.isSaving,
-                                                        getValue: () => listDesc.value,
-                                                        setValue: e => listDesc.execAction(self => self.value = e.target.value)
+                                                        getValue: () => listDesc.value ? listDesc.value : '',
+                                                        setValue: e => {
+
+                                                            this.undoManager.pushToStack({
+                                                                key: 'value',
+                                                                value: listDesc.value,
+                                                                model: listDesc,
+                                                                tabKey: i
+                                                            });
+
+                                                            listDesc.execAction(self => self.value = e.target.value);
+                                                        }
                                                     })
                                                     :
                                                     null
@@ -133,8 +169,26 @@ class ProductDetail4 extends React.Component {
                                                         key: i,
                                                         label: this.activeLang.labels['lbl_DtlPg'] + ` # ${d.detailRank + 1}`,
                                                         isDisabled: () => prodModel.isSaving,
-                                                        getValue: () => d.value,
-                                                        setValue: e => d.execAction(self => self.value = e.target.value)
+                                                        isValid: () => d.detailRank === 0 ? d.isValueValid() : true,
+                                                        getValue: () => d.value ? d.value : '',
+                                                        setValue: e => {
+
+                                                            this.undoManager.pushToStack({
+                                                                key: 'value',
+                                                                value: d.value,
+                                                                model: d,
+                                                                tabKey: i
+                                                            });
+
+                                                            d.execAction(self => {
+
+                                                                self.value = e.target.value;
+
+                                                                if (self.detailRank === 0) {
+                                                                    self.recievedInput = true;
+                                                                }
+                                                            });
+                                                        }
                                                     }))
                                             }
                                         </Row>

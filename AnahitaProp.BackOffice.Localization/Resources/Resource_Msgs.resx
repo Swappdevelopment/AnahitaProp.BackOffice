@@ -240,4 +240,7 @@ If you don't want to reset your password, please ignore this message and your pa
   <data name="msg_UploadImgs" xml:space="preserve">
     <value>Upload Image(s)</value>
   </data>
+  <data name="msg_InvldValue" xml:space="preserve">
+    <value>Invalid Value</value>
+  </data>
 </root>

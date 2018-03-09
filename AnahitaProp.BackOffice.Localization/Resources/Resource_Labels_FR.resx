@@ -516,4 +516,10 @@
   <data name="lbl_Undo" xml:space="preserve">
     <value>Annuler</value>
   </data>
+  <data name="lbl_Groups" xml:space="preserve">
+    <value>Groupes</value>
+  </data>
+  <data name="lbl_VwSubProds" xml:space="preserve">
+    <value>Voir les Sous Produits</value>
+  </data>
 </root>

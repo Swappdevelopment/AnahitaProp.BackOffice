@@ -1,74 +1,82 @@
-.s-btn{
+.s-btn {
     position: relative;
     display: inline-block;
     text-align: center;
     border-radius: 60px;
     transition: all ease 300ms;
-
-    &-small{
+    &-empty {
         @extend .s-btn;
-
-        &-primary{
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: none;
+        &:hover,
+        &:focus,
+        &:active,
+        &:active:focus {
+            background-color: transparent;
+            border-color: transparent;
+            transition: all ease 300ms;
+            box-shadow: none;
+            outline: none;
+        }
+    }
+    &-small {
+        @extend .s-btn;
+        &-primary {
             @extend .s-btn-small;
             color: $white;
             background-color: $primary;
             border-color: $primary;
-            box-shadow: 0px 5px 10px 2px rgba(94,55,19, 0.2);
-            
+            box-shadow: 0px 5px 10px 2px rgba(94, 55, 19, 0.2);
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $primaryDark;
                 border-color: $primaryDark;
-                box-shadow: 0px 5px 10px 2px rgba(94,55,19, 0.2);
+                box-shadow: 0px 5px 10px 2px rgba(94, 55, 19, 0.2);
                 transition: all ease 300ms;
                 outline: none;
             }
         }
-
-        &-primary-border{
+        &-primary-border {
             @extend .s-btn-small;
             color: $primary;
             background-color: $white;
             border-color: $primary;
             box-shadow: none;
-            
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $primary;
                 border-color: $primary;
-                box-shadow: 0px 5px 10px 2px rgba(94,55,19, 0.20);
+                box-shadow: 0px 5px 10px 2px rgba(94, 55, 19, 0.20);
                 transition: all ease 300ms;
                 outline: none;
             }
         }
-
-        &-secondary{
+        &-secondary {
             @extend .s-btn-small;
             color: $white;
             background-color: $secondary;
             border-color: $secondary;
-            box-shadow: 0px 5px 10px 2px rgba(230,136,53, 0.2);
-            
+            box-shadow: 0px 5px 10px 2px rgba(230, 136, 53, 0.2);
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $secondaryDark;
                 border-color: $secondaryDark;
-                box-shadow: 0px 5px 10px 2px rgba(207,122,47,0.2);
+                box-shadow: 0px 5px 10px 2px rgba(207, 122, 47, 0.2);
                 transition: all ease 300ms;
                 outline: none;
             }
         }
-
-        &-search{
+        &-search {
             @extend .s-btn-small;
             position: absolute;
             top: 3px;
@@ -78,11 +86,10 @@
             font-size: 18px;
             color: $white;
             box-shadow: none;
-
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: transparent;
                 border: none;
@@ -90,8 +97,7 @@
                 box-shadow: none;
             }
         }
-
-        &-clear{
+        &-clear {
             @extend .s-btn-small;
             position: absolute;
             top: 3px;
@@ -101,11 +107,10 @@
             font-size: 18px;
             color: $white;
             box-shadow: none;
-
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $secondary;
                 background-color: transparent;
@@ -114,19 +119,17 @@
                 box-shadow: none;
             }
         }
-
-        &-edit{
+        &-edit {
             @extend .s-btn-small;
             color: $orange;
             background-color: transparent;
             border-color: transparent;
             box-shadow: none;
             padding: 0 5px;
-
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $orangeDark;
                 background-color: transparent;
                 border-color: transparent;
@@ -134,19 +137,17 @@
                 outline: none;
             }
         }
-
-        &-delete{
+        &-delete {
             @extend .s-btn-small;
             color: $red;
             background-color: transparent;
             border-color: transparent;
             box-shadow: none;
             padding: 0 5px;
-
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $redDark;
                 background-color: transparent;
                 border-color: transparent;
@@ -154,277 +155,244 @@
                 outline: none;
             }
         }
-
-        &-secondary-empty{
+        &-secondary-empty {
             @extend .s-btn-small;
             color: $secondary;
             background-color: transparent;
             border-color: transparent;
-            box-shadow: none;      
-
+            box-shadow: none;
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $secondaryDark;
                 background-color: transparent;
                 border-color: transparent;
                 transition: all ease 300ms;
-                box-shadow: none;      
+                box-shadow: none;
                 outline: none;
             }
-
         }
-
-        &-red{
+        &-red {
             @extend .s-btn-small;
             color: $white;
             background-color: $red;
             border-color: $red;
-            box-shadow: 0px 3px 20px 0px rgba(255,108,96, 0.2) !important;
-            
+            box-shadow: 0px 3px 20px 0px rgba(255, 108, 96, 0.2) !important;
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $redDark;
                 border-color: $redDark;
                 transition: all ease 300ms;
-                box-shadow: 0px 3px 20px 0px rgba(217,83,79, 0.2) !important;
+                box-shadow: 0px 3px 20px 0px rgba(217, 83, 79, 0.2) !important;
                 outline: none;
             }
         }
-
-        &-redDark{
+        &-redDark {
             @extend .s-btn-small;
             color: $white;
             background-color: $redDark;
             border-color: $redDark;
-            box-shadow: 0px 3px 20px 0px rgba(217,83,79, 0.2) !important;
-            
+            box-shadow: 0px 3px 20px 0px rgba(217, 83, 79, 0.2) !important;
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $redDark;
                 border-color: $redDark;
                 transition: all ease 300ms;
-                box-shadow: 0px 3px 20px 0px rgba(217,83,79, 0.2) !important;
+                box-shadow: 0px 3px 20px 0px rgba(217, 83, 79, 0.2) !important;
                 outline: none;
             }
         }
-
-        &-red-empty{
+        &-red-empty {
             @extend .s-btn-small;
             color: $red;
             background-color: transparent;
             border-color: transparent;
-            box-shadow: none;      
-
+            box-shadow: none;
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $redDark;
                 background-color: transparent;
                 border-color: transparent;
                 transition: all ease 300ms;
-                box-shadow: none;      
+                box-shadow: none;
                 outline: none;
             }
         }
-
-        &-redDark-empty{
+        &-redDark-empty {
             @extend .s-btn-small;
             color: $redDark;
             background-color: transparent;
             border-color: transparent;
-            box-shadow: none;      
-
+            box-shadow: none;
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $redDark;
                 background-color: transparent;
                 border-color: transparent;
                 transition: all ease 300ms;
-                box-shadow: none;      
+                box-shadow: none;
                 outline: none;
             }
         }
-
-        &-orange-empty{
+        &-orange-empty {
             @extend .s-btn-small;
             color: $orange;
             background-color: transparent;
             border-color: transparent;
-            box-shadow: none;      
-
+            box-shadow: none;
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $orangeDark;
                 background-color: transparent;
                 border-color: transparent;
                 transition: all ease 300ms;
-                box-shadow: none;      
+                box-shadow: none;
                 outline: none;
             }
         }
-
-        &-popover-add{
+        &-popover-add {
             color: $white;
             background-color: $secondary;
             border: none;
-            box-shadow: 0px 5px 10px 2px rgba(22,65,105, 0.2);
+            box-shadow: 0px 5px 10px 2px rgba(22, 65, 105, 0.2);
             margin-left: 5px;
             height: 38px;
-
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $secondaryDark;
                 border: none;
-                box-shadow: 0px 5px 10px 2px rgba(19,58,94, 0.2);
+                box-shadow: 0px 5px 10px 2px rgba(19, 58, 94, 0.2);
                 transition: all ease 300ms;
                 outline: none;
             }
         }
-      
     }
-
-    &-medium{
+    &-medium {
         @extend .s-btn;
         padding: 12px 24px;
-
-        &-primary{
+        &-primary {
             @extend .s-btn-medium;
             color: $white;
             background-color: $primary;
             border-color: $primary;
-            box-shadow: 0px 5px 10px 2px rgba(94,55,19, 0.2);
-            
+            box-shadow: 0px 5px 10px 2px rgba(94, 55, 19, 0.2);
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $primaryDark;
                 border-color: $primaryDark;
-                box-shadow: 0px 5px 10px 2px rgba(94,55,19, 0.2);
+                box-shadow: 0px 5px 10px 2px rgba(94, 55, 19, 0.2);
                 outline: none;
             }
         }
-
-        &-primary-border{
+        &-primary-border {
             @extend .s-btn-medium;
             color: $primary;
             background-color: $white;
             border-color: $primary;
             box-shadow: none;
-            
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $primary;
                 border-color: $primary;
-                box-shadow: 0px 5px 10px 2px rgba(94,55,19, 0.20);
+                box-shadow: 0px 5px 10px 2px rgba(94, 55, 19, 0.20);
                 transition: all ease 300ms;
                 outline: none;
             }
         }
-
-        &-secondary{
+        &-secondary {
             @extend .s-btn-medium;
             color: $white;
             background-color: $secondary;
             border-color: $secondary;
-            box-shadow: 0px 5px 10px 2px rgba(22,65,105, 0.2);
-            
+            box-shadow: 0px 5px 10px 2px rgba(22, 65, 105, 0.2);
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $secondaryDark;
                 border-color: $secondaryDark;
-                box-shadow: 0px 5px 10px 2px rgba(19,58,94, 0.2);
+                box-shadow: 0px 5px 10px 2px rgba(19, 58, 94, 0.2);
                 transition: all ease 300ms;
                 outline: none;
             }
         }
-
-        &-gray-empty-secondary{
+        &-gray-empty-secondary {
             @extend .s-btn-medium;
             color: $lightgray4;
             background-color: transparent;
             border-color: transparent;
             box-shadow: 0px 3px 20px 0px rgba(111, 114, 125, 0.2) !important;
-
-
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $secondary;
                 border-color: $secondary;
                 transition: all ease 300ms;
-                box-shadow: 0px 3px 20px 0px rgba(22,65,105, 0.2) !important;
+                box-shadow: 0px 3px 20px 0px rgba(22, 65, 105, 0.2) !important;
                 outline: none;
             }
-
         }
-         
     }
-
-    &-big{
+    &-big {
         @extend .s-btn;
         padding: 16px 44px;
-
-        &-primary{
+        &-primary {
             @extend .s-btn-big;
             color: $white;
             background-color: $primary;
             border-color: $primary;
-            box-shadow: 0px 5px 10px 2px rgba(94,55,19, 0.2);
-
+            box-shadow: 0px 5px 10px 2px rgba(94, 55, 19, 0.2);
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $primaryDark;
                 border-color: $primaryDark;
-                box-shadow: 0px 5px 10px 2px rgba(94,55,19, 0.2);
+                box-shadow: 0px 5px 10px 2px rgba(94, 55, 19, 0.2);
                 transition: all ease 300ms;
                 outline: none;
             }
         }
-
-        &-primary-border{
+        &-primary-border {
             @extend .s-btn-big;
             color: $primary;
             background-color: $white;
             border-color: $primary;
             box-shadow: none;
-            
             &:hover,
             &:focus,
             &:active,
-            &:active:focus{
+            &:active:focus {
                 color: $white;
                 background-color: $primary;
                 border-color: $primary;
-                box-shadow: 0px 5px 10px 2px rgba(94,55,19, 0.20);
+                box-shadow: 0px 5px 10px 2px rgba(94, 55, 19, 0.20);
                 transition: all ease 300ms;
                 outline: none;
             }
@@ -432,7 +400,7 @@
     }
 }
 
-.btn-default.disabled{
+.btn-default.disabled {
     @extend .s-btn;
 }
 

@@ -53,6 +53,7 @@ class ProductDetail1 extends React.Component {
                                                 type={params1.inputType ? params1.inputType : 'text'}
                                                 className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
                                                 value={params1.getValue()}
+                                                min={params1.inputType === 'number' ? params1.min : undefined}
                                                 onChange={params1.setValue} />
                                         </div>
 
@@ -84,6 +85,7 @@ class ProductDetail1 extends React.Component {
                                             <input
                                                 type={params2.inputType ? params2.inputType : 'text'}
                                                 className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
+                                                min={params2.inputType === 'number' ? params2.min : undefined}
                                                 value={params2.getValue()}
                                                 onChange={params2.setValue} />
                                         </div>
@@ -126,7 +128,7 @@ class ProductDetail1 extends React.Component {
                                 label: this.activeLang.labels['lbl_Code'],
                                 isValid: prodModel.isCodeValid,
                                 isDisabled: () => prodModel.isSaving,
-                                getValue: () => prodModel.code,
+                                getValue: () => prodModel.code ? prodModel.code : '',
                                 setValue: e => {
 
                                     this.undoManager.pushToStack(
@@ -136,7 +138,10 @@ class ProductDetail1 extends React.Component {
                                             model: prodModel
                                         });
 
-                                    prodModel.execAction(self => self.code = e.target.value);
+                                    prodModel.execAction(self => {
+                                        self.code = e.target.value;
+                                        self.recievedInput = true;
+                                    });
                                 }
                             })
                         }
@@ -148,7 +153,7 @@ class ProductDetail1 extends React.Component {
                                     label: this.activeLang.labels['lbl_Name'] + ' ' + (prodName.language_Code ? prodName.language_Code.toUpperCase() : ''),
                                     isValid: prodName.isValueValid,
                                     isDisabled: () => prodModel.isSaving,
-                                    getValue: () => prodName.value,
+                                    getValue: () => prodName.value ? prodName.value : '',
                                     setValue: e => {
 
                                         this.undoManager.pushToStack(
@@ -158,7 +163,11 @@ class ProductDetail1 extends React.Component {
                                                 model: prodName
                                             });
 
-                                        prodName.execAction(self => self.value = e.target.value);
+                                        prodName.execAction(self => {
+
+                                            self.value = e.target.value;
+                                            self.recievedInput = true;
+                                        });
                                     }
                                 }))
                         }
@@ -166,8 +175,11 @@ class ProductDetail1 extends React.Component {
                             this.getInputElement({
                                 label: this.activeLang.labels['lbl_NetSize'],
                                 inputType: 'number',
+                                min: 0,
+                                isValid: prodModel.isNetSizeValid,
+                                errMsg: this.activeLang.msgs['msg_InvldValue'],
                                 isDisabled: () => prodModel.isSaving,
-                                getValue: () => prodModel.netSize,
+                                getValue: () => prodModel.netSize ? prodModel.netSize : 0,
                                 setValue: e => {
 
                                     this.undoManager.pushToStack(
@@ -183,8 +195,11 @@ class ProductDetail1 extends React.Component {
                                 {
                                     label: this.activeLang.labels['lbl_GrossSize'],
                                     inputType: 'number',
+                                    min: 0,
+                                    isValid: prodModel.isGrossSizeValid,
+                                    errMsg: this.activeLang.msgs['msg_InvldValue'],
                                     isDisabled: () => prodModel.isSaving,
-                                    getValue: () => prodModel.grossSize,
+                                    getValue: () => prodModel.grossSize ? prodModel.grossSize : 0,
                                     setValue: e => {
 
                                         this.undoManager.pushToStack(
@@ -203,111 +218,108 @@ class ProductDetail1 extends React.Component {
                                 label: this.activeLang.labels['lbl_Price'],
                                 isValid: prodModel.isCodeValid,
                                 getInnerElement: () => (
-                                    <table style={{ width: '80%' }}>
-                                        <tbody>
-                                            <tr>
-                                                <td style={{ width: 75 }}>
-                                                    {
-                                                        prodModel.isSaving ?
-                                                            <WaitBlock fullWidth height={38} />
-                                                            :
-                                                            <div className="s-dropdown-modal">
-                                                                <div className="form-group s-form-group">
-                                                                    <DropdownEditor
-                                                                        id="drpCurrency"
-                                                                        className="form-control s-input s-ellipsis"
-                                                                        disabled={prodModel.isSaving}
-                                                                        title={prodModel.currencyCode}>
-                                                                        {
-                                                                            this.viewModel.currencies.map((v, i) => {
-
-                                                                                return (
-                                                                                    <DropdownEditorMenu
-                                                                                        active={v.id === prodModel.currency_Id}
-                                                                                        key={v.id}
-                                                                                        onClick={e => {
-
-                                                                                            this.undoManager.pushToStack(
-                                                                                                [
-                                                                                                    {
-                                                                                                        key: 'currency_Id',
-                                                                                                        value: prodModel.currency_Id,
-                                                                                                        model: prodModel
-                                                                                                    },
-                                                                                                    {
-                                                                                                        key: 'currencyCode',
-                                                                                                        value: prodModel.currencyCode,
-                                                                                                        model: prodModel
-                                                                                                    }
-                                                                                                ]);
-
-                                                                                            prodModel.execAction(self => {
-
-                                                                                                self.currency_Id = v.id;
-                                                                                                self.currencyCode = v.code;
-                                                                                            });
-                                                                                        }}>
-                                                                                        {v.code}
-                                                                                    </DropdownEditorMenu>
-                                                                                );
-                                                                            })
-                                                                        }
-                                                                    </DropdownEditor>
-                                                                </div>
-                                                            </div>
-                                                    }
-                                                </td>
-                                                <td style={{ paddingLeft: 10 }}>
-                                                    {
-                                                        prodModel.isSaving ?
-                                                            <WaitBlock fullWidth height={38} />
-                                                            :
-                                                            <div className="form-group s-form-group">
-                                                                <Cleave
-                                                                    type="text"
-                                                                    className={'form-control s-input' + (prodModel.isPriceAndCurrencyValid() ? '' : '-error')}
-                                                                    disabled={prodModel.isSaving}
-                                                                    options={{
-                                                                        numeral: true,
-                                                                        numeralThousandsGroupStyle: 'thousand',
-                                                                        numeralDecimalScale: 2
-                                                                    }}
-                                                                    value={prodModel.price}
-                                                                    onChange={e => prodModel.execAction(self => {
-
-                                                                        this.undoManager.pushToStack(
+                                    <div>
+                                        <table style={{ width: '80%' }}>
+                                            <tbody>
+                                                <tr>
+                                                    <td style={{ width: 75 }}>
+                                                        {
+                                                            prodModel.isSaving ?
+                                                                <WaitBlock fullWidth height={38} />
+                                                                :
+                                                                <div className="s-dropdown-modal">
+                                                                    <div className="form-group s-form-group">
+                                                                        <DropdownEditor
+                                                                            id="drpCurrency"
+                                                                            className={'form-control s-input' + (prodModel.isPriceValid() ? '' : '-error') + ' s-ellipsis'}
+                                                                            disabled={prodModel.isSaving}
+                                                                            title={prodModel.currencyCode}>
                                                                             {
-                                                                                key: 'price',
-                                                                                value: prodModel.price,
-                                                                                model: prodModel
-                                                                            });
+                                                                                this.viewModel.currencies.map((v, i) => {
 
-                                                                        self.price = parseFloat(e.target.rawValue);
-                                                                    })} />
-                                                            </div>
-                                                    }
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                                                    return (
+                                                                                        <DropdownEditorMenu
+                                                                                            active={v.id === prodModel.currency_Id}
+                                                                                            key={v.id}
+                                                                                            onClick={e => {
+
+                                                                                                this.undoManager.pushToStack(
+                                                                                                    [
+                                                                                                        {
+                                                                                                            key: 'currency_Id',
+                                                                                                            value: prodModel.currency_Id,
+                                                                                                            model: prodModel
+                                                                                                        },
+                                                                                                        {
+                                                                                                            key: 'currencyCode',
+                                                                                                            value: prodModel.currencyCode,
+                                                                                                            model: prodModel
+                                                                                                        }
+                                                                                                    ]);
+
+                                                                                                prodModel.execAction(self => {
+
+                                                                                                    self.currency_Id = v.id;
+                                                                                                    self.currencyCode = v.code;
+                                                                                                    self.recievedInput = true;
+                                                                                                });
+                                                                                            }}>
+                                                                                            {v.code}
+                                                                                        </DropdownEditorMenu>
+                                                                                    );
+                                                                                })
+                                                                            }
+                                                                        </DropdownEditor>
+                                                                    </div>
+                                                                </div>
+                                                        }
+                                                    </td>
+                                                    <td style={{ paddingLeft: 10 }}>
+                                                        {
+                                                            prodModel.isSaving ?
+                                                                <WaitBlock fullWidth height={38} />
+                                                                :
+                                                                <div className="form-group s-form-group">
+                                                                    <Cleave
+                                                                        type="text"
+                                                                        className={'form-control s-input' + (prodModel.isPriceValid() ? '' : '-error')}
+                                                                        disabled={prodModel.isSaving}
+                                                                        options={{
+                                                                            numeral: true,
+                                                                            numeralThousandsGroupStyle: 'thousand',
+                                                                            numeralDecimalScale: 2
+                                                                        }}
+                                                                        min={0}
+                                                                        value={prodModel.price ? prodModel.price : 0}
+                                                                        onChange={e => prodModel.execAction(self => {
+
+                                                                            this.undoManager.pushToStack(
+                                                                                {
+                                                                                    key: 'price',
+                                                                                    value: prodModel.price,
+                                                                                    model: prodModel
+                                                                                });
+
+                                                                            self.price = parseFloat(e.target.rawValue);
+                                                                        })} />
+                                                                </div>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        {
+                                            prodModel.isCurrencyValid() && prodModel.isPriceValid() ?
+                                                null
+                                                :
+                                                <small className="s-label-error">
+                                                    {this.activeLang.msgs['msg_InvldValue']}
+                                                </small>
+                                        }
+                                    </div>
                                 )
                             })
                         }
-
-                        {/* <div className="s-row-center row" style={{ paddingTop: 20 }}>
-                            <Button
-                                className="s-btn-medium-primary"
-                                disabled={!prodModel.requiresSave()}
-                                onClick={e => { this.viewModel.saveProduct(prodModel) }}
-                                style={{ padding: '12px 36px', marginLeft: "5px" }}>
-                                {
-                                    this.viewModel.savingProfile ?
-                                        <span>{this.activeLang.labels['lbl_SaveChanges']}<i className="spinner-right"></i></span>
-                                        :
-                                        this.activeLang.labels['lbl_SaveChanges']
-                                }
-                            </Button>
-                        </div> */}
                     </Row>
                 </div>
             );

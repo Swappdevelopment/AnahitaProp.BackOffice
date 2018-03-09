@@ -2,6 +2,16 @@
 
 /* Checkbox */
 
+.border-bottom-primary {
+    border-bottom: $primary solid 1px;
+    &:hover,
+    &:focus,
+    &:active,
+    &:active:focus {
+        border-bottom: $primary solid 1px;
+    }
+}
+
 .s-checkbox {
     margin-top: 0;
     margin-bottom: 0;
