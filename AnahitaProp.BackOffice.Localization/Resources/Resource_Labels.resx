@@ -522,4 +522,7 @@
   <data name="lbl_Group" xml:space="preserve">
     <value>Group</value>
   </data>
+  <data name="lbl_AddNewFam" xml:space="preserve">
+    <value>Add new Family</value>
+  </data>
 </root>

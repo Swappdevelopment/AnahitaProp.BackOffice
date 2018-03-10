@@ -174,7 +174,7 @@ class ProductDetail extends React.Component {
                     <Row>
                         <Col md={9} mdOffset={1}>
                             <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                <ProductDetail1 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} />
+                                <ProductDetail1 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} rootContainer={this} />
                             </div>
                             <br />
                             <LazyLoad debounce={false}>

@@ -13,12 +13,19 @@ import WaitBlock from '../../WaitBlock/WaitBlock';
 import ProductDetailToolBar from './ProductDetailToolBar';
 import UndoManager from '../../../Helper/UndoManager';
 
+import QuickAddPoper from '../../QuickAddPoper';
+import ProdFamilyQuickAddContainer from '../ProductFamilies/QuickAddContainer';
+
 
 class ProductDetail1 extends React.Component {
 
     constructor(props) {
 
         super(props);
+
+        this.state = {
+            isPopNewFamOpen: false
+        };
 
         this.viewModel = props.viewModel;
 
@@ -332,48 +339,62 @@ class ProductDetail1 extends React.Component {
                                                 :
                                                 <div className="s-dropdown-modal">
                                                     <div className="form-group s-form-group">
-                                                        <DropdownEditor
-                                                            id="drpFamily"
-                                                            className={'form-control s-input' + (prodModel.isFamilyValid() ? '' : '-error') + ' s-ellipsis'}
-                                                            disabled={prodModel.isSaving || prodModel.group_Id > 0}
-                                                            title={prodModel.productFamily ? prodModel.productFamily.getName(true) : ''}>
-                                                            {
-                                                                this.viewModel.prodFamilies.map((v, i) => {
+                                                        <Row>
+                                                            <Col md={11}>
+                                                                <DropdownEditor
+                                                                    id="drpFamily"
+                                                                    className={'form-control s-input' + (prodModel.isFamilyValid() ? '' : '-error') + ' s-ellipsis'}
+                                                                    disabled={prodModel.isSaving || prodModel.group_Id > 0}
+                                                                    title={prodModel.productFamily ? prodModel.productFamily.getName(true) : ''}>
+                                                                    {
+                                                                        this.viewModel.prodFamilies.map((v, i) => {
 
-                                                                    return (
-                                                                        <DropdownEditorMenu
-                                                                            active={v.id === prodModel.productFamily_Id}
-                                                                            key={v.id}
-                                                                            onClick={e => {
+                                                                            return (
+                                                                                <DropdownEditorMenu
+                                                                                    active={v.id === prodModel.productFamily_Id}
+                                                                                    key={v.id}
+                                                                                    onClick={e => {
 
-                                                                                this.undoManager.pushToStack(
-                                                                                    [
-                                                                                        {
-                                                                                            key: 'productFamily_Id',
-                                                                                            value: prodModel.productFamily_Id,
-                                                                                            model: prodModel
-                                                                                        },
-                                                                                        {
-                                                                                            key: 'productFamily',
-                                                                                            value: prodModel.productFamily,
-                                                                                            model: prodModel
-                                                                                        }
-                                                                                    ]);
+                                                                                        this.undoManager.pushToStack(
+                                                                                            [
+                                                                                                {
+                                                                                                    key: 'productFamily_Id',
+                                                                                                    value: prodModel.productFamily_Id,
+                                                                                                    model: prodModel
+                                                                                                },
+                                                                                                {
+                                                                                                    key: 'productFamily',
+                                                                                                    value: prodModel.productFamily,
+                                                                                                    model: prodModel
+                                                                                                }
+                                                                                            ]);
 
-                                                                                prodModel.execAction(self => {
+                                                                                        prodModel.execAction(self => {
 
-                                                                                    debugger;
-                                                                                    self.productFamily_Id = v.id;
-                                                                                    self.productFamily = v.id;
-                                                                                    self.recievedInput = true;
-                                                                                });
-                                                                            }}>
-                                                                            {v.getName(true)}
-                                                                        </DropdownEditorMenu>
-                                                                    );
-                                                                })
-                                                            }
-                                                        </DropdownEditor>
+                                                                                            debugger;
+                                                                                            self.productFamily_Id = v.id;
+                                                                                            self.productFamily = v.id;
+                                                                                            self.recievedInput = true;
+                                                                                        });
+                                                                                    }}>
+                                                                                    {v.getName(true)}
+                                                                                </DropdownEditorMenu>
+                                                                            );
+                                                                        })
+                                                                    }
+                                                                </DropdownEditor>
+                                                            </Col>
+                                                            <Col md={1}>
+                                                                <QuickAddPoper
+                                                                    id="qadd-prodFamily"
+                                                                    isOpen={this.state.isPopNewFamOpen}
+                                                                    popPlacement="top"
+                                                                    container={this.props.rootContainer}
+                                                                    tooltip={this.activeLang.labels['lbl_AddNewFam']}>
+                                                                    <ProdFamilyQuickAddContainer />
+                                                                </QuickAddPoper>
+                                                            </Col>
+                                                        </Row>
                                                     </div>
                                                 </div>
                                         }

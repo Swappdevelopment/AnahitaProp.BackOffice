@@ -143,6 +143,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ajouter une nouvelle Famille.
+        /// </summary>
+        public static string lbl_AddNewFam {
+            get {
+                return ResourceManager.GetString("lbl_AddNewFam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adresse.
         /// </summary>
         public static string lbl_Address {
