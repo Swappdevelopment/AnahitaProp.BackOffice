@@ -74,7 +74,7 @@ class SubProducts extends React.Component {
 
           paTitle={
             <span>
-              <span>{'Group'}</span>
+              <span>{this.activeLang.labels['lbl_Group']}</span>
               <span className="la la-angle-right" style={{ margin: '0 8px' }}></span>
               <span style={{ color: 'black' }}>{prodGroup.getNameAndCode()}</span>
             </span>}

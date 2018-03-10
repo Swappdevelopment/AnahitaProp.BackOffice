@@ -26,9 +26,9 @@ const ProdFamilyModel = types.model(
         getObject())
 ).actions(
     self => ({
-        setPropsValue: value => {
+        execAction: cb => {
 
-            BaseModel.setPropsValue(self, value);
+            if (cb) cb();
         },
         sync: value => {
 
@@ -56,9 +56,15 @@ const ProdFamilyModel = types.model(
         }
     })).views(self => ({
 
-        getName: () => {
+        getName: withType => {
+            
+            let result = ''
 
             if (self.names && self.names.length > 0) {
+
+                if (withType && self.type) {
+                    result = `  (${self.type.name})`;
+                }
 
                 if (self.activeLangCode) {
 
@@ -66,14 +72,16 @@ const ProdFamilyModel = types.model(
 
                     if (nameItem) {
 
-                        return nameItem.value;
+                        result = nameItem.value + result;
                     }
                 }
+                else {
 
-                return self.names[0].value;
+                    result = self.names[0].value + result;
+                }
             }
 
-            return '';
+            return result;
         },
     }));
 

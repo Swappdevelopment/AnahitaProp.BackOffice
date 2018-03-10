@@ -216,7 +216,6 @@ class ProductDetail1 extends React.Component {
                         {
                             this.getInputElement({
                                 label: this.activeLang.labels['lbl_Price'],
-                                isValid: prodModel.isCodeValid,
                                 getInnerElement: () => (
                                     <div>
                                         <table style={{ width: '80%' }}>
@@ -310,6 +309,76 @@ class ProductDetail1 extends React.Component {
                                         </table>
                                         {
                                             prodModel.isCurrencyValid() && prodModel.isPriceValid() ?
+                                                null
+                                                :
+                                                <small className="s-label-error">
+                                                    {this.activeLang.msgs['msg_InvldValue']}
+                                                </small>
+                                        }
+                                    </div>
+                                )
+                            })
+                        }
+
+                        {
+                            this.getInputElement({
+                                label: this.activeLang.labels['lbl_Family'],
+                                getInnerElement: () => (
+                                    <div>
+
+                                        {
+                                            prodModel.isSaving ?
+                                                <WaitBlock fullWidth height={38} />
+                                                :
+                                                <div className="s-dropdown-modal">
+                                                    <div className="form-group s-form-group">
+                                                        <DropdownEditor
+                                                            id="drpFamily"
+                                                            className={'form-control s-input' + (prodModel.isFamilyValid() ? '' : '-error') + ' s-ellipsis'}
+                                                            disabled={prodModel.isSaving || prodModel.group_Id > 0}
+                                                            title={prodModel.productFamily ? prodModel.productFamily.getName(true) : ''}>
+                                                            {
+                                                                this.viewModel.prodFamilies.map((v, i) => {
+
+                                                                    return (
+                                                                        <DropdownEditorMenu
+                                                                            active={v.id === prodModel.productFamily_Id}
+                                                                            key={v.id}
+                                                                            onClick={e => {
+
+                                                                                this.undoManager.pushToStack(
+                                                                                    [
+                                                                                        {
+                                                                                            key: 'productFamily_Id',
+                                                                                            value: prodModel.productFamily_Id,
+                                                                                            model: prodModel
+                                                                                        },
+                                                                                        {
+                                                                                            key: 'productFamily',
+                                                                                            value: prodModel.productFamily,
+                                                                                            model: prodModel
+                                                                                        }
+                                                                                    ]);
+
+                                                                                prodModel.execAction(self => {
+
+                                                                                    debugger;
+                                                                                    self.productFamily_Id = v.id;
+                                                                                    self.productFamily = v.id;
+                                                                                    self.recievedInput = true;
+                                                                                });
+                                                                            }}>
+                                                                            {v.getName(true)}
+                                                                        </DropdownEditorMenu>
+                                                                    );
+                                                                })
+                                                            }
+                                                        </DropdownEditor>
+                                                    </div>
+                                                </div>
+                                        }
+                                        {
+                                            prodModel.isFamilyValid() ?
                                                 null
                                                 :
                                                 <small className="s-label-error">

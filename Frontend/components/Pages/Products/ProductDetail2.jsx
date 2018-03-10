@@ -109,8 +109,6 @@ class ProductDetail2 extends React.Component {
 
         const prodGroup = prodModel.group;
 
-        debugger;
-
         return (
             <Row style={{ paddingTop: 30 }}>
                 {

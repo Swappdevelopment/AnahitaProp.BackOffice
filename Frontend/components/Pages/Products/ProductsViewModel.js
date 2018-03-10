@@ -2,6 +2,7 @@ import { types, destroy, detach, onPatch } from 'mobx-state-tree';
 
 import BaseModel from '../../../Models/BaseModel';
 import ProductModel from '../../../Models/ProductModel';
+import ProdFamilyModel from '../../../Models/ProdFamilyModel';
 import PropertyModel from '../../../Models/PropertyModel';
 import ProjectModel from '../../../Models/ProjectModel';
 import FlagModel from '../../../Models/FlagModel';
@@ -35,7 +36,7 @@ const ProductsViewModel = types.model(
         properties: types.optional(types.array(PropertyModel), []),
         projects: types.optional(types.array(ProjectModel), []),
         currencies: types.optional(types.array(types.frozen), []),
-        prodFamilies: types.optional(types.array(types.frozen), []),
+        prodFamilies: types.optional(types.array(ProdFamilyModel), []),
         prodFamilyTypes: types.optional(types.array(types.frozen), []),
         flags: types.optional(types.array(FlagModel), [])
     }
@@ -185,6 +186,28 @@ const ProductsViewModel = types.model(
 
                 const promises = [];
 
+                const joinFamiliesWithTypes = () => {
+
+                    if (self.prodFamilyTypes.length > 0
+                        && self.prodFamilies.length > 0) {
+
+                        for (const ftp of self.prodFamilyTypes) {
+
+                            self.prodFamilies.filter(fm => {
+
+                                if (fm.type_Id === ftp.id) {
+
+                                    fm.execAction(() => fm.type = ftp);
+
+                                    return true;
+                                }
+
+                                return false;
+                            });
+                        }
+                    }
+                };
+
                 if (self.prodFamilyTypes.length === 0) {
 
                     let idCounter = -1;
@@ -211,6 +234,8 @@ const ProductsViewModel = types.model(
                                             });
                                         }));
                                     });
+
+                                    joinFamiliesWithTypes();
                                 }
                             },
                             incrementSession: () => {
@@ -237,21 +262,12 @@ const ProductsViewModel = types.model(
 
                                 if (data && data.length > 0) {
 
-                                    self.execAction(() => {
+                                    const temp = data.map(pf => ProdFamilyModel.init(pf, ++self.idGenerator, self.activeLang.code));
 
-                                        self.prodFamilies.push(...data.map((v, i) => {
-
-                                            const name = v.names ?
-                                                v.names.find(nm => (nm.language_Code ? nm.language_Code.toLowerCase() : '') == self.activeLang.code)
-                                                :
-                                                null;
-
-                                            return Object.assign(v, {
-                                                name: name ? name.value : null
-                                            });
-                                        }));
-                                    });
+                                    self.execAction(() => self.prodFamilies.push(...temp));
                                 }
+
+                                joinFamiliesWithTypes();
                             },
                             incrementSession: () => {
 
@@ -986,6 +1002,11 @@ ProductsViewModel.init = (activeLang) => {
 
                     self.execAction(() => {
 
+                        if (!self.selectedValue.productFamily) {
+
+                            self.selectedValue.productFamily = self.selectedValue.productFamily_Id;
+                        }
+
                         if (self.properties.length > 0) {
 
                             self.selectedValue.property = self.selectedValue.property_Id > 0 ? self.selectedValue.property_Id : null;
@@ -1004,6 +1025,11 @@ ProductsViewModel.init = (activeLang) => {
             case '/selectedGroup':
 
                 if (self.selectedGroup) {
+
+                    if (!self.selectedGroup.productFamily) {
+
+                        self.selectedGroup.productFamily = self.selectedGroup.productFamily_Id;
+                    }
 
                     self.execAction(() => {
 
@@ -1025,6 +1051,11 @@ ProductsViewModel.init = (activeLang) => {
             case '/selectedSubValue':
 
                 if (self.selectedSubValue) {
+
+                    if (!self.selectedSubValue.productFamily) {
+
+                        self.selectedSubValue.productFamily = self.selectedSubValue.productFamily_Id;
+                    }
 
                     self.execAction(() => {
 

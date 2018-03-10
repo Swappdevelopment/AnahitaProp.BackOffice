@@ -34,7 +34,7 @@ const getObject = () => {
             isGroup: false,
             names: types.optional(types.array(ItemFieldModel), []),
             descs: types.optional(types.array(ItemFieldModel), []),
-            productFamily: types.maybe(ProdFamilyModel, types.null),
+            productFamily: types.maybe(types.reference(ProdFamilyModel), types.null),
             originalValue: types.optional(types.frozen, null),
             property: types.maybe(types.reference(PropertyModel), types.null),
             project: types.maybe(types.reference(ProjectModel), types.null),
@@ -114,7 +114,7 @@ const ProductModel = types.model(
 
             self.originalValue = value;
 
-            BaseModel.setPropsValue(self, value);
+            BaseModel.setPropsValue(self, value, ['productFamily']);
 
             self.names.length = 0;
             self.descs.length = 0;
@@ -142,15 +142,6 @@ const ProductModel = types.model(
                         language_Code: v.language_Code ? v.language_Code.toLowerCase() : '',
                     });
                 }));
-            }
-
-            if (value.productFamily) {
-
-                self.productFamily = ProdFamilyModel.init(value.productFamily, self.genId, self.activeLangCode);
-            }
-            else {
-
-                self.productFamily = null;
             }
         },
         setOriginalValueProperty: value => {
@@ -362,6 +353,7 @@ const ProductModel = types.model(
         isGrossSizeValid: () => self.recievedInput ? (self.grossSize >= 0 ? true : false) : true,
         isCurrencyValid: () => self.recievedInput ? (self.currency_Id > 0 ? true : false) : true,
         isPriceValid: () => self.recievedInput ? (self.price >= 0 ? true : false) : true,
+        isFamilyValid: () => self.recievedInput ? (self.productFamily_Id > 0 ? true : false) : true,
         isPropertyValid: () => {
 
             if (self.recievedInput

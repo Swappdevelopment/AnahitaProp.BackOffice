@@ -134,7 +134,25 @@ class ProductDetail extends React.Component {
 
                 <PageActions
                     sideScrollNav={this.getSideScrollNav()}
-                    paTitle={prodModel.getNameAndCode()}
+                    paTitle={
+                        prodModel ?
+                            prodModel.group ?
+                                <span style={{ marginBottom: 20 }}>
+
+                                    <span style={{ fontSize: 16 }}>
+                                        <span>{this.activeLang.labels['lbl_Group']}</span>
+                                        <span className="la la-angle-right" style={{ margin: '0 8px' }}></span>
+                                        <span>{prodModel.group.getNameAndCode()}</span>
+                                        <span className="la la-angle-right" style={{ margin: '0 8px' }}></span>
+                                    </span>
+
+                                    <span style={{ color: 'black' }}>{prodModel.getNameAndCode()}</span>
+                                </span>
+                                :
+                                prodModel.getNameAndCode()
+                            :
+                            null
+                    }
                     paTitleClick={e => {
                         this.viewModel.execAction(self => {
 
