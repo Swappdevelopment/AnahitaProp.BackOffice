@@ -28,6 +28,8 @@ class ProductDetail extends React.Component {
         document.documentElement.scrollTop = 0;
     }
 
+    getSelectedValue = () => this.props.isSubProduct ? this.viewModel.selectedSubValue : this.viewModel.selectedValue
+
 
     getSideScrollNav = () => {
 
@@ -100,11 +102,13 @@ class ProductDetail extends React.Component {
 
     render() {
 
+        const prodModel = this.getSelectedValue();
+
         let statusColor = null;
 
-        if (this.viewModel.selectedValue) {
+        if (prodModel) {
 
-            switch (this.viewModel.selectedValue.recordState) {
+            switch (prodModel.recordState) {
 
                 case 10:
                     statusColor = 's-circle s-status-add';
@@ -116,7 +120,7 @@ class ProductDetail extends React.Component {
 
                 default:
 
-                    if (this.viewModel.selectedValue.isModified()) {
+                    if (prodModel.isModified()) {
 
                         statusColor = 's-circle s-status-edit';
                     }
@@ -130,47 +134,52 @@ class ProductDetail extends React.Component {
 
                 <PageActions
                     sideScrollNav={this.getSideScrollNav()}
-                    paTitle={this.viewModel.selectedValue.getNameAndCode()}
+                    paTitle={prodModel.getNameAndCode()}
                     paTitleClick={e => {
                         this.viewModel.execAction(self => {
 
-                            self.selectedValue = null;
+                            if (this.props.isSubProduct) {
+                                self.selectedSubValue = null;
+                            }
+                            else {
+                                self.selectedValue = null;
+                            }
                         });
                     }}
-                    paRefresh={() => this.viewModel.getProduct(this.viewModel.selectedValue)}
+                    paRefresh={() => this.viewModel.getProduct(prodModel)}
                     paShowSaveButton={() => true}
-                    saveBtnDisabled={() => !this.viewModel.selectedValue || !this.viewModel.selectedValue.requiresSave()}
-                    paGlobalSaveOnClick={() => this.viewModel.saveProduct(this.viewModel.selectedValue)}
+                    saveBtnDisabled={() => !prodModel || !prodModel.requiresSave()}
+                    paGlobalSaveOnClick={() => this.viewModel.saveProduct(prodModel)}
                     hideAdd />
 
                 <div className="container">
                     <Row>
                         <Col md={9} mdOffset={1}>
                             <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                <ProductDetail1 viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                <ProductDetail1 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} />
                             </div>
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail2 viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                    <ProductDetail2 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} />
                                 </div>
                             </LazyLoad>
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail3 viewModel={this.viewModel} errorHandler={this.errorHandler} rootContainer={this} />
+                                    <ProductDetail3 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} rootContainer={this} />
                                 </div>
                             </LazyLoad>
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail4 viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                    <ProductDetail4 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} />
                                 </div>
                             </LazyLoad>
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail5 viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                    <ProductDetail5 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} />
                                 </div>
                             </LazyLoad>
                         </Col>

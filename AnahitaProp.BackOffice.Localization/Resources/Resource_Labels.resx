@@ -519,4 +519,7 @@
   <data name="lbl_VwSubProds" xml:space="preserve">
     <value>View Sub Products</value>
   </data>
+  <data name="lbl_Group" xml:space="preserve">
+    <value>Group</value>
+  </data>
 </root>

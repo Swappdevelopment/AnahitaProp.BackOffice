@@ -446,7 +446,7 @@ class ProductDetail5 extends React.Component {
 
         if (!this.viewModel.isGettingFiles) {
 
-            const prodModel = this.viewModel.selectedValue;
+            const prodModel = this.props.getSelectedValue();
 
             let btnBrowse = null;
 

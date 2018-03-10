@@ -117,7 +117,7 @@ class ProductDetail3 extends React.Component {
 
     render() {
 
-        const prodModel = this.viewModel.selectedValue;
+        const prodModel = this.props.getSelectedValue();
 
         if (prodModel) {
 

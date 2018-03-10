@@ -33,6 +33,7 @@ namespace AnahitaProp.BackOffice
         [MenuRequirement("products>crud")]
         public async Task<IActionResult> Get(
             long productID = 0,
+            long group_Id = 0,
             short? statusFilter = null,
             bool? hideSearchFilter = null,
             int offset = 0,
@@ -51,6 +52,7 @@ namespace AnahitaProp.BackOffice
                     {
                         products = _dbi.GetListProducts(
                             productID: productID,
+                            group_Id: group_Id,
                             withNames: true,
                             withGroups: withGroups,
                             withSubGroups: withSubGroups,

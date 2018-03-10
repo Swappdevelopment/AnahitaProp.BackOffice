@@ -107,6 +107,10 @@ class ProductDetail2 extends React.Component {
 
         const { prodModel, hideProperty, hideProject, projectsFilter } = params;
 
+        const prodGroup = prodModel.group;
+
+        debugger;
+
         return (
             <Row style={{ paddingTop: 30 }}>
                 {
@@ -128,7 +132,13 @@ class ProductDetail2 extends React.Component {
                                                     <DropdownEditor
                                                         id="drpProdProp"
                                                         className={'form-control s-input' + (prodModel.isPropertyValid() ? '' : '-error') + ' s-ellipsis'}
-                                                        title={prodModel.property ? prodModel.property.getFullName() : null}>
+                                                        disabled={prodModel.isSaving || (prodGroup && prodGroup.property ? true : false)}
+                                                        title={
+                                                            prodGroup && prodGroup.property ?
+                                                                prodGroup.property.getFullName()
+                                                                :
+                                                                prodModel.property ? prodModel.property.getFullName() : null
+                                                        }>
                                                         {
                                                             this.viewModel.properties.map((v, i) => {
 
@@ -234,8 +244,13 @@ class ProductDetail2 extends React.Component {
                                                 <DropdownEditor
                                                     id="drpProdProp"
                                                     className={'form-control s-input' + (prodModel.isProjectValid() ? '' : '-error') + ' s-ellipsis'}
-                                                    disabled={prodModel.isSaving}
-                                                    title={prodModel.project ? prodModel.project.getName() : ''}>
+                                                    disabled={prodModel.isSaving || (prodGroup && prodGroup.project ? true : false)}
+                                                    title={
+                                                        prodGroup && prodGroup.project ?
+                                                            prodGroup.project.getName()
+                                                            :
+                                                            prodModel.project ? prodModel.project.getName() : ''
+                                                    }>
                                                     {
                                                         (projectsFilter ?
                                                             this.viewModel.projects.filter(projectsFilter)
@@ -294,7 +309,7 @@ class ProductDetail2 extends React.Component {
 
     render() {
 
-        const prodModel = this.viewModel.selectedValue;
+        const prodModel = this.props.getSelectedValue();
 
         if (prodModel) {
 

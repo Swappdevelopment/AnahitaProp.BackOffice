@@ -40,7 +40,7 @@ class ProductDetail4 extends React.Component {
 
     getDescs = () => {
 
-        this.viewModel.getDescs(this.viewModel.selectedValue);
+        this.viewModel.getDescs(this.props.getSelectedValue());
     }
 
     getInputElement = params => {
@@ -92,7 +92,7 @@ class ProductDetail4 extends React.Component {
 
     render() {
 
-        const prodModel = this.viewModel.selectedValue;
+        const prodModel = this.props.getSelectedValue();
 
         if (prodModel) {
 
@@ -116,8 +116,6 @@ class ProductDetail4 extends React.Component {
                 }
             }
 
-            debugger;
-            
             return (
                 <div>
 

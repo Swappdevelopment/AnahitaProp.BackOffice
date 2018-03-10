@@ -28,6 +28,7 @@ const ProductsViewModel = types.model(
         isGettingFiles: false,
         selectedValue: types.maybe(types.reference(ProductModel), types.null),
         selectedGroup: types.maybe(types.reference(ProductModel), types.null),
+        selectedSubValue: types.maybe(types.reference(ProductModel), types.null),
         searchText: types.optional(types.string, ''),
         products: types.optional(types.array(ProductModel), []),
         groups: types.optional(types.array(ProductModel), []),
@@ -72,9 +73,18 @@ const ProductsViewModel = types.model(
 
         removeLazyWaitRecord: action => {
 
-            switch (action) {
+            if (action) {
 
-                case 'groups':
+                if (action.subProducts) {
+
+                    if (action.subProducts
+                        && action.subProducts.length > 0
+                        && action.subProducts[action.subProducts.length - 1].isLazyWait) {
+
+                        action.execAction(() => destroy(action.subProducts[action.subProducts.length - 1]));
+                    }
+                }
+                else {
 
                     if (self.groups
                         && self.groups.length > 0
@@ -82,6 +92,21 @@ const ProductsViewModel = types.model(
 
                         destroy(self.groups[self.groups.length - 1]);
                     }
+                }
+            }
+            else {
+
+                if (self.products
+                    && self.products.length > 0
+                    && self.products[self.products.length - 1].isLazyWait) {
+
+                    destroy(self.products[self.products.length - 1]);
+                }
+            }
+
+            switch (action) {
+
+                case 'groups':
                     break;
 
                 case 'subgroups':
@@ -90,12 +115,7 @@ const ProductsViewModel = types.model(
 
                 default:
 
-                    if (self.products
-                        && self.products.length > 0
-                        && self.products[self.products.length - 1].isLazyWait) {
 
-                        destroy(self.products[self.products.length - 1]);
-                    }
                     break;
             }
 
@@ -309,35 +329,32 @@ const ProductsViewModel = types.model(
             }
         },
 
-        getProducts: (limit, offset, action) => {
+        getProducts: (limit, offset, getGroups, group_Id) => {
 
-            if ((action === 'groups' && !self.isGettingGroups)
-                || (action === 'subgroups' && !self.isGettingSubGroups)
+            if ((getGroups && !self.isGettingGroups)
+                || (group_Id > 0 && self.subGroupsParentID !== group_Id)
                 || !self.isGettingProjects) {
-
 
                 const isFullRefresh = offset === 0;
 
+                const prodGroup = self.selectedGroup;
+
                 if (isFullRefresh) {
 
-                    switch (action) {
+                    if (getGroups) {
 
-                        case 'groups':
+                        self.isGettingGroups = true;
+                        self.groups.length = 0;
+                    }
+                    else if (group_Id > 0 && prodGroup) {
 
-                            self.isGettingGroups = true;
-                            self.groups.length = 0;
-                            break;
+                        self.subGroupsParentID = group_Id;
+                        prodGroup.subProducts.length = 0;
+                    }
+                    else {
 
-                        case 'subgroups':
-
-                            self.isGettingSubGroups = true;
-                            break;
-
-                        default:
-
-                            self.isGettingProducts = true;
-                            self.products.length = 0;
-                            break;
+                        self.isGettingProducts = true;
+                        self.products.length = 0;
                     }
 
                     self.triggerPageBlur(true);
@@ -350,9 +367,10 @@ const ProductsViewModel = types.model(
                 const params = {
                     limit,
                     offset,
-                    hideSearchFilter: self.statusType === 1 ? false : (self.statusType === 0 ? true : null),
-                    withGroups: action === 'groups',
-                    withSubGroups: action === 'subgroups',
+                    group_Id,
+                    statusFilter: self.statusType,
+                    withGroups: getGroups,
+                    withSubGroups: group_Id > 0,
                     withProperties: (self.properties.length === 0)
                 };
 
@@ -377,32 +395,27 @@ const ProductsViewModel = types.model(
 
                                 if (data.products && data.products.length > 0) {
 
-                                    self.removeLazyWaitRecord(action);
+                                    self.removeLazyWaitRecord(getGroups ? true : (group_Id > 0 ? prodGroup : null));
 
                                     const temp = [...data.products.map((v, i) => self.syncProduct(v))];
                                     temp.push(self.getLazyWaitRecord());
 
+                                    if (getGroups) {
 
-                                    switch (action) {
+                                        self.execAction(() => self.groups.push(...temp));
+                                    }
+                                    else if (group_Id > 0 && prodGroup) {
 
-                                        case 'groups':
+                                        prodGroup.execAction(() => prodGroup.subProducts.push(...temp));
+                                    }
+                                    else {
 
-                                            self.execAction(() => self.groups.push(...temp));
-                                            break;
-
-                                        case 'subgroups':
-
-                                            break;
-
-                                        default:
-
-                                            self.execAction(() => self.products.push(...temp));
-                                            break;
+                                        self.execAction(() => self.products.push(...temp));
                                     }
                                 }
                                 else {
 
-                                    self.removeLazyWaitRecord(action);
+                                    self.removeLazyWaitRecord(getGroups ? true : (group_Id > 0 ? prodGroup : null));
                                 }
                             }
                         },
@@ -427,22 +440,17 @@ const ProductsViewModel = types.model(
 
                         self.execAction(() => self.isLazyLoading = false);
 
-                        switch (action) {
+                        if (getGroups) {
 
-                            case 'groups':
+                            self.isGettingGroups = false;
+                        }
+                        else if (group_Id > 0 && prodGroup) {
 
-                                self.isGettingGroups = false;
-                                break;
+                            self.subGroupsParentID = 0;
+                        }
+                        else {
 
-                            case 'subgroups':
-
-                                self.isGettingSubGroups = false;
-                                break;
-
-                            default:
-
-                                self.isGettingProducts = false;
-                                break;
+                            self.isGettingProducts = false;
                         }
                     }
                 );
@@ -986,6 +994,48 @@ ProductsViewModel.init = (activeLang) => {
                         if (self.projects.length > 0) {
 
                             self.selectedValue.project = self.selectedValue.project_Id > 0 ? self.selectedValue.project_Id : null;
+                        }
+                    });
+                }
+
+                _triggeronSelectedValueChanged();
+                break;
+
+            case '/selectedGroup':
+
+                if (self.selectedGroup) {
+
+                    self.execAction(() => {
+
+                        if (self.properties.length > 0) {
+
+                            self.selectedGroup.property = self.selectedGroup.property_Id > 0 ? self.selectedGroup.property_Id : null;
+                        }
+
+                        if (self.projects.length > 0) {
+
+                            self.selectedGroup.project = self.selectedGroup.project_Id > 0 ? self.selectedGroup.project_Id : null;
+                        }
+                    });
+                }
+
+                _triggeronSelectedValueChanged();
+                break;
+
+            case '/selectedSubValue':
+
+                if (self.selectedSubValue) {
+
+                    self.execAction(() => {
+
+                        if (self.properties.length > 0) {
+
+                            self.selectedSubValue.property = self.selectedSubValue.property_Id > 0 ? self.selectedSubValue.property_Id : null;
+                        }
+
+                        if (self.projects.length > 0) {
+
+                            self.selectedSubValue.project = self.selectedSubValue.project_Id > 0 ? self.selectedSubValue.project_Id : null;
                         }
                     });
                 }

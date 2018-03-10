@@ -17,6 +17,7 @@ import ProductRow from "./ProductRow";
 
 import ProductsViewModel from "./ProductsViewModel";
 import ProductDetail from "./ProductDetail";
+import SubProducts from "./SubProducts";
 
 
 class Products extends React.Component {
@@ -88,17 +89,17 @@ class Products extends React.Component {
             case 1:
 
                 this.groupsOffset = 0;
-                this.getProducts('groups');
+                this.getProducts(true);
                 break;
         }
     }
 
-    getProducts = (action) => {
+    getProducts = (getGroups) => {
 
         this.viewModel.getProducts(
-            action === 'groups' ? this.groupsLimit : this.prodsLimit,
-            action === 'groups' ? this.groupsOffset : this.prodsOffset,
-            action);
+            getGroups ? this.groupsLimit : this.prodsLimit,
+            getGroups ? this.groupsOffset : this.prodsOffset,
+            getGroups);
     }
 
     selectedValueChanged = () => {
@@ -147,7 +148,7 @@ class Products extends React.Component {
             activeLang={this.activeLang}
             loadLazy={() => {
                 this.groupsOffset += this.groupsLimit;
-                this.getProducts('groups');
+                this.getProducts(true);
             }}
             onRowClick={() => {
 
@@ -166,7 +167,15 @@ class Products extends React.Component {
                     self.selectedValue = value.id;
                 });
             }}
-            changeBoolean={this.changeBoolean} />
+            changeBoolean={this.changeBoolean}
+            onShowSubProducts={e => {
+
+                this.groupsScrollPos = document.documentElement.scrollTop;
+
+                this.viewModel.execAction(self => {
+                    self.selectedGroup = value.id;
+                });
+            }} />
     )
 
     changeBoolean = (value, action) => {
@@ -310,7 +319,7 @@ class Products extends React.Component {
 
                                             if (this.viewModel.groups.length === 0) {
 
-                                                this.getProducts('groups');
+                                                this.getProducts(true);
                                             }
 
                                             this.prodsScrollPos = document.documentElement.scrollTop;
@@ -330,14 +339,6 @@ class Products extends React.Component {
                         </tbody>
                     </table>
                 }
-                paSearchPlaceholder={this.activeLang.labels["lbl_SearchProducts"]}
-                paSearchValue={this.viewModel.searchText}
-                paOnSearchValueChange={e => this.viewModel.searchText = e.target.value}
-                paOnSearch={e => {
-
-                    this.clearAndQuery();
-                }}
-                paClearSearchValue={e => this.viewModel.searchText = ''}
                 paOnAdd={e => {
                     this.viewModel.selectedValue = this.viewModel.getNewProducts();
                     this.modalHandler.show();
@@ -397,12 +398,13 @@ class Products extends React.Component {
                                 <tr>
                                     <th className="s-th-cell-status"></th>
                                     <th className="s-th-cell-name">{this.activeLang.labels["lbl_Name"]}</th>
+                                    <th></th>
+                                    <th>{this.activeLang.labels["lbl_Type"]}</th>
                                     <th>{this.activeLang.labels["lbl_NetSize"]}</th>
                                     <th>{this.activeLang.labels["lbl_GrossSize"]}</th>
                                     <th>{this.activeLang.labels["lbl_Currency"]}</th>
                                     <th>{this.activeLang.labels["lbl_Family"]}</th>
                                     <th className="s-th-cell-active">{this.activeLang.labels["lbl_Active"]}</th>
-                                    <th></th>
                                 </tr>
 
                             );
@@ -414,18 +416,24 @@ class Products extends React.Component {
                 hideNext
                 hidePrev
 
-                hidePage={this.viewModel.selectedValue ? true : false}
+                hidePage={this.viewModel.selectedValue || this.viewModel.selectedGroup ? true : false}
                 getSiblings={() => {
 
-                    return (
+                    if (this.viewModel.selectedValue || this.viewModel.selectedGroup) {
 
-                        this.viewModel.selectedValue ?
+                        if (this.viewModel.selectedValue) {
 
-                            <ProductDetail key="ProductDetail" viewModel={this.viewModel} errorHandler={this.errorHandler} />
-                            :
-                            null
+                            return (
+                                <ProductDetail key="ProductDetail" viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                            );
+                        }
 
-                    );
+                        return (
+                            <SubProducts key="SubProducts" viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                        );
+                    }
+
+                    return null;
                 }} />
         );
     }

@@ -59,7 +59,9 @@ const ProductModel = types.model(
             isGettingFlags: false,
             isGettingDescs: false,
             isChangingStatus: false,
-            isChangingHideSearch: false
+            isChangingHideSearch: false,
+            group: types.maybe(types.reference(types.late(() => ProductModel)), types.null),
+            subProducts: types.optional(types.array(types.late(() => ProductModel)), [])
         },
         getObject())
 ).actions(
@@ -118,6 +120,15 @@ const ProductModel = types.model(
             self.descs.length = 0;
             self.flags.length = 0;
             self.files.length = 0;
+
+            if (self.group_Id > 0) {
+
+                self.group = self.group_Id;
+            }
+            else {
+
+                self.group = null;
+            }
 
             if (value.names && value.names.length > 0) {
 

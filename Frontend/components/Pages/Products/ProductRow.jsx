@@ -59,18 +59,40 @@ export default class ProductRow extends React.Component {
 
                         {
                             isGroupRow ?
-                                null
-                                :
                                 <td>
-                                    {
-                                        value.type === 10 ? activeLang.labels['lbl_Rsl']
-                                            :
-                                            (value.type === 20 ? activeLang.labels['lbl_Lfs']
-                                                :
-                                                (value.type === 30 ? activeLang.labels['lbl_Prj'] : ''))
-                                    }
+                                    <OverlayTrigger
+                                        placement="top"
+                                        rootClose
+                                        overlay={Helper.getTooltip(`tltp-VwSubProds-${value.genId}`, activeLang.labels["lbl_VwSubProds"])}>
+
+                                        <Button
+                                            className="s-btn-empty"
+                                            onClick={this.props.onShowSubProducts}>
+                                            <span className="la la-arrow-right"></span>
+                                        </Button>
+
+                                    </OverlayTrigger>
                                 </td>
+                                :
+                                null
                         }
+
+                        <td>
+                            {
+                                value.group ?
+                                    value.group.type === 10 ? activeLang.labels['lbl_Rsl']
+                                        :
+                                        (value.group.type === 20 ? activeLang.labels['lbl_Lfs']
+                                            :
+                                            (value.group.type === 30 ? activeLang.labels['lbl_Prj'] : ''))
+                                    :
+                                    value.type === 10 ? activeLang.labels['lbl_Rsl']
+                                        :
+                                        (value.type === 20 ? activeLang.labels['lbl_Lfs']
+                                            :
+                                            (value.type === 30 ? activeLang.labels['lbl_Prj'] : ''))
+                            }
+                        </td>
 
                         <td>{value.netSize.format(0, 3)}</td>
                         <td>{value.grossSize.format(0, 3)}</td>
@@ -90,7 +112,7 @@ export default class ProductRow extends React.Component {
                                     :
                                     <Checkbox className="s-checkbox"
 
-                                        defaultChecked={value.hideSearch ? false : true}
+                                        defaultChecked={value.status === 1 ? true : false}
                                         onChange={e => {
 
                                             if (value.id > 0) {
@@ -99,12 +121,12 @@ export default class ProductRow extends React.Component {
 
                                                 value.execAction(self => {
 
-                                                    self.hideSearch = e.target.checked ? false : true;
+                                                    self.status = e.target.checked ? 1 : 0;
                                                 });
 
                                                 if (tempValue !== value.hideSearch) {
 
-                                                    if (changeBoolean) changeBoolean(value, 'hideSearch');
+                                                    if (changeBoolean) changeBoolean(value, 'status');
                                                 }
                                             }
 
@@ -113,24 +135,7 @@ export default class ProductRow extends React.Component {
                             }
 
                         </td>
-                        {
-                            isGroupRow ?
-                                <td>
-                                    <OverlayTrigger
-                                        placement="top"
-                                        rootClose
-                                        overlay={Helper.getTooltip(`tltp-VwSubProds-${value.genId}`, activeLang.labels["lbl_VwSubProds"])}>
-
-                                        <Button className="s-btn-empty">
-                                            <span className="la la-arrow-right"></span>
-                                        </Button>
-
-                                    </OverlayTrigger>
-                                </td>
-                                :
-                                null
-                        }
-                    </tr >
+                    </tr>
                 );
             }
         }

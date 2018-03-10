@@ -522,4 +522,7 @@
   <data name="lbl_VwSubProds" xml:space="preserve">
     <value>Voir les Sous Produits</value>
   </data>
+  <data name="lbl_Group" xml:space="preserve">
+    <value>Groupe</value>
+  </data>
 </root>
