@@ -95,7 +95,7 @@ namespace AnahitaProp.BackOffice
         [HttpGet]
         [Access]
         [ResponseCache(Duration = 2592000)] // 30 Days
-        public async Task<JsonResult> GetCurrencies()
+        public async Task<IActionResult> GetCurrencies()
         {
             Currency[] result = null;
 
@@ -122,7 +122,7 @@ namespace AnahitaProp.BackOffice
             }
             catch (Exception ex)
             {
-                throw ex;
+                return InternalServerError(ex);
             }
             finally
             {
@@ -136,7 +136,7 @@ namespace AnahitaProp.BackOffice
         [HttpGet]
         [Access]
         [ResponseCache(Duration = 2592000)] // 30 Days
-        public JsonResult GetProductFamilyTypes()
+        public IActionResult GetProductFamilyTypes()
         {
             ProductFamilyType[] types = null;
 
@@ -149,7 +149,7 @@ namespace AnahitaProp.BackOffice
             }
             catch (Exception ex)
             {
-                throw ex;
+                return InternalServerError(ex);
             }
             finally
             {
@@ -161,7 +161,7 @@ namespace AnahitaProp.BackOffice
 
         [HttpGet]
         [Access]
-        public JsonResult GetProductFamilies()
+        public IActionResult GetProductFamilies()
         {
             ProductFamily[] families = null;
 
@@ -174,7 +174,7 @@ namespace AnahitaProp.BackOffice
             }
             catch (Exception ex)
             {
-                throw ex;
+                return InternalServerError(ex);
             }
             finally
             {
@@ -186,7 +186,7 @@ namespace AnahitaProp.BackOffice
 
         [HttpGet]
         [Access]
-        public JsonResult GetFlagViews()
+        public IActionResult GetFlagViews()
         {
             Flag[] flags = null;
 
@@ -199,7 +199,7 @@ namespace AnahitaProp.BackOffice
             }
             catch (Exception ex)
             {
-                throw ex;
+                return InternalServerError(ex);
             }
             finally
             {
