@@ -325,38 +325,45 @@ class ProductDetail2 extends React.Component {
                         activeKey={prodModel.type}
                         onSelect={key => this.onTabSelect(prodModel, key)}>
                         <Tab
+                            style={{ position: 'relative' }}
                             disabled={prodModel.isSaving}
                             eventKey={10}
                             title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Rsl'], 10)}>
                             {
                                 this.viewModel.isGettingProperties ?
-                                    <span className="spinner" />
+                                    <span className="spinner" style={{ position: 'absolute' }} />
                                     :
+
                                     this.getPropertyChoiceContent({ prodModel, hideProject: true })
+
                             }
                         </Tab>
                         <Tab
+                            style={{ position: 'relative' }}
                             disabled={prodModel.isSaving}
                             eventKey={20}
                             title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Lfs'], 20)}>
                             {
                                 this.viewModel.isGettingProperties || this.viewModel.isGettingProjects ?
-                                    <span className="spinner" />
+                                    <span className="spinner" style={{ position: 'absolute' }} />
                                     :
+
                                     this.getPropertyChoiceContent(
                                         {
                                             prodModel,
                                             projectsFilter: (v, i) => v.type === 10
                                         })
+
                             }
                         </Tab>
                         <Tab
+                            style={{ position: 'relative' }}
                             disabled={prodModel.isSaving}
                             eventKey={30}
                             title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Prj'], 30)}>
                             {
                                 this.viewModel.isGettingProjects ?
-                                    <span className="spinner" />
+                                    <span className="spinner" style={{ position: 'absolute' }} />
                                     :
                                     this.getPropertyChoiceContent(
                                         {

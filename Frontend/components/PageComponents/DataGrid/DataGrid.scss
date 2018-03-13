@@ -31,6 +31,9 @@
             color: $secondaryDark !important;
         }
     }
+
+
+
     .s-td-cell-namenl{
         text-align: left !important;
         font-weight: bold;
@@ -108,5 +111,9 @@
         position: relative;
         border-top: none;
         width: 70px;
+    }
+
+    .s-td-cell-active{
+        position: relative;
     }
 }

@@ -319,7 +319,7 @@ class ProductDetail5 extends React.Component {
                     <td className="s-td-cell-active">
                         {
                             entFile.isChangingIsListImage ?
-                                <span className="spinner"></span>
+                                <span className="spinner" style={{ position: 'absolute', marginLeft: -15, marginTop: -15 }}></span>
                                 :
                                 <Checkbox
                                     className="s-checkbox"
@@ -350,7 +350,7 @@ class ProductDetail5 extends React.Component {
                     <td className="s-td-cell-active">
                         {
                             entFile.isChangingAppearDetail ?
-                                <span className="spinner"></span>
+                                <span className="spinner" style={{ position: 'absolute', marginLeft: -15, marginTop: -15 }}></span>
                                 :
                                 <Checkbox
                                     className="s-checkbox"
@@ -381,7 +381,7 @@ class ProductDetail5 extends React.Component {
                     <td className="s-td-cell-active">
                         {
                             entFile.isChangingStatus ?
-                                <span className="spinner"></span>
+                                <span className="spinner" style={{ position: 'absolute', marginLeft: -15, marginTop: -15 }}></span>
                                 :
                                 <Checkbox className="s-checkbox"
                                     disabled={entFile.isSaving}
