@@ -301,7 +301,7 @@ class Products extends React.Component {
                                             this.state.tabKey === 0 ?
                                                 <h4>{this.activeLang.labels["lbl_Menu_products"]}</h4>
                                                 :
-                                                this.activeLang.labels["lbl_Menu_products"]
+                                                <h4>{this.activeLang.labels["lbl_Menu_products"]}</h4>
                                         }
                                     </Button>
                                 </td>
@@ -331,7 +331,7 @@ class Products extends React.Component {
                                             this.state.tabKey === 1 ?
                                                 <h4>{this.activeLang.labels["lbl_Groups"]}</h4>
                                                 :
-                                                this.activeLang.labels["lbl_Groups"]
+                                                <h4>{this.activeLang.labels["lbl_Groups"]}</h4>
                                         }
                                     </Button>
                                 </td>

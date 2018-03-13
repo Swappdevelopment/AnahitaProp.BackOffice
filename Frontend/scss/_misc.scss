@@ -85,6 +85,15 @@
     }
 }
 
+.tltpRevert {
+    .tooltip-inner {
+        background-color: $blue !important;
+    }
+    .tooltip-arrow {
+        border-top-color: $blue !important;
+    }
+}
+
 
 /* Alert */
 

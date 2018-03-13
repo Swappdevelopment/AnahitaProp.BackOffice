@@ -15,31 +15,19 @@
             
             .s-dropdown-arrow{
                 position: absolute;
-                color: rgba(105, 62, 22, 0.6);
-                top: -13px;
+                top: -10px;
                 right: 50px;
-
-                &:before{
-                    position: relative;
-                    top: 100%;
-                    font-size: 40px;
-                    display: inline-block;
-                    font-family: "Metronic";
-                    font-style: normal;
-                    font-weight: normal;
-                    font-variant: normal;
-                    line-height: 0px;
-                    text-decoration: inherit;
-                    text-rendering: optimizeLegibility;
-                    text-transform: none;
-                    -webkit-font-smoothing: antialiased;
-                    content: "";
-                }
+                width: 0; 
+                height: 0; 
+                border-left: 20px solid transparent;
+                border-right: 20px solid transparent;
+                border-bottom: 20px solid $secondary;
+             
             }
 
             .s-dropdown-header{
                 height: 120px;
-                background: linear-gradient(rgba(105, 62, 22, 0.9), rgba(105, 62, 22, 0.9)), url("~/images/background.png") center center no-repeat scroll;
+                background: linear-gradient(rgba(230, 136, 53, 0.9), rgba(230, 136, 53, 0.9)), url("~/images/background.png") center center no-repeat scroll;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
                 padding: 15px;
@@ -166,34 +154,6 @@
             border-radius: 6px;
             background-color: $white;
             
-            .s-dropdown-arrow{
-                position: absolute;
-                color: $white;
-                right: 26px;
-                top: -28px;
-
-                @media(max-width: $screen-sm-max){
-                    right: 0;
-                }
-                
-                &:before{
-                    position: relative;
-                    top: 100%;
-                    font-size: 40px;
-                    display: inline-block;
-                    font-family: "Metronic";
-                    font-style: normal;
-                    font-weight: normal;
-                    font-variant: normal;
-                    line-height: 0px;
-                    text-decoration: inherit;
-                    text-rendering: optimizeLegibility;
-                    text-transform: none;
-                    -webkit-font-smoothing: antialiased;
-                    content: "";
-                }
-            }
-
             .s-dropdown-content {
 
                 li {

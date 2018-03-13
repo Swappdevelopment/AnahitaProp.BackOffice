@@ -3,7 +3,7 @@ import { observer, inject } from 'mobx-react';
 
 import Cleave from 'cleave.js/react';
 
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 
 import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
