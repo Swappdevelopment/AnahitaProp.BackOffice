@@ -51,7 +51,7 @@
                         }
 
                         .s-menu-user{
-                            color: $primary;
+                            color: $secondary;
                             font-weight: 600;
                         }
 
@@ -113,28 +113,13 @@
 
                         &-active{
                             position: absolute;
-                            color: $primary;
                             top: 69px;
                             left: 5px;
-                            font-size: 60px;
-
-                            &:before{
-                                position: relative;
-                                display: inline-block;
-                                font-family: "Metronic";
-                                font-style: normal;
-                                font-weight: normal;
-                                font-variant: normal;
-                                line-height: 0px;
-                                text-decoration: inherit;
-                                text-rendering: optimizeLegibility;
-                                text-transform: none;
-                                -moz-osx-font-smoothing: grayscale;
-                                -webkit-font-smoothing: antialiased;
-                                font-smoothing: antialiased;
-                                content: "";
-
-                            }
+                            width: 0; 
+                            height: 0; 
+                            border-left: 18px solid transparent;
+                            border-right: 18px solid transparent;
+                            border-top: 18px solid $primary;
                         }
                     }
                 }

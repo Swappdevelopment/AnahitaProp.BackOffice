@@ -2,6 +2,7 @@
 .wait-block {
     background-color: $lightgray1;
     animation: animate-on 1.2s infinite linear both;
+    border-radius: 4px;
 
     @keyframes animate-on {
         0% {
@@ -20,16 +21,4 @@
             opacity: 0.5;
         }
     }
-    /*&.small {
-        width: 100px;
-    }
-    &.medium {
-        width: 200px;
-    }
-    &.long {
-        width: 300px;
-    }
-    &.super-long {
-        width: 450px;
-    }*/
 }

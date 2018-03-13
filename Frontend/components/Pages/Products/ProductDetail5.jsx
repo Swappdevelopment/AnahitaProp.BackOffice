@@ -49,11 +49,12 @@ class ProductDetail5 extends React.Component {
 
             return (
                 <Popover
-                    id={`popDelete-${entFile.genId}`}
+                    id="popDelete"
                     className={`popDelete-${entFile.genId}`}
                     title={
                         <div>
-                            <span className="la la-exclamation-circle">&nbsp;</span>
+                            <span className="la la-exclamation-circle"></span>
+                            <span> {this.activeLang.labels['lbl_Delete']}</span>
                             {this.props.deleteTitle}
                         </div>
                     }>
@@ -305,10 +306,10 @@ class ProductDetail5 extends React.Component {
                             </div>
                         </div>
                     </td>
-                    <td>
+                    <td style={{ position: 'relative' }}>
                         {
                             entFile.isSaving ?
-                                <span className="la la-spinner la-spin la-3x clr-fore-primary"></span>
+                                <span className="spinner" style={{ position: 'absolute', left: 70 }}></span>
                                 :
                                 <a href={url} target="_blank">
                                     <Image style={{ margin: '5px 10px', height: 90 }} src={url} responsive rounded />

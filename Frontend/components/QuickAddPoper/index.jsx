@@ -37,7 +37,7 @@ export default class QuickAddPoper extends React.Component {
                 style={{
                     marginTop: 4
                 }}
-                className="s-btn-empty"
+                className="s-btn-small-secondary-empty"
                 disabled={this.props.isActionDisable ? this.props.isActionDisable() : false}>
                 <span className="flaticon-add"></span>
             </Button>
