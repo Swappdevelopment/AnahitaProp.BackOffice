@@ -9,7 +9,7 @@ const ItemFieldModel = types.model(
     {
         recordState: types.optional(types.number, 0),
         value: types.optional(types.string, ''),
-        recievedInput: false,
+        receivedInput: false,
         originalValue: types.optional(types.frozen, null)
     }
 ).actions(
@@ -18,6 +18,11 @@ const ItemFieldModel = types.model(
             if (func) {
                 func(self);
             }
+        },
+        sync: value => {
+
+            self.originalValue = value;
+            BaseModel.setPropsValue(self, value);
         },
         resetOriginalValue: () => {
 
@@ -44,10 +49,10 @@ const ItemFieldModel = types.model(
 
             return BaseModel.isSelfModified(self, self.originalValue);
         },
-        isValueValid: () => self.recievedInput ? (self.value ? true : false) : true,
+        isValueValid: () => self.receivedInput ? (self.value && self.value.length > 0 ? true : false) : true,
         isValid: () => {
 
-            self.recievedInput = true;
+            self.execAction(() => self.receivedInput = true);
 
             return self.isValueValid();
         }
@@ -59,18 +64,18 @@ ItemFieldModel.init = (value, genId) => {
 
     self.genId = genId;
 
-    self.execAction(() => {
+    self.sync(value);
 
-        self.originalValue = value;
-        BaseModel.setPropsValue(self, value);
-    });
+    if (value) {
 
-    self.id = value.id;
-    self.status = value.status;
-    self.isList = value.isList;
-    self.detailRank = value.detailRank;
-    self.language_Id = value.language_Id;
-    self.language_Code = value.language_Code;
+        self.id = value.id;
+        self.status = value.status;
+        self.isList = value.isList;
+        self.detailRank = value.detailRank;
+        self.language_Id = value.language_Id;
+        self.language_Code = value.language_Code;
+        self.language = value.language;
+    }
 
 
     self.getValue = () => {
@@ -82,7 +87,8 @@ ItemFieldModel.init = (value, genId) => {
                 isList: self.isList,
                 detailRank: self.detailRank,
                 language_Id: self.language_Id,
-                language_Code: self.language_Code
+                language_Code: self.language_Code,
+                language: self.language
             });
     };
 

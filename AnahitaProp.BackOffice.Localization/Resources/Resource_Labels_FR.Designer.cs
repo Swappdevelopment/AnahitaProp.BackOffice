@@ -341,6 +341,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Informations Essentielles.
+        /// </summary>
+        public static string lbl_CoreInfo {
+            get {
+                return ResourceManager.GetString("lbl_CoreInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pays.
         /// </summary>
         public static string lbl_Country {
@@ -544,6 +553,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Family {
             get {
                 return ResourceManager.GetString("lbl_Family", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminer.
+        /// </summary>
+        public static string lbl_Finish {
+            get {
+                return ResourceManager.GetString("lbl_Finish", resourceCulture);
             }
         }
         
@@ -809,11 +827,29 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nouveau Produit.
+        /// </summary>
+        public static string lbl_NewProd {
+            get {
+                return ResourceManager.GetString("lbl_NewProd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nouveau Mot de Passe.
         /// </summary>
         public static string lbl_NewPsswrd {
             get {
                 return ResourceManager.GetString("lbl_NewPsswrd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suivant.
+        /// </summary>
+        public static string lbl_Next {
+            get {
+                return ResourceManager.GetString("lbl_Next", resourceCulture);
             }
         }
         
@@ -904,6 +940,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Prj {
             get {
                 return ResourceManager.GetString("lbl_Prj", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type de Produit.
+        /// </summary>
+        public static string lbl_ProdType {
+            get {
+                return ResourceManager.GetString("lbl_ProdType", resourceCulture);
             }
         }
         
@@ -1057,6 +1102,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_Search {
             get {
                 return ResourceManager.GetString("lbl_Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Informations Secondaires (Optionelles).
+        /// </summary>
+        public static string lbl_SecInfo {
+            get {
+                return ResourceManager.GetString("lbl_SecInfo", resourceCulture);
             }
         }
         

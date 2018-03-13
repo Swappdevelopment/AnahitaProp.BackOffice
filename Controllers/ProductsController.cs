@@ -381,6 +381,8 @@ namespace AnahitaProp.BackOffice
                         case RecordState.Added:
 
                             product.UID = Helper.GenerateSequentialGuid().ToString();
+                            getProdIdQuery = $"SELECT ID FROM Products WHERE UID = '{product.UID}'";
+
                             product.Slug = _dbi.GetProductSlug(product.Slug.ToSlug(length: Product.SLUG_LENGTH - 4));
 
                             toSave.Add(product);
@@ -389,7 +391,15 @@ namespace AnahitaProp.BackOffice
                             {
                                 toSave.AddRange(
                                         product.Names
-                                        .Select(l => l.SetRecordState(RecordState.Added).AddCommand("Product_Id", getProdIdQuery)));
+                                        .Select(l =>
+                                        {
+                                            if (l.Language_Id <= 0 && !string.IsNullOrEmpty(l.Language?.Code))
+                                            {
+                                                l.AddCommand("Language_Id", $"SELECT ID FROM Languages WHERE Code = '{l.Language.Code.ToUpper()}' ");
+                                            }
+
+                                            return l.SetRecordState(RecordState.Added).AddCommand("Product_Id", getProdIdQuery);
+                                        }));
                             }
 
                             if (product.Descs != null)
@@ -512,18 +522,21 @@ namespace AnahitaProp.BackOffice
 
                             if (tempProd.Type == ProductType.Resale)
                             {
-                                tempProd.Project_Id = null;
-
-                                if (psds == null || psds.Length == 0)
+                                if (tempProd.Property_Id > 0)
                                 {
-                                    psds = new ProductSoldDate[]
+                                    tempProd.Project_Id = null;
+
+                                    if (psds == null || psds.Length == 0)
                                     {
+                                        psds = new ProductSoldDate[]
+                                        {
                                         new ProductSoldDate()
                                         {
                                             RecordState = RecordState.Added,
                                             DateSold = DateTime.UtcNow.AddDays(-7)
                                         }.AddCommand<ProductSoldDate>("Product_Id", getProdIdQuery)
-                                    };
+                                        };
+                                    }
                                 }
                             }
                             else if (psds != null)

@@ -131,11 +131,11 @@ const UserModel = types.model(
     })).views(
     self => ({
 
-        isEmailValid: () => Helper.validateEmail(self.email, self.recievedInput),
+        isEmailValid: () => Helper.validateEmail(self.email, self.receivedInput),
 
         isValid: () => {
 
-            self.recievedInput = true;
+            self.receivedInput = true;
 
             return self.isEmailValid();
         },

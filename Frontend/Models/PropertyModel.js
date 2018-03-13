@@ -26,7 +26,7 @@ const PropertyModel = types.model(
     Object.assign(
         {
             isSaving: false,
-            recievedInput: false,
+            receivedInput: false,
             originalValue: types.optional(types.frozen, null),
         },
         getObject())
@@ -138,10 +138,10 @@ const PropertyModel = types.model(
 
             return self.code;
         },
-        isLotSizeValid: () => self.recievedInput ? (self.lotSize >= 0 ? true : false) : true,
+        isLotSizeValid: () => self.receivedInput ? (self.lotSize >= 0 ? true : false) : true,
         isValid: () => {
 
-            self.recievedInput = true;
+            self.execAction(() => self.receivedInput = true);
 
             return self.isLotSizeValid();
         },

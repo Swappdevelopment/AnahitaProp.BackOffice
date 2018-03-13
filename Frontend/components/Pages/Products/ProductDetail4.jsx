@@ -183,7 +183,7 @@ class ProductDetail4 extends React.Component {
                                                                 self.value = e.target.value;
 
                                                                 if (self.detailRank === 0) {
-                                                                    self.recievedInput = true;
+                                                                    self.receivedInput = true;
                                                                 }
                                                             });
                                                         }

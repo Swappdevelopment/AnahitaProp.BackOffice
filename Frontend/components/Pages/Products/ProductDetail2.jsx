@@ -163,7 +163,7 @@ class ProductDetail2 extends React.Component {
 
                                                                                 self.property_Id = v.id;
                                                                                 self.property = v.id;
-                                                                                self.recievedInput = true;
+                                                                                self.receivedInput = true;
                                                                             });
                                                                         }}>
                                                                         {v.getFullName()}
@@ -208,7 +208,7 @@ class ProductDetail2 extends React.Component {
                                                         prodModel.property.execAction(self => {
 
                                                             self.lotSize = parseFloat(e.target.value);
-                                                            self.recievedInput = true;
+                                                            self.receivedInput = true;
                                                         });
                                                     }} />
                                             </div>
@@ -278,7 +278,7 @@ class ProductDetail2 extends React.Component {
 
                                                                                 self.project_Id = v.id;
                                                                                 self.project = v.id;
-                                                                                self.recievedInput = true;
+                                                                                self.receivedInput = true;
                                                                             });
                                                                         }}>
                                                                         {v.getName()}

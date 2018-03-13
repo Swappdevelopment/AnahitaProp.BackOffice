@@ -528,4 +528,22 @@
   <data name="lbl_AddNewFam" xml:space="preserve">
     <value>Ajouter une nouvelle Famille</value>
   </data>
+  <data name="lbl_Next" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="lbl_CoreInfo" xml:space="preserve">
+    <value>Informations Essentielles</value>
+  </data>
+  <data name="lbl_NewProd" xml:space="preserve">
+    <value>Nouveau Produit</value>
+  </data>
+  <data name="lbl_ProdType" xml:space="preserve">
+    <value>Type de Produit</value>
+  </data>
+  <data name="lbl_SecInfo" xml:space="preserve">
+    <value>Informations Secondaires (Optionelles)</value>
+  </data>
+  <data name="lbl_Finish" xml:space="preserve">
+    <value>Terminer</value>
+  </data>
 </root>

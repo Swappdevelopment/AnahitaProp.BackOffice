@@ -27,7 +27,7 @@ class ProductDetail3 extends React.Component {
 
         this.viewModel.bindOnSelectedValueChange(this.viewModel.getFlags);
 
-        this.viewModel.getFlags();
+        this.viewModel.getFlags(this.props.getSelectedValue());
     }
 
     componentWillUnmount() {
@@ -125,7 +125,7 @@ class ProductDetail3 extends React.Component {
 
                 return <WaitControl show={true} />;
             }
-            else if (prodModel.flags.length > 0) {
+            else {
 
                 let flBedRoomCount = null, flOptnDen = null, flViews = null;
 
@@ -172,7 +172,7 @@ class ProductDetail3 extends React.Component {
 
                                                 flBedRoomCount.execAction(self => {
                                                     self.valueInt = parseInt(e.target.value);
-                                                    self.recievedInput = true;
+                                                    self.receivedInput = true;
                                                 });
                                             }
                                         })
@@ -199,7 +199,7 @@ class ProductDetail3 extends React.Component {
 
                                                 flOptnDen.execAction(self => {
                                                     self.valueInt = parseInt(e.target.value);
-                                                    self.recievedInput = true;
+                                                    self.receivedInput = true;
                                                 });
                                             }
                                         })
@@ -214,7 +214,7 @@ class ProductDetail3 extends React.Component {
                                                 <OverlayTrigger
                                                     rootClose
                                                     trigger="click"
-                                                    placement="top"
+                                                    placement={this.props.viewsPlacement ? this.props.viewsPlacement : 'top'}
                                                     container={this.props.rootContainer}
                                                     overlay={
                                                         <Popover id="popViews">

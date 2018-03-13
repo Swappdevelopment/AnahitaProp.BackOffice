@@ -121,7 +121,7 @@ export default class Helper {
 
                                     complete(data);
                                 }
-                            });
+                            })
                             // .catch(error => {
 
                             // });

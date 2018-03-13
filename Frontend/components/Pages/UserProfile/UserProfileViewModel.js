@@ -17,7 +17,7 @@ export default class UserProfileViewModel {
                 queryingServer: false,
                 savingProfile: false,
                 hasChanges: false,
-                recievedInput: false,
+                receivedInput: false,
                 allowEmailChange: false,
                 showChangePassword: false
             },
@@ -46,8 +46,8 @@ export default class UserProfileViewModel {
     validationsObject() {
 
         return {
-            isAccountNameValid: () => this.recievedInput ? (this.accountName ? true : false) : true,
-            isEmailValid: () => Helper.validateEmail(this.email, this.recievedInput)
+            isAccountNameValid: () => this.receivedInput ? (this.accountName ? true : false) : true,
+            isEmailValid: () => Helper.validateEmail(this.email, this.receivedInput)
         };
     }
 
@@ -104,13 +104,13 @@ export default class UserProfileViewModel {
             this.hasChanges = false;
         }
 
-        this.recievedInput = true;
+        this.receivedInput = true;
     }
 
 
     isValid() {
 
-        this.recievedInput = true;
+        this.receivedInput = true;
 
         // return this.isEmailValid() && this.isAccountNameValid();
         return this.isAccountNameValid();

@@ -1,4 +1,4 @@
-import { types, detach, destroy } from 'mobx-state-tree';
+import { types, detach, destroy, onPatch } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
 import ItemFieldModel from './ItemFieldModel';
@@ -77,12 +77,6 @@ const ProductModel = types.model(
 
             self.recordState = value;
         },
-        setPropsValue: (value, listenForChange) => {
-
-            BaseModel.setPropsValue(self, value, listenForChange);
-
-            self.receivedInput = listenForChange ? true : false;
-        },
         resetOriginalValue: propertyFlags => {
 
             const value = self.getValue();
@@ -138,6 +132,7 @@ const ProductModel = types.model(
                         id: v.id,
                         status: v.status,
                         value: v.value,
+                        language: v.language,
                         language_Id: v.language_Id,
                         language_Code: v.language_Code ? v.language_Code.toLowerCase() : '',
                     });
@@ -348,15 +343,15 @@ const ProductModel = types.model(
 
             return `${self.getName()}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`;
         },
-        isCodeValid: () => self.recievedInput ? (self.code ? true : false) : true,
-        isNetSizeValid: () => self.recievedInput ? (self.netSize >= 0 ? true : false) : true,
-        isGrossSizeValid: () => self.recievedInput ? (self.grossSize >= 0 ? true : false) : true,
-        isCurrencyValid: () => self.recievedInput ? (self.currency_Id > 0 ? true : false) : true,
-        isPriceValid: () => self.recievedInput ? (self.price >= 0 ? true : false) : true,
-        isFamilyValid: () => self.recievedInput ? (self.productFamily_Id > 0 ? true : false) : true,
+        isCodeValid: () => self.receivedInput ? (self.code ? true : false) : true,
+        isNetSizeValid: () => self.receivedInput ? (self.netSize >= 0 ? true : false) : true,
+        isGrossSizeValid: () => self.receivedInput ? (self.grossSize >= 0 ? true : false) : true,
+        isCurrencyValid: () => self.receivedInput ? (self.currency_Id > 0 ? true : false) : true,
+        isPriceValid: () => self.receivedInput ? (self.price >= 0 ? true : false) : true,
+        isFamilyValid: () => self.receivedInput ? (self.productFamily_Id > 0 ? true : false) : true,
         isPropertyValid: () => {
 
-            if (self.recievedInput
+            if (self.receivedInput
                 && (!self.type || self.type === 10 || self.type === 20)) {
 
                 return self.property_Id > 0;
@@ -366,7 +361,7 @@ const ProductModel = types.model(
         },
         isProjectValid: () => {
 
-            if (self.recievedInput
+            if (self.receivedInput
                 && (!self.type || self.type === 20 || self.type === 30)) {
 
                 return self.project_Id > 0;
@@ -376,17 +371,19 @@ const ProductModel = types.model(
         },
         isValid: () => {
 
-            self.recievedInput = true;
+            self.execAction(() => self.receivedInput = true);
 
             return self.isCodeValid()
                 && self.isNetSizeValid()
                 && self.isGrossSizeValid()
                 && self.isCurrencyValid()
                 && self.isPriceValid()
-                && self.isPropertyValid()
-                && self.isProjectValid()
-                && (!self.property || self.property.isValid())
-                && !self.names.find((v, i) => !v.isValid());
+                && self.isFamilyValid()
+                && !self.names.find((v, i) => !v.isValid())
+                && (self.recordState === 10
+                    || (self.isPropertyValid()
+                        && self.isProjectValid()
+                        && (!self.property || self.property.isValid())));
         },
         getPropertyFlags: colRefFilter => {
 
@@ -453,6 +450,24 @@ ProductModel.init = (value, genId, activeLangCode) => {
                 flags: self.flags ? self.flags.map(f => f.getValue()) : null
             });
     };
+
+
+    onPatch(self, patch => {
+
+        switch (patch.path) {
+
+            case '/receivedInput':
+
+                if (patch.value === true) {
+
+                    for (const item of self.names) {
+
+                        item.execAction(() => item.receivedInput = patch.value);
+                    }
+                }
+                break;
+        }
+    });
 
 
     return self;

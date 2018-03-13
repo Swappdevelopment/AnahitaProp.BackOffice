@@ -19,6 +19,8 @@ import ProductsViewModel from "./ProductsViewModel";
 import ProductDetail from "./ProductDetail";
 import SubProducts from "./SubProducts";
 
+import CreateProduct from './CreateProduct';
+
 
 class Products extends React.Component {
 
@@ -29,12 +31,12 @@ class Products extends React.Component {
         this.groupsScrollPos = 0;
 
         this.state = {
-            tabKey: 0,
-            isModalShown: false
+            tabKey: 0
         };
 
         this.pageViewModel = props.pageViewModel;
         this.errorHandler = props.errorHandler;
+        this.modalHandler = new ModalHandler();
 
         this.activeLang = this.props.store.langStore.active;
 
@@ -99,7 +101,7 @@ class Products extends React.Component {
         this.viewModel.getProducts(
             getGroups ? this.groupsLimit : this.prodsLimit,
             getGroups ? this.groupsOffset : this.prodsOffset,
-            getGroups);
+            getGroups ? true : false);
     }
 
     selectedValueChanged = () => {
@@ -340,16 +342,13 @@ class Products extends React.Component {
                     </table>
                 }
                 paOnAdd={e => {
-                    this.viewModel.selectedValue = this.viewModel.getNewProducts();
+                    //this.viewModel.selectedValue = this.viewModel.getNewProducts();
                     this.modalHandler.show();
                 }}
                 paShowSaveButton={e => {
                     const temp = this.viewModel.products.find((v, i) => !v.isLazyWait && v.recordState !== 0 && !v.isSaving) ? true : false;
 
                     return !this.viewModel.isModalShown && temp;
-                }}
-                paGlobalSaveOnClick={e => {
-                    this.viewModel.saveProducts();
                 }}
                 paRefresh={e => {
 
@@ -434,6 +433,43 @@ class Products extends React.Component {
                     }
 
                     return null;
+                }}
+                modalHandler={this.modalHandler}
+                getModalHeader={() => this.activeLang.labels['lbl_NewProd']}
+
+                getModalInRoot={() => {
+
+                    return <WaitControl opacity50={true} show={this.viewModel.showModalWait} />;
+                }}
+
+                getModalBody={() => (
+                    <CreateProduct
+                        isActive={this.viewModel.isModalShown}
+                        viewModel={this.viewModel}
+                        errorHandler={this.errorHandler}
+                        modalHandler={this.modalHandler} />
+                )}
+
+                onModalShow={args => this.viewModel.execAction(self => self.isModalShown = true)}
+
+                onModalHide={args => {
+
+                    this.viewModel.execAction(self => self.isModalShown = false);
+
+                    if (args) {
+
+                        switch (args.action) {
+
+                            case 'noRevert':
+                            case 'save':
+
+                                break;
+
+                            default:
+
+                                break;
+                        }
+                    }
                 }} />
         );
     }

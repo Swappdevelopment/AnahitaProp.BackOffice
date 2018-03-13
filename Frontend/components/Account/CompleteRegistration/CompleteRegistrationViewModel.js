@@ -21,7 +21,7 @@ export default class CompleteRegistrationViewModel {
                     queryingServer: false,
                     exceptionIDCaught: false,
                     criticalError: false,
-                    recievedInput: false,
+                    receivedInput: false,
                     invalidMsgs: []
                 },
                 this.validationsObject()));
@@ -30,9 +30,9 @@ export default class CompleteRegistrationViewModel {
     validationsObject() {
 
         return {
-            isPasswordValid: () => this.recievedInput ? (this.password ? true : false) : true,
-            isAccountNameValid: () => this.recievedInput ? (this.accountName ? true : false) : true,
-            isAccountNameLengthValid: () => this.recievedInput ? (this.accountName && this.accountName.length > 2 ? true : false) : true
+            isPasswordValid: () => this.receivedInput ? (this.password ? true : false) : true,
+            isAccountNameValid: () => this.receivedInput ? (this.accountName ? true : false) : true,
+            isAccountNameLengthValid: () => this.receivedInput ? (this.accountName && this.accountName.length > 2 ? true : false) : true
         };
     }
 
@@ -60,7 +60,7 @@ export default class CompleteRegistrationViewModel {
 
     isValid() {
 
-        this.recievedInput = true;
+        this.receivedInput = true;
 
         return this.isPasswordValid() && this.isAccountNameValid() && this.isAccountNameLengthValid();
     }

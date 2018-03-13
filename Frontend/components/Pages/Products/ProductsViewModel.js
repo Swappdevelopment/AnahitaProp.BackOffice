@@ -1,5 +1,7 @@
 import { types, destroy, detach, onPatch } from 'mobx-state-tree';
 
+import CreateProductViewModel from './CreateProductViewModel';
+
 import BaseModel from '../../../Models/BaseModel';
 import ProductModel from '../../../Models/ProductModel';
 import ProdFamilyModel from '../../../Models/ProdFamilyModel';
@@ -20,6 +22,7 @@ const _onSelectedValueChangeCallbacks = [];
 const ProductsViewModel = types.model(
     'ProductsViewModel',
     {
+        createProduct: types.maybe(CreateProductViewModel, types.null),
         isLazyLoading: false,
         isSaving: false,
         isGettingProperties: false,
@@ -27,6 +30,8 @@ const ProductsViewModel = types.model(
         isGettingFlags: false,
         isGettingDescs: false,
         isGettingFiles: false,
+        isModalShown: false,
+        showModalWait: false,
         selectedValue: types.maybe(types.reference(ProductModel), types.null),
         selectedGroup: types.maybe(types.reference(ProductModel), types.null),
         selectedSubValue: types.maybe(types.reference(ProductModel), types.null),
@@ -122,7 +127,7 @@ const ProductsViewModel = types.model(
 
         },
 
-        saveProduct: value => {
+        saveProduct: (value, successCallback) => {
 
             if (value && !value.isSaving && (value.recordState > 0 || value.isModified()) && value.isValid && value.isValid()) {
 
@@ -137,7 +142,16 @@ const ProductsViewModel = types.model(
 
                             if (data && data.saved) {
 
-                                if (value.recordState === 30) {
+                                if (value.recordState === 10) {
+
+                                    if (data.newProduct) {
+
+                                        value = ProductModel.init(data.newProduct, ++self.idGenerator, self.activeLang.code);
+
+                                        value.execAction(prod => prod.isSaving = true);
+                                    }
+                                }
+                                else if (value.recordState === 30) {
 
 
                                 }
@@ -154,6 +168,10 @@ const ProductsViewModel = types.model(
                                             value.resetOriginalValue(data.propertyFlags);
                                             break;
                                     }
+                                }
+
+                                if (successCallback) {
+                                    successCallback(value);
                                 }
                             }
                         },
@@ -523,57 +541,6 @@ const ProductsViewModel = types.model(
             }
         },
 
-        saveProducts: () => {
-
-            let idCounter = -1;
-
-            const savePromises = {
-                options: self.products
-                    .filter((v, i) => v.recordState && v.recordState !== 0 && !v.isSaving)
-                    .map((toSave, index) => {
-
-                        toSave.isSaving = true;
-
-                        return {
-                            promise: Helper.FetchPromisePost('/products/Save', toSave.getValue()),
-                            success: data => {
-
-                                if (data) {
-
-                                    if (toSave.recordState === 30) {
-
-                                        self.removeProducts(toSave);
-                                    }
-                                    else if (!data.ok) {
-
-                                        toSave.sync(data);
-                                    }
-                                }
-                            },
-                            failure: error => {
-
-                                toSave.execAction(() => toSave.error = self.activeLang.msgs['errMsg_Aplgs']);
-                            },
-                            complete: () => {
-
-                                toSave.execAction(() => toSave.isSaving = false);
-                            }
-                        };
-                    }),
-                incrementSession: () => {
-
-                    self.saveProductsPromiseID = self.saveProductsPromiseID ? (self.saveProductsPromiseID + 1) : 1;
-                    idCounter = self.saveProductsPromiseID;
-                },
-                sessionValid: () => {
-
-                    return idCounter === self.saveProductsPromiseID;
-                }
-            };
-
-            Helper.RunPromise(savePromises);
-        },
-
         getProperties: () => {
 
             if (self.properties.length === 0 && !self.isGettingProperties) {
@@ -674,7 +641,7 @@ const ProductsViewModel = types.model(
             }
         },
 
-        getFlags: () => {
+        getFlags: prodModel => {
 
             if (!self.isGettingFlags && self.flags.length === 0) {
 
@@ -737,7 +704,7 @@ const ProductsViewModel = types.model(
                 );
             }
 
-            const prodModel = self.selectedValue;
+            prodModel = prodModel ? prodModel : self.selectedValue;
 
             if (prodModel && !prodModel.isGettingFlags) {
 
@@ -980,14 +947,6 @@ ProductsViewModel.init = (activeLang) => {
     self.counterNewProdFile = -1;
 
     self.syncProduct = value => ProductModel.init(value, ++self.idGenerator, self.activeLang.code);
-
-    self.getNewProduct = () => {
-
-        const newProd = ProductModel.init(ProductModel.getObject(), ++self.idGenerator);
-        newProd.setRecordState(10);
-
-        return newProd;
-    };
 
     self.getLazyWaitRecord = () => ProductModel.init({ id: -1, isLazyWait: true }, ++self.genId);
 

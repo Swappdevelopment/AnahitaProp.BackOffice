@@ -147,7 +147,8 @@ class ProductDetail1 extends React.Component {
 
                                     prodModel.execAction(self => {
                                         self.code = e.target.value;
-                                        self.recievedInput = true;
+                                        self.receivedInput = true;
+                                        self.isValid();
                                     });
                                 }
                             })
@@ -157,7 +158,14 @@ class ProductDetail1 extends React.Component {
 
                                 this.getInputElement({
                                     key: `names-${i}`,
-                                    label: this.activeLang.labels['lbl_Name'] + ' ' + (prodName.language_Code ? prodName.language_Code.toUpperCase() : ''),
+
+                                    label: this.activeLang.labels['lbl_Name'] + ' ' +
+                                    (prodName.language_Code ?
+                                        prodName.language_Code.toUpperCase() :
+                                        (
+                                            prodName.language ? prodName.language.code : ''
+                                        )),
+
                                     isValid: prodName.isValueValid,
                                     isDisabled: () => prodModel.isSaving,
                                     getValue: () => prodName.value ? prodName.value : '',
@@ -173,7 +181,7 @@ class ProductDetail1 extends React.Component {
                                         prodName.execAction(self => {
 
                                             self.value = e.target.value;
-                                            self.recievedInput = true;
+                                            self.receivedInput = true;
                                         });
                                     }
                                 }))
@@ -267,7 +275,7 @@ class ProductDetail1 extends React.Component {
 
                                                                                                     self.currency_Id = v.id;
                                                                                                     self.currencyCode = v.code;
-                                                                                                    self.recievedInput = true;
+                                                                                                    self.receivedInput = true;
                                                                                                 });
                                                                                             }}>
                                                                                             {v.code}
@@ -369,10 +377,9 @@ class ProductDetail1 extends React.Component {
 
                                                                                 prodModel.execAction(self => {
 
-                                                                                    debugger;
                                                                                     self.productFamily_Id = v.id;
                                                                                     self.productFamily = v.id;
-                                                                                    self.recievedInput = true;
+                                                                                    self.receivedInput = true;
                                                                                 });
                                                                             }}>
                                                                             {v.getName(true)}

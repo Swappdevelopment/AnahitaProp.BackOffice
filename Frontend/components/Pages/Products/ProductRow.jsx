@@ -107,7 +107,7 @@ export default class ProductRow extends React.Component {
 
                         <td className="s-td-cell-active">
                             {
-                                value.isChangingHideSearch ?
+                                value.isChangingStatus ?
                                     <span className="spinner"></span>
                                     :
                                     <Checkbox className="s-checkbox"
@@ -117,14 +117,14 @@ export default class ProductRow extends React.Component {
 
                                             if (value.id > 0) {
 
-                                                let tempValue = value.hideSearch;
+                                                let tempValue = value.status;
 
                                                 value.execAction(self => {
 
                                                     self.status = e.target.checked ? 1 : 0;
                                                 });
 
-                                                if (tempValue !== value.hideSearch) {
+                                                if (tempValue !== value.status) {
 
                                                     if (changeBoolean) changeBoolean(value, 'status');
                                                 }
