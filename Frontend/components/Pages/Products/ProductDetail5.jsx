@@ -464,7 +464,8 @@ class ProductDetail5 extends React.Component {
                                 type="file" multiple
                                 onChange={e => {
 
-                                    const lastRank = prodModel.files[prodModel.files.length - 1].model.detailRank;
+                                    debugger;
+                                    const lastRank = prodModel.files.length > 0 ? prodModel.files[prodModel.files.length - 1].model.detailRank : 0;
 
                                     for (let i = 0; i < e.target.files.length; i++) {
 

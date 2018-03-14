@@ -623,11 +623,11 @@ namespace AnahitaProp.BackOffice
                 {
                     toSave = new List<IdentityModel>(files);
 
-                    toSave.AddRange(files
-                                        .Where(l =>
-                                            l.RecordState == RecordState.Deleted
-                                            && l.File != null && l.File.ID > 0)
-                                        .Select(l => l.File.SetRecordState(RecordState.Deleted)));
+                    //toSave.AddRange(files
+                    //                    .Where(l =>
+                    //                        l.RecordState == RecordState.Deleted
+                    //                        && l.File != null && l.File.ID > 0)
+                    //                    .Select(l => l.File.SetRecordState(RecordState.Deleted)));
 
 
                     _dbi.ManageIdentityModels(toSave.ToArray());

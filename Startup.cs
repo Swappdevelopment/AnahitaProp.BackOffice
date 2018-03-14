@@ -59,14 +59,15 @@ namespace AnahitaProp.BackOffice
                 if (_env.IsDevelopment())
                 {
                     connStr = DevSecrets.GetSecretValue("connectionStrings:anahitaProp:local:mysql");
-               }
+                }
                 else if (_env.IsStaging())
                 {
                     connStr = Configuration["ConnectionStrings:staging:value"];
                 }
                 else
                 {
-                    connStr = Configuration["ConnectionStrings:production:value"];
+                    connStr = Configuration["ConnectionStrings:staging:value"];
+                    //connStr = Configuration["ConnectionStrings:production:value"];
                 }
 
                 return new DbContextOptionsWrapper(builder.Options, connStr); 
