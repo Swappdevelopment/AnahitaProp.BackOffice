@@ -167,7 +167,7 @@ class ProductDetail3 extends React.Component {
                                 activeLang={this.activeLang}
                                 undoManager={this.undoManager} />
 
-                            <Row>
+                            <Row style={{ padding: '0 20px' }}>
                                 {
                                     flBedRoomCount ?
                                         this.getInputElement({

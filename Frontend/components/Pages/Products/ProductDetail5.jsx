@@ -487,6 +487,11 @@ class ProductDetail5 extends React.Component {
                                     {this.activeLang.labels['lbl_Upload']}
                                 </Button>
                             </OverlayTrigger>
+                            <Button
+                                style={{ marginLeft: 5 }}
+                                className="s-btn-small-primary">
+                                <span className="la la-save"></span>
+                            </Button>
 
                         </div>
                         <table className="s-table table">

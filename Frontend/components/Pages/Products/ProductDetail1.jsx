@@ -144,7 +144,7 @@ class ProductDetail1 extends React.Component {
                         activeLang={this.activeLang}
                         undoManager={this.undoManager} />
 
-                    <Row>
+                    <Row style={{ padding: '0 20px' }}>
                         {
                             this.getInputElement({
                                 smallInput: true,
@@ -176,11 +176,11 @@ class ProductDetail1 extends React.Component {
                                     key: `names-${i}`,
 
                                     label: this.activeLang.labels['lbl_Name'] + ' ' +
-                                    (prodName.language_Code ?
-                                        prodName.language_Code.toUpperCase() :
-                                        (
-                                            prodName.language ? prodName.language.code : ''
-                                        )),
+                                        (prodName.language_Code ?
+                                            prodName.language_Code.toUpperCase() :
+                                            (
+                                                prodName.language ? prodName.language.code : ''
+                                            )),
 
                                     isValid: prodName.isValueValid,
                                     isDisabled: () => prodModel.isSaving,

@@ -156,7 +156,7 @@ class ProductDetail4 extends React.Component {
                                         disabled={this.editViewModel ? this.editViewModel.isStep4ReadOnly : false}
                                         eventKey={i}
                                         title={<span>{this.activeLang.labels['lbl_Desc']} {g.langCode}</span>}>
-                                        <Row style={{ paddingTop: 25 }}>
+                                        <Row style={{ padding: '0 20px' }}>
                                             {
                                                 listDesc ?
                                                     this.getInputElement({
