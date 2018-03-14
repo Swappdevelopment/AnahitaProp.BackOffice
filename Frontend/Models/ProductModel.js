@@ -165,7 +165,7 @@ const ProductModel = types.model(
                     const targetIndex = tempArray.length > 0 ? tempArray[0].i : 0;
 
                     if (targetIndex !== index && targetIndex >= 0) {
-
+                        
                         for (let i = 0; i < self.files.length; i++) {
 
                             if (index > targetIndex) {
@@ -197,7 +197,7 @@ const ProductModel = types.model(
 
                         reorderSessions.push(sessionCollection);
 
-                        self.saveReorderSession();
+                        // self.saveReorderSession();
                     }
                 }
             }

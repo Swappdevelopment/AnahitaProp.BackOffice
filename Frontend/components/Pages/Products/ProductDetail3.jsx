@@ -149,7 +149,9 @@ class ProductDetail3 extends React.Component {
 
                 if (flBedRoomCount != null || flOptnDen != null || flViews != null) {
 
-                    const viewsToBeAdded = this.viewModel.flags.filter(f => !flViews.find(flv => flv.flag && flv.flag.id === f.id));
+                    const viewsToBeAdded = flViews ?
+                        this.viewModel.flags.filter(f => !flViews.find(flv => flv.flag && flv.flag.id === f.id))
+                        : null;
 
                     return (
                         <div>
@@ -231,7 +233,7 @@ class ProductDetail3 extends React.Component {
                                         null
                                 }
                                 {
-                                    flViews ?
+                                    flViews && viewsToBeAdded ?
                                         <div className="s-row-center row">
                                             <Col md={2}>
                                                 <label>{this.activeLang.labels['lbl_Views']}</label>

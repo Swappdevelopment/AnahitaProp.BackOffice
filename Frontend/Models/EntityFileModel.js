@@ -12,6 +12,7 @@ const getObject = () => {
             isFeaturedImage: types.optional(types.boolean, false),
             appearDetail: types.optional(types.boolean, false),
             detailRank: types.optional(types.number, -1),
+            version: types.optional(types.number, 0),
             file_Id: types.optional(types.number, 0),
             file: types.maybe(FileModel, types.null),
             originalValue: types.optional(types.frozen, null)
@@ -63,6 +64,15 @@ const EntityFileModel = types.model(
 
                 self.file = null;
             }
+        }
+    }))
+    .views(self => ({
+
+        isModified: () => {
+
+            const modified = BaseModel.isSelfModified(self, self.originalValue);
+
+            return modified;
         }
     }));
 

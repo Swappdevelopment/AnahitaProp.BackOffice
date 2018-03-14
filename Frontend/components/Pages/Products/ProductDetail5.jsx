@@ -252,7 +252,7 @@ class ProductDetail5 extends React.Component {
 
         if (prodModel && entFile) {
 
-            const url = entFile.file ? `${GlobalValues.domains.assets}${entFile.file.optzUrl}?t=${Date.now()}` : '';
+            const url = entFile.file ? `${GlobalValues.domains.assets}${entFile.file.optzUrl}?t=${entFile.version}` : '';
 
             let oTrig = null;
 
@@ -482,11 +482,17 @@ class ProductDetail5 extends React.Component {
                                     {this.activeLang.labels['lbl_Upload']}
                                 </Button>
                             </OverlayTrigger>
-                            <Button
-                                style={{ marginLeft: 5 }}
-                                className="s-btn-small-primary">
-                                <span className="la la-save"></span>
-                            </Button>
+                            <OverlayTrigger
+                                placement="top"
+                                rootClose
+                                overlay={Helper.getTooltip('tltpSaveImg', this.activeLang.labels["lbl_Save"])}>
+                                <Button
+                                    disabled={!prodModel.files.find(w => w.model && w.model.isModified())}
+                                    style={{ marginLeft: 5 }}
+                                    className="s-btn-small-primary">
+                                    <span className="la la-save"></span>
+                                </Button>
+                            </OverlayTrigger>
 
                         </div>
                         <table className="s-table table">
