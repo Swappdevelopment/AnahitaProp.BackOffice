@@ -27,18 +27,15 @@ namespace AnahitaProp.BackOffice
 
 
         protected IConfigurationRoot _config = null;
-        protected IHostingEnvironment _env = null;
         protected AppDbInteractor _dbi = null;
         protected InjectorObjectHolder _injHolder = null;
 
 
         public BaseController(
             IConfigurationRoot config,
-            IHostingEnvironment env,
             DbContextOptionsWrapper dbOptns,
             InjectorObjectHolder injHolder)
         {
-            _env = env;
             _config = config;
 
             _injHolder = injHolder;
@@ -157,7 +154,7 @@ namespace AnahitaProp.BackOffice
 
         public IActionResult FailedRequest(Exception ex)
         {
-            bool inDev = _env == null ? false : _env.IsDevelopment();
+            bool inDev = this.IsDevelopment();
 
             if (inDev)
             {
@@ -178,7 +175,7 @@ namespace AnahitaProp.BackOffice
 
         public IActionResult InternalServerError(Exception ex)
         {
-            bool inDev = _env == null ? false : _env.IsDevelopment();
+            bool inDev = this.IsDevelopment();
 
             if (inDev)
             {
@@ -256,34 +253,9 @@ namespace AnahitaProp.BackOffice
         }
 
 
-        public bool IsInDevMode
-        {
-            get
-            {
-                return _env == null ? true : _env.IsDevelopment();
-            }
-        }
-
-        public bool IsInStagingMode
-        {
-            get
-            {
-                return _env == null ? false : _env.IsStaging();
-            }
-        }
-
-        public bool IsInProductionMode
-        {
-            get
-            {
-                return _env == null ? false : _env.IsProduction();
-            }
-        }
-
-
         protected IMailService GetMailService()
         {
-            if (this.IsInDevMode && (_config != null && !bool.Parse(_config["App:ForceProdMail"]))) return new DevMailService();
+            if (this.IsDevelopment() && (_config != null && !bool.Parse(_config["App:ForceProdMail"]))) return new DevMailService();
 
 
             return new MailService(_config);
@@ -306,6 +278,74 @@ namespace AnahitaProp.BackOffice
             {
                 return false;
             }
+        }
+
+
+        protected IActionResult Gocheck(Func<IActionResult> func)
+        {
+            try
+            {
+                if (_config != null)
+                {
+                    switch (_config["App:State"])
+                    {
+                        case "maintenance":
+                            return Redirect($"/maintenance");
+                    }
+                }
+
+                this.ViewData["Environment"] = this.Environment;
+
+                if (func == null) throw new NullReferenceException();
+
+
+                return func();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        public SessionEnvironment Environment
+        {
+            get
+            {
+                return GetEnvironment(_config);
+            }
+        }
+
+        public bool IsDevelopment()
+        {
+            return this.Environment == SessionEnvironment.Development;
+        }
+        public bool IsStaging()
+        {
+            return this.Environment == SessionEnvironment.Development;
+        }
+        public bool IsProduction()
+        {
+            return this.Environment == SessionEnvironment.Development;
+        }
+
+
+        public static SessionEnvironment GetEnvironment(IConfigurationRoot config)
+        {
+            if (config != null)
+            {
+                switch (config["App:Publish:Env"]?.ToLower())
+                {
+                    case "staging":
+                        return SessionEnvironment.Staging;
+
+                    case "development":
+                        return SessionEnvironment.Development;
+                }
+            }
+
+            return SessionEnvironment.Production;
         }
     }
 }

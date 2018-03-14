@@ -1,6 +1,5 @@
 ﻿using AnahitaProp.Data;
 using AnahitaProp.Data.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Swapp.Data;
@@ -14,10 +13,9 @@ namespace AnahitaProp.BackOffice
     {
         public LookupController(
             IConfigurationRoot config,
-            IHostingEnvironment env,
             DbContextOptionsWrapper dbOptns,
             InjectorObjectHolder injHolder)
-            : base(config, env, dbOptns, injHolder)
+            : base(config, dbOptns, injHolder)
         {
         }
 

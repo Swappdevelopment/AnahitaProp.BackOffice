@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AnahitaProp.Data;
+using AnahitaProp.Data.Models;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using AnahitaProp.Data;
+using Swapp.Data;
 using Swapp.Data.Hashing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Swapp.Data;
-using AnahitaProp.Data.Models;
 
 namespace AnahitaProp.BackOffice
 {
@@ -18,10 +17,9 @@ namespace AnahitaProp.BackOffice
     {
         public AccountController(
             IConfigurationRoot config,
-            IHostingEnvironment env,
             DbContextOptionsWrapper dbOptns,
             InjectorObjectHolder injHolder)
-            : base(config, env, dbOptns, injHolder)
+            : base(config, dbOptns, injHolder)
         {
         }
 
