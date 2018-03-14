@@ -18,6 +18,7 @@ class ProductDetail4 extends React.Component {
 
         this.state = { tabKey: 0 };
 
+        this.editViewModel = props.editViewModel;
         this.viewModel = props.viewModel;
 
         this.activeLang = this.props.store.langStore.active;
@@ -34,6 +35,7 @@ class ProductDetail4 extends React.Component {
     }
 
     componentWillUnmount() {
+
         this.undoManager.unbindUndoing(this.onUndoing);
         this.viewModel.unbindOnSelectedValueChange(this.getDescs);
     }
@@ -59,6 +61,7 @@ class ProductDetail4 extends React.Component {
                                 :
                                 <div className="form-group s-form-group">
                                     <textarea
+                                        disabled={this.editViewModel ? this.editViewModel.isStep4ReadOnly : false}
                                         className={'form-control s-input' + (!params.isValid || params.isValid() ? '' : '-error')}
                                         style={{ minHeight: params.minHeight ? params.minHeight : 200 }}
                                         value={params.getValue()}
@@ -120,10 +123,25 @@ class ProductDetail4 extends React.Component {
                 <div>
 
                     <ProductDetailToolBar
+                        isReadOnly={this.editViewModel && this.editViewModel.isStep4ReadOnly}
+                        onEdit={e => {
+
+                            if (this.editViewModel && this.editViewModel.isEditable()) {
+                                this.editViewModel.execAction(self => self.isStep4ReadOnly = false);
+                            }
+                        }}
+                        onRevert={e => {
+
+                            if (this.editViewModel && !this.editViewModel.isStep4ReadOnly) {
+                                this.editViewModel.execAction(self => self.isStep4ReadOnly = true);
+                            }
+                        }}
                         activeLang={this.activeLang}
                         undoManager={this.undoManager} />
 
-                    <Tabs id="tab_product_desc" className="s-tabs"
+                    <Tabs
+                        id="tab_product_desc"
+                        className="s-tabs"
                         defaultActiveKey={0}
                         activeKey={this.state.tabKey}
                         onSelect={key => this.setState({ tabKey: key })}>
@@ -135,7 +153,7 @@ class ProductDetail4 extends React.Component {
                                 return (
                                     <Tab
                                         key={i}
-                                        disabled={prodModel.isSaving}
+                                        disabled={this.editViewModel ? this.editViewModel.isStep4ReadOnly : false}
                                         eventKey={i}
                                         title={<span>{this.activeLang.labels['lbl_Desc']} {g.langCode}</span>}>
                                         <Row style={{ paddingTop: 25 }}>

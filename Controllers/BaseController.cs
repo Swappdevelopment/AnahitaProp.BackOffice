@@ -288,5 +288,24 @@ namespace AnahitaProp.BackOffice
 
             return new MailService(_config);
         }
+
+
+        protected bool IsInternetExplorer()
+        {
+            return IsInternetExplorer(Request?.Headers["User-Agent"]);
+        }
+
+        public static bool IsInternetExplorer(string userAgent)
+        {
+            if (!string.IsNullOrEmpty(userAgent)
+                && (userAgent.Contains("MSIE") || userAgent.Contains("Trident")))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

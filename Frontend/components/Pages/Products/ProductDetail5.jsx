@@ -331,6 +331,8 @@ class ProductDetail5 extends React.Component {
 
                                             const tempValue = entFile.isListImage;
 
+                                            let currentListImage = e.target.checked ? prodModel.files.find(fl => fl.isListImage) : null;
+
                                             entFile.execAction(self => {
 
                                                 self.isListImage = e.target.checked ? true : false;

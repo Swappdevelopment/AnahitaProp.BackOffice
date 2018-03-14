@@ -16,6 +16,7 @@ class ProductDetail3 extends React.Component {
 
         super(props);
 
+        this.editViewModel = props.editViewModel;
         this.viewModel = props.viewModel;
 
         this.activeLang = this.props.store.langStore.active;
@@ -57,6 +58,7 @@ class ProductDetail3 extends React.Component {
                                         :
                                         <div className="form-group s-form-group">
                                             <input
+                                                disabled={this.editViewModel ? this.editViewModel.isStep3ReadOnly : false}
                                                 type={params1.inputType ? params1.inputType : 'text'}
                                                 min={params1.inputType === 'number' ? params1.min : undefined}
                                                 className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
@@ -90,6 +92,7 @@ class ProductDetail3 extends React.Component {
                                         :
                                         <div className="form-group s-form-group">
                                             <input
+                                                disabled={this.editViewModel ? this.editViewModel.isStep3ReadOnly : false}
                                                 type={params2.inputType ? params2.inputType : 'text'}
                                                 min={params2.inputType === 'number' ? params2.min : undefined}
                                                 className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
@@ -148,6 +151,19 @@ class ProductDetail3 extends React.Component {
                         <div>
 
                             <ProductDetailToolBar
+                                isReadOnly={this.editViewModel && this.editViewModel.isStep3ReadOnly}
+                                onEdit={e => {
+
+                                    if (this.editViewModel && this.editViewModel.isEditable()) {
+                                        this.editViewModel.execAction(self => self.isStep3ReadOnly = false);
+                                    }
+                                }}
+                                onRevert={e => {
+
+                                    if (this.editViewModel && !this.editViewModel.isStep3ReadOnly) {
+                                        this.editViewModel.execAction(self => self.isStep3ReadOnly = true);
+                                    }
+                                }}
                                 activeLang={this.activeLang}
                                 undoManager={this.undoManager} />
 
@@ -224,6 +240,7 @@ class ProductDetail3 extends React.Component {
                                                                 }).map((f, i) => (
                                                                     <Button
                                                                         key={i}
+                                                                        disabled={this.editViewModel ? this.editViewModel.isStep3ReadOnly : false}
                                                                         className={'s-btn-small-secondary'}
                                                                         style={{
                                                                             borderBottomLeftRadius: 5,
@@ -257,6 +274,7 @@ class ProductDetail3 extends React.Component {
                                                         </Popover>
                                                     }>
                                                     <Button
+                                                        disabled={this.editViewModel ? this.editViewModel.isStep3ReadOnly : false}
                                                         style={{ padding: '0 12px' }}
                                                         className="s-btn-small-secondary-empty">
                                                         <i className="flaticon-add"></i>
@@ -291,6 +309,7 @@ class ProductDetail3 extends React.Component {
                                                                                         key={v.genId}
                                                                                         style={{ paddingRight: 8, paddingBottom: 8, float: 'left' }}>
                                                                                         <Button
+                                                                                            disabled={this.editViewModel ? this.editViewModel.isStep3ReadOnly : false}
                                                                                             className={'s-btn-small-' +
                                                                                                 (v.recordState === 30
                                                                                                     ? 'red'

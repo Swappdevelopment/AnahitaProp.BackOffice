@@ -7,6 +7,8 @@
                                  {
                                      key = (int)k
                                  }).ToArray());
+
+    bool isInIE = this.GetViewData<bool>("IsInternetExplorer");
 }
 
 
@@ -21,6 +23,24 @@
 }
 
 @section Scripts {
+
+    @if (isInIE)
+    {
+        <script>
+            if (!Object.entries)
+                Object.entries = function (obj) {
+                    var ownProps = Object.keys(obj),
+                        i = ownProps.length,
+                        resArray = new Array(i); // preallocate the Array
+                    while (i--)
+                        resArray[i] = [ownProps[i], obj[ownProps[i]]];
+
+                    return resArray;
+                };
+        </script>
+        <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+        @*<script src='https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.min.js'></script>*@
+    }
 
     <script>
 
