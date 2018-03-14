@@ -94,6 +94,16 @@
     }
 }
 
+.tltpPageNav{
+    .tooltip-inner {
+        background-color: $orangeDark !important;
+    }
+    .tooltip-arrow {
+        border-right-color: $orangeDark !important;
+        border-left-color: $orangeDark !important;
+    }
+}
+
 
 /* Alert */
 

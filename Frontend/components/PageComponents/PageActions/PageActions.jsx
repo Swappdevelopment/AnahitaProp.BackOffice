@@ -289,11 +289,11 @@ const PageActions = inject("store")(
                                             {
                                                 sideScrollNav.isLeftVisible && sideScrollNav.isLeftVisible() ?
                                                     <OverlayTrigger
-                                                        placement="top"
+                                                        placement="right"
                                                         rootClose
                                                         overlay={
                                                             Helper.getTooltip(
-                                                                `tltpPageLeftNav-${this.props.key}`,
+                                                                `tltpPageNav`,
                                                                 sideScrollNav.getLeftLabel ? sideScrollNav.getLeftLabel() : '')}>
                                                         <div
                                                             className={this.props.hidePrev ? 'hidden' : 's-page-action-prev hidden-xs hidden-sm'}
@@ -307,11 +307,11 @@ const PageActions = inject("store")(
                                             {
                                                 sideScrollNav.isRightVisible && sideScrollNav.isRightVisible() ?
                                                     <OverlayTrigger
-                                                        placement="top"
+                                                        placement="left"
                                                         rootClose
                                                         overlay={
                                                             Helper.getTooltip(
-                                                                `tltpPageRightNav`,
+                                                                `tltpPageNav`,
                                                                 sideScrollNav.getRightLabel ? sideScrollNav.getRightLabel() : '')}>
                                                         <div
                                                             className={this.props.hideNext ? 'hidden' : 's-page-action-next hidden-xs hidden-sm'}
