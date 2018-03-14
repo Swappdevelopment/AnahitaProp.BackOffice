@@ -1,4 +1,5 @@
 import React from 'react';
+import { observer } from "mobx-react";
 import { Checkbox, Button, OverlayTrigger } from "react-bootstrap";
 
 import RowLazyWait from "../../RowLazyWait/RowLazyWait";
@@ -6,7 +7,7 @@ import RowLazyWait from "../../RowLazyWait/RowLazyWait";
 import Helper from '../../../Helper/Helper';
 
 
-export default class ProductRow extends React.Component {
+class ProductRow extends React.Component {
 
     render() {
 
@@ -143,3 +144,6 @@ export default class ProductRow extends React.Component {
         }
     }
 }
+
+
+export default observer(ProductRow);

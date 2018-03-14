@@ -11,12 +11,16 @@ import ProductDetail3 from './ProductDetail3';
 import ProductDetail4 from './ProductDetail4';
 import ProductDetail5 from './ProductDetail5';
 
+import ProductEditViewModel from './ProductEditViewModel';
+
 
 class ProductDetail extends React.Component {
 
     constructor(props) {
 
         super(props);
+
+        this.editViewModel = ProductEditViewModel.init();
 
         this.viewModel = props.viewModel;
         this.activeLang = this.props.store.langStore.active;
@@ -164,7 +168,6 @@ class ProductDetail extends React.Component {
                             }
                         });
                     }}
-                    paRefresh={() => this.viewModel.getProduct(prodModel)}
                     paShowSaveButton={() => true}
                     saveBtnDisabled={() => !prodModel || !prodModel.requiresSave()}
                     paGlobalSaveOnClick={() => this.viewModel.saveProduct(prodModel)}
@@ -177,12 +180,21 @@ class ProductDetail extends React.Component {
                     <Row>
                         <Col md={10} mdOffset={1}>
                             <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                <ProductDetail1 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} rootContainer={this} />
+                                <ProductDetail1
+                                    editViewModel={this.editViewModel}
+                                    viewModel={this.viewModel}
+                                    getSelectedValue={this.getSelectedValue}
+                                    errorHandler={this.errorHandler}
+                                    rootContainer={this} />
                             </div>
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail2 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} />
+                                    <ProductDetail2
+                                        editViewModel={this.editViewModel}
+                                        viewModel={this.viewModel}
+                                        getSelectedValue={this.getSelectedValue}
+                                        errorHandler={this.errorHandler} />
                                 </div>
                             </LazyLoad>
                             <br />

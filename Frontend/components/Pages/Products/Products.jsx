@@ -186,17 +186,18 @@ class Products extends React.Component {
 
             let idCounter = -1;
 
-            value.execAction(self => {
+            value.execAction(() => {
+
                 switch (action) {
 
                     case 'status':
 
-                        self.isChangingStatus = true;
+                    value.isChangingStatus = true;
                         break;
 
                     case 'hideSearch':
 
-                        self.isChangingHideSearch = true;
+                    value.isChangingHideSearch = true;
                         break;
                 }
 
