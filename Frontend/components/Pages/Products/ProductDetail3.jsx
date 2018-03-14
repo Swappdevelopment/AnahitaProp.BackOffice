@@ -149,9 +149,10 @@ class ProductDetail3 extends React.Component {
 
                 if (flBedRoomCount != null || flOptnDen != null || flViews != null) {
 
+                    const viewsToBeAdded = this.viewModel.flags.filter(f => !flViews.find(flv => flv.flag && flv.flag.id === f.id));
+
                     return (
                         <div>
-
                             <ProductDetailToolBar
                                 isReadOnly={this.editViewModel && this.editViewModel.isStep3ReadOnly}
                                 isEditDisabled={this.editViewModel && !this.editViewModel.isEditable()}
@@ -240,11 +241,11 @@ class ProductDetail3 extends React.Component {
                                                     placement={this.props.viewsPlacement ? this.props.viewsPlacement : 'top'}
                                                     container={this.props.rootContainer}
                                                     overlay={
-                                                        <Popover id="popViews">
+                                                        <Popover
+                                                            id="popViews"
+                                                            style={viewsToBeAdded && viewsToBeAdded.length > 0 ? {} : { display: 'none' }}>
                                                             {
-                                                                this.viewModel.flags.filter(f => {
-                                                                    return !flViews.find(flv => flv.flag && flv.flag.id === f.id);
-                                                                }).map((f, i) => (
+                                                                viewsToBeAdded.map((f, i) => (
                                                                     <Button
                                                                         key={i}
                                                                         disabled={this.editViewModel ? this.editViewModel.isStep3ReadOnly : false}

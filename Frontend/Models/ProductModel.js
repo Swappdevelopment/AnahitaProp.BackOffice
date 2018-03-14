@@ -249,8 +249,6 @@ const ProductModel = types.model(
 
             if (!prodFile.isSaving) {
 
-                let idCounter = -1;
-
                 prodFile.execAction(self => self.isSaving = true);
 
                 const param = {
@@ -267,7 +265,6 @@ const ProductModel = types.model(
                             '/products/saveProductFiles/', param),
                         success: data => {
 
-                            debugger;
                             if (prodFile.wrapper) {
 
                                 self.execAction(() => {
@@ -277,19 +274,9 @@ const ProductModel = types.model(
 
                                 success = true;
                             }
-                        },
-                        incrementSession: () => {
-
-                            self.deleteProductFilePromiseID = self.deleteProductFilePromiseID ? (self.deleteProductFilePromiseID + 1) : 1;
-                            idCounter = self.deleteProductFilePromiseID;
-                        },
-                        sessionValid: () => {
-
-                            return idCounter === self.deleteProductFilePromiseID;
                         }
                     },
                     error => {
-                        debugger;
                     },
                     () => {
 
