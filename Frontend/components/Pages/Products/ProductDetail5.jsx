@@ -5,6 +5,8 @@ import { Row, Col, Button, Image, Checkbox, OverlayTrigger, Popover } from "reac
 
 import scrollToComponent from 'react-scroll-to-component';
 
+import WaitControl from '../../WaitControl/WaitControl';
+
 import Helper from '../../../Helper/Helper';
 
 
@@ -66,13 +68,11 @@ class ProductDetail5 extends React.Component {
                             className="s-btn-small-redDark"
                             onClick={e => {
 
-                                setTimeout(() => {
-                                    prodModel.deleteProductFile(entFile);
+                                prodModel.deleteProductFile(entFile);
 
-                                    if (deleteCallback) {
-                                        deleteCallback();
-                                    }
-                                }, 2000);
+                                if (deleteCallback) {
+                                    deleteCallback();
+                                }
 
                             }}>
                             {this.activeLang.labels['lbl_Delete']}
@@ -442,85 +442,86 @@ class ProductDetail5 extends React.Component {
 
     render() {
 
-        if (!this.viewModel.isGettingFiles) {
+        const prodModel = this.props.getSelectedValue();
 
-            const prodModel = this.props.getSelectedValue();
+        let btnBrowse = null;
 
-            let btnBrowse = null;
+        if (prodModel) {
 
-            if (prodModel) {
-
-                return (
-                    <div>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-                            <input
-                                ref={r => btnBrowse = r}
-                                style={{ display: 'none' }}
-                                type="file" multiple
-                                onChange={e => {
-
-                                    const lastRank = prodModel.files.length > 0 ? prodModel.files[prodModel.files.length - 1].model.detailRank : 0;
-
-                                    for (let i = 0; i < e.target.files.length; i++) {
-
-                                        this.uploadImage(prodModel, e.target.files[i], lastRank + i, i);
-                                    }
-                                }} />
-                            <OverlayTrigger
-                                placement="top"
-                                rootClose
-                                overlay={Helper.getTooltip('tltpUploadImg', this.activeLang.msgs["msg_UploadImgs"])}>
-                                <Button
-                                    className="s-btn-small-secondary"
-                                    disabled={this.state.uploading}
-                                    onClick={e => {
-                                        if (btnBrowse) {
-                                            btnBrowse.click(e);
-                                        }
-                                    }}>
-                                    <span className="la la-upload"></span>
-                                    {this.activeLang.labels['lbl_Upload']}
-                                </Button>
-                            </OverlayTrigger>
-                            <OverlayTrigger
-                                placement="top"
-                                rootClose
-                                overlay={Helper.getTooltip('tltpSaveImg', this.activeLang.labels["lbl_Save"])}>
-                                <Button
-                                    disabled={!prodModel.files.find(w => w.model && w.model.isModified())}
-                                    style={{ marginLeft: 5 }}
-                                    className="s-btn-small-primary">
-                                    <span className="la la-save"></span>
-                                </Button>
-                            </OverlayTrigger>
-
-                        </div>
-                        <table className="s-table table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th></th>
-                                    <th>
-                                        {this.activeLang.labels['lbl_LstImg']}
-                                    </th>
-                                    <th>
-                                        {this.activeLang.labels['lbl_AprDtl']}
-                                    </th>
-                                    <th>
-                                        {this.activeLang.labels['lbl_Active']}
-                                    </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    prodModel.files.map((f, i) => this.getImageElement(prodModel, f.model, i === (prodModel.files.length - 1)))
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                );
+            if (prodModel.isGettingFiles) {
+                return <WaitControl show={true} isRelative height={400} />;
             }
+
+            return (
+                <div>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
+                        <input
+                            ref={r => btnBrowse = r}
+                            style={{ display: 'none' }}
+                            type="file" multiple
+                            onChange={e => {
+
+                                const lastRank = prodModel.files.length > 0 ? prodModel.files[prodModel.files.length - 1].model.detailRank : 0;
+
+                                for (let i = 0; i < e.target.files.length; i++) {
+
+                                    this.uploadImage(prodModel, e.target.files[i], lastRank + i, i);
+                                }
+                            }} />
+                        <OverlayTrigger
+                            placement="top"
+                            rootClose
+                            overlay={Helper.getTooltip('tltpUploadImg', this.activeLang.msgs["msg_UploadImgs"])}>
+                            <Button
+                                className="s-btn-small-secondary"
+                                disabled={this.state.uploading}
+                                onClick={e => {
+                                    if (btnBrowse) {
+                                        btnBrowse.click(e);
+                                    }
+                                }}>
+                                <span className="la la-upload"></span>
+                                {this.activeLang.labels['lbl_Upload']}
+                            </Button>
+                        </OverlayTrigger>
+                        <OverlayTrigger
+                            placement="top"
+                            rootClose
+                            overlay={Helper.getTooltip('tltpSaveImg', this.activeLang.labels["lbl_Save"])}>
+                            <Button
+                                disabled={!prodModel.files.find(w => w.model && w.model.isModified())}
+                                style={{ marginLeft: 5 }}
+                                className="s-btn-small-primary">
+                                <span className="la la-save"></span>
+                            </Button>
+                        </OverlayTrigger>
+
+                    </div>
+                    <table className="s-table table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th>
+                                    {this.activeLang.labels['lbl_LstImg']}
+                                </th>
+                                <th>
+                                    {this.activeLang.labels['lbl_AprDtl']}
+                                </th>
+                                <th>
+                                    {this.activeLang.labels['lbl_Active']}
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                prodModel.files.map((f, i) => this.getImageElement(prodModel, f.model, i === (prodModel.files.length - 1)))
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            );
         }
 
         return null;
