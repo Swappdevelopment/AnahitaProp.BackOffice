@@ -192,12 +192,12 @@ class Products extends React.Component {
 
                     case 'status':
 
-                    value.isChangingStatus = true;
+                        value.isChangingStatus = true;
                         break;
 
                     case 'hideSearch':
 
-                    value.isChangingHideSearch = true;
+                        value.isChangingHideSearch = true;
                         break;
                 }
 
@@ -415,7 +415,7 @@ class Products extends React.Component {
                     : this.viewModel.groups.map(this.getGroupsRow)}
                 hideNext
                 hidePrev
-                
+
                 hidePage={this.viewModel.selectedValue || this.viewModel.selectedGroup ? true : false}
                 getSiblings={() => {
 
@@ -424,7 +424,11 @@ class Products extends React.Component {
                         if (this.viewModel.selectedValue) {
 
                             return (
-                                <ProductDetail key="ProductDetail" viewModel={this.viewModel} errorHandler={this.errorHandler} />
+                                <ProductDetail
+                                    key="ProductDetail"
+                                    changeStatus={value => this.changeBoolean(value, 'status')}
+                                    viewModel={this.viewModel}
+                                    errorHandler={this.errorHandler} />
                             );
                         }
 
