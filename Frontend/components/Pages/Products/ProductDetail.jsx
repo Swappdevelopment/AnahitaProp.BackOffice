@@ -212,19 +212,31 @@ class ProductDetail extends React.Component {
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail3 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} rootContainer={this} />
+                                    <ProductDetail3
+                                        editViewModel={this.editViewModel}
+                                        viewModel={this.viewModel}
+                                        getSelectedValue={this.getSelectedValue}
+                                        errorHandler={this.errorHandler}
+                                        rootContainer={this} />
                                 </div>
                             </LazyLoad>
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail4 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} />
+                                    <ProductDetail4
+                                        editViewModel={this.editViewModel}
+                                        viewModel={this.viewModel}
+                                        getSelectedValue={this.getSelectedValue}
+                                        errorHandler={this.errorHandler} />
                                 </div>
                             </LazyLoad>
                             <br />
                             <LazyLoad debounce={false}>
                                 <div className="s-portlet" style={{ padding: '30px 40px' }}>
-                                    <ProductDetail5 viewModel={this.viewModel} getSelectedValue={this.getSelectedValue} errorHandler={this.errorHandler} />
+                                    <ProductDetail5
+                                        viewModel={this.viewModel}
+                                        getSelectedValue={this.getSelectedValue}
+                                        errorHandler={this.errorHandler} />
                                 </div>
                             </LazyLoad>
                         </Col>

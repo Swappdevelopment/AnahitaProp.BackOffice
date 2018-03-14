@@ -34,6 +34,7 @@ namespace AnahitaProp.BackOffice
 
                 fileInfo = new FileInfo(assembly.Location);
 
+                this.ViewData["IsInternetExplorer"] = this.IsInternetExplorer();
                 this.ViewData["LangVersion"] = fileInfo.LastWriteTimeUtc.Ticks.ToString();
 
                 this.ViewData["CacheVersion"] = _config["App:CacheVersion"];
