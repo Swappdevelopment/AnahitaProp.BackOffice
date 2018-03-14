@@ -1,20 +1,19 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AnahitaProp.BackOffice.Localization.Resources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using Swapp.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Swapp.Data;
-using AnahitaProp.BackOffice.Localization.Resources;
 
 namespace AnahitaProp.BackOffice
 {
     public class LanguageController : BaseController
     {
-        public LanguageController(IConfigurationRoot config, IHostingEnvironment env)
-            : base(config, env, null, null)
+        public LanguageController(IConfigurationRoot config)
+            : base(config, null, null)
         {
         }
 

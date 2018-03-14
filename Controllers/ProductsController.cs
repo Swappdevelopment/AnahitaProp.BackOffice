@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
-using AnahitaProp.Data;
+﻿using AnahitaProp.Data;
 using AnahitaProp.Data.Models;
-using Swapp.Data;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using System.IO;
 using CoreFtp;
 using CoreFtp.Enum;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
+using Swapp.Data;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AnahitaProp.BackOffice
 {
@@ -20,10 +19,9 @@ namespace AnahitaProp.BackOffice
     {
         public ProductsController(
             IConfigurationRoot config,
-            IHostingEnvironment env,
             DbContextOptionsWrapper dbOptns,
             InjectorObjectHolder injHolder)
-            : base(config, env, dbOptns, injHolder)
+            : base(config, dbOptns, injHolder)
         {
         }
 

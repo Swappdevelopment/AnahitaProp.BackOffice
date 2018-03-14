@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AnahitaProp.Data;
+using AnahitaProp.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -6,8 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using AnahitaProp.Data;
-using AnahitaProp.Data.Models;
 
 namespace AnahitaProp.BackOffice
 {
@@ -15,47 +14,55 @@ namespace AnahitaProp.BackOffice
     {
         public HomeController(
             IConfigurationRoot config,
-            IHostingEnvironment env,
             DbContextOptionsWrapper dbOptns,
             InjectorObjectHolder injHolder)
-            : base(config, env, dbOptns, injHolder)
+            : base(config, dbOptns, injHolder)
         {
         }
 
         public IActionResult Index()
         {
-            Assembly assembly = null;
-            FileInfo fileInfo = null;
-            SysParDetail[] versions = null;
-
-            try
+            return this.Gocheck(() =>
             {
-                assembly = Assembly.Load(new AssemblyName("AnahitaProp.BackOffice.Localization"));
+                Assembly assembly = null;
+                FileInfo fileInfo = null;
+                SysParDetail[] versions = null;
 
-                fileInfo = new FileInfo(assembly.Location);
+                try
+                {
+                    assembly = Assembly.Load(new AssemblyName("AnahitaProp.BackOffice.Localization"));
 
-                this.ViewData["IsInternetExplorer"] = this.IsInternetExplorer();
-                this.ViewData["LangVersion"] = fileInfo.LastWriteTimeUtc.Ticks.ToString();
+                    fileInfo = new FileInfo(assembly.Location);
 
-                this.ViewData["CacheVersion"] = _config["App:CacheVersion"];
-                this.ViewData["DbVersion"] = _config["App:DbVersion"];
-                this.ViewData["CountriesVersion"] = _config["App:CountriesVersion"];
-                this.ViewData["AssetsDomain"] = _config["App:domain:assets"];
+                    this.ViewData["IsInternetExplorer"] = this.IsInternetExplorer();
+                    this.ViewData["LangVersion"] = fileInfo.LastWriteTimeUtc.Ticks.ToString();
 
-                versions = _dbi.GetSysParDetails(SysParMaster.LOOKUP_VERSIONS_CODE);
+                    this.ViewData["CacheVersion"] = _config["App:CacheVersion"];
+                    this.ViewData["DbVersion"] = _config["App:DbVersion"];
+                    this.ViewData["CountriesVersion"] = _config["App:CountriesVersion"];
+                    this.ViewData["AssetsDomain"] = _config["App:domain:assets"];
 
-                this.ViewData["LookupVersions"] =
-                                versions == null ?
-                                new KeyValuePair<string, int>[0] :
-                                versions.Select(l => new KeyValuePair<string, int>(l.Code, l.GetValue()?.IntVal ?? 0)).ToArray();
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
+                    versions = _dbi.GetSysParDetails(SysParMaster.LOOKUP_VERSIONS_CODE);
+
+                    this.ViewData["LookupVersions"] =
+                                    versions == null ?
+                                    new KeyValuePair<string, int>[0] :
+                                    versions.Select(l => new KeyValuePair<string, int>(l.Code, l.GetValue()?.IntVal ?? 0)).ToArray();
+                }
+                catch (Exception ex)
+                {
+                    return InternalServerError(ex);
+                }
+                finally
+                {
+                    assembly = null;
+                    fileInfo = null;
+                    versions = null;
+                }
 
 
-            return View();
+                return View();
+            });
         }
     }
 }

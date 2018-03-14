@@ -97,8 +97,6 @@ class ProductDetail5 extends React.Component {
 
         if (prodModel && value) {
 
-            let idCounter = -1;
-
             value.execAction(self => {
                 switch (action) {
 
@@ -156,15 +154,6 @@ class ProductDetail5 extends React.Component {
                             }
 
                         }
-                    },
-                    incrementSession: () => {
-
-                        this.changeBooleanPromiseID = this.changeBooleanPromiseID ? (this.changeBooleanPromiseID + 1) : 1;
-                        idCounter = this.changeBooleanPromiseID;
-                    },
-                    sessionValid: () => {
-
-                        return idCounter === this.changeBooleanPromiseID;
                     }
                 },
                 error => {
@@ -327,23 +316,26 @@ class ProductDetail5 extends React.Component {
                                 <Checkbox
                                     className="s-checkbox"
                                     disabled={entFile.isSaving}
-                                    defaultChecked={entFile.isListImage ? true : false}
+                                    checked={entFile.isListImage ? true : false}
                                     onChange={e => {
 
                                         if (entFile.id > 0) {
 
                                             const tempValue = entFile.isListImage;
 
-                                            let currentListImage = e.target.checked ? prodModel.files.find(fl => fl.isListImage) : null;
+                                            let currentListImage = e.target.checked ? prodModel.files.map(fl => fl.model).find(fl => fl.isListImage) : null;
 
-                                            entFile.execAction(self => {
-
-                                                self.isListImage = e.target.checked ? true : false;
-                                            });
+                                            entFile.execAction(self => self.isListImage = e.target.checked ? true : false);
 
                                             if (tempValue !== entFile.isListImage) {
 
                                                 this.changeBoolean(prodModel, entFile, 'isListImage');
+
+                                                if (currentListImage) {
+
+                                                    currentListImage.execAction(self => self.isListImage = false);
+                                                    this.changeBoolean(prodModel, currentListImage, 'isListImage');
+                                                }
                                             }
                                         }
 
@@ -360,7 +352,7 @@ class ProductDetail5 extends React.Component {
                                 <Checkbox
                                     className="s-checkbox"
                                     disabled={entFile.isSaving}
-                                    defaultChecked={entFile.appearDetail ? true : false}
+                                    checked={entFile.appearDetail ? true : false}
                                     onChange={e => {
 
                                         if (entFile.id > 0) {
@@ -390,7 +382,7 @@ class ProductDetail5 extends React.Component {
                                 :
                                 <Checkbox className="s-checkbox"
                                     disabled={entFile.isSaving}
-                                    defaultChecked={entFile.status === 1 ? true : false}
+                                    checked={entFile.status === 1 ? true : false}
                                     onChange={e => {
 
                                         if (entFile.id > 0) {
@@ -467,7 +459,6 @@ class ProductDetail5 extends React.Component {
                                 type="file" multiple
                                 onChange={e => {
 
-                                    debugger;
                                     const lastRank = prodModel.files.length > 0 ? prodModel.files[prodModel.files.length - 1].model.detailRank : 0;
 
                                     for (let i = 0; i < e.target.files.length; i++) {

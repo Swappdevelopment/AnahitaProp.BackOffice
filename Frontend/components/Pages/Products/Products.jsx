@@ -184,8 +184,6 @@ class Products extends React.Component {
 
         if (value) {
 
-            let idCounter = -1;
-
             value.execAction(() => {
 
                 switch (action) {
@@ -206,7 +204,7 @@ class Products extends React.Component {
             Helper.RunPromise(
                 {
                     promise: Helper.FetchPromisePost(
-                        '/products/ChangeBoolean',
+                        '/products/changeBoolean',
                         {
                             id: value.id,
                             action: action,
@@ -231,15 +229,6 @@ class Products extends React.Component {
                             }
 
                         }
-                    },
-                    incrementSession: () => {
-
-                        this.changeBooleanPromiseID = this.changeBooleanPromiseID ? (this.changeBooleanPromiseID + 1) : 1;
-                        idCounter = this.changeBooleanPromiseID;
-                    },
-                    sessionValid: () => {
-
-                        return idCounter === this.changeBooleanPromiseID;
                     }
                 },
                 error => {

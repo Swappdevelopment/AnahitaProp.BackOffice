@@ -1,6 +1,5 @@
 ﻿using AnahitaProp.Data;
 using AnahitaProp.Data.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
@@ -15,10 +14,9 @@ namespace AnahitaProp.BackOffice
     {
         public FamilyController(
             IConfigurationRoot config,
-            IHostingEnvironment env,
             DbContextOptionsWrapper dbOptns,
             InjectorObjectHolder injHolder)
-            : base(config, env, dbOptns, injHolder)
+            : base(config, dbOptns, injHolder)
         {
         }
 

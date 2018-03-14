@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AnahitaProp.Data;
+using AnahitaProp.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
-using AnahitaProp.Data;
-using AnahitaProp.Data.Models;
 
 namespace AnahitaProp.BackOffice
 {
@@ -12,10 +11,9 @@ namespace AnahitaProp.BackOffice
     {
         public MenuController(
             IConfigurationRoot config,
-            IHostingEnvironment env,
             DbContextOptionsWrapper dbOptns,
             InjectorObjectHolder injHolder)
-            : base(config, env, dbOptns, injHolder)
+            : base(config, dbOptns, injHolder)
         {
         }
 

@@ -18,7 +18,7 @@ namespace AnahitaProp.BackOffice
 {
     public class Startup
     {
-        
+
         private IHostingEnvironment _env = null;
 
         public Startup(IHostingEnvironment env)
@@ -56,21 +56,23 @@ namespace AnahitaProp.BackOffice
 
                 string connStr = null;
 
-                if (_env.IsDevelopment())
+
+                switch (BaseController.GetEnvironment(this.Configuration))
                 {
-                    connStr = DevSecrets.GetSecretValue("connectionStrings:anahitaProp:local:mysql");
-                }
-                else if (_env.IsStaging())
-                {
-                    connStr = Configuration["ConnectionStrings:staging:value"];
-                }
-                else
-                {
-                    connStr = Configuration["ConnectionStrings:staging:value"];
-                    //connStr = Configuration["ConnectionStrings:production:value"];
+                    case SessionEnvironment.Development:
+                        connStr = DevSecrets.GetSecretValue("connectionStrings:anahitaProp:local:mysql");
+                        break;
+
+                    case SessionEnvironment.Staging:
+                        connStr = Configuration["ConnectionStrings:staging:value"];
+                        break;
+
+                    default:
+                        connStr = Configuration["ConnectionStrings:production:value"];
+                        break;
                 }
 
-                return new DbContextOptionsWrapper(builder.Options, connStr); 
+                return new DbContextOptionsWrapper(builder.Options, connStr);
             });
 
 

@@ -1,13 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+﻿using AnahitaProp.Data;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
-using AnahitaProp.Data;
-using AnahitaProp.Data.Models;
-using Swapp.Data;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 
 namespace AnahitaProp.BackOffice
 {
@@ -15,10 +7,9 @@ namespace AnahitaProp.BackOffice
     {
         public PropertyController(
             IConfigurationRoot config,
-            IHostingEnvironment env,
             DbContextOptionsWrapper dbOptns,
             InjectorObjectHolder injHolder)
-            : base(config, env, dbOptns, injHolder)
+            : base(config, dbOptns, injHolder)
         {
         }
     }
