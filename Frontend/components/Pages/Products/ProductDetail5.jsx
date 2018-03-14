@@ -486,7 +486,7 @@ class ProductDetail5 extends React.Component {
                                 </Button>
                             </OverlayTrigger>
                             <Button
-                            style={{marginLeft: 5}}
+                                style={{ marginLeft: 5 }}
                                 className="s-btn-small-primary">
                                 <span className="la la-save"></span>
                             </Button>
