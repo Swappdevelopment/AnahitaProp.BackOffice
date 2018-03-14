@@ -267,6 +267,7 @@ const ProductModel = types.model(
                             '/products/saveProductFiles/', param),
                         success: data => {
 
+                            debugger;
                             if (prodFile.wrapper) {
 
                                 self.execAction(() => {
@@ -288,6 +289,7 @@ const ProductModel = types.model(
                         }
                     },
                     error => {
+                        debugger;
                     },
                     () => {
 
