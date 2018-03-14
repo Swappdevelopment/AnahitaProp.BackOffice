@@ -135,7 +135,6 @@ class ProductDetail extends React.Component {
 
         return (
             <div className="s-page">
-
                 <PageActions
                     sideScrollNav={this.getSideScrollNav()}
                     paTitle={
@@ -176,9 +175,22 @@ class ProductDetail extends React.Component {
                     hideStatus />
 
                 <div className="container">
-
                     <Row>
                         <Col md={10} mdOffset={1}>
+                            <div className="s-portlet" style={{ padding: '30px 40px' }}>
+                                <Row>
+                                    <Col md={2}>
+                                        <label style={{marginTop: 8}}>{this.activeLang.labels['lbl_Active']}</label>
+                                    </Col>
+                                    <Col md={4}>
+                                        <label className="s-switch" >
+                                            <input type="checkbox" />
+                                            <span className="slider round"></span>
+                                        </label>
+                                    </Col>
+                                </Row>
+                            </div>
+                            <br />
                             <div className="s-portlet" style={{ padding: '30px 40px' }}>
                                 <ProductDetail1
                                     editViewModel={this.editViewModel}

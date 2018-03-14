@@ -99,7 +99,7 @@ class SubProducts extends React.Component {
 
           hidePage={this.viewModel.selectedSubValue ? true : false}
           hideStatus
-          hideActive
+          
           getSiblings={() => (
             this.viewModel.selectedSubValue ?
               <ProductDetail key="SubProductDetail" viewModel={this.viewModel} errorHandler={this.errorHandler} isSubProduct />
