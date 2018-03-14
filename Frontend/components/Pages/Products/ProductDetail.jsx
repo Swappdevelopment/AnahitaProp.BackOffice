@@ -190,13 +190,22 @@ class ProductDetail extends React.Component {
                                     </Col>
                                     <Col md={4}>
                                         <Switch
-                                            color='blue'
+                                            showSpinner={prodModel.isChangingStatus}
+                                            checkedColor={'blue'}
+                                            unCheckedColor={'purple'}
                                             checked={prodModel.status === 1}
-                                            onChange={e => prodModel.execAction(() => prodModel.status = e.target.checked ? 1 : 0)} />
-                                        {/* <label className="s-switch" >
-                                            <input type="checkbox" />
-                                            <span className="slider round"></span>
-                                        </label> */}
+                                            onChange={e => {
+
+                                                const prevValue = prodModel.status;
+                                                const newValue = e.target.checked ? 1 : 0;
+
+                                                if (prevValue != newValue && this.props.changeStatus) {
+
+                                                    prodModel.execAction(() => prodModel.status = newValue);
+                                                    this.props.changeStatus(prodModel);
+                                                }
+
+                                            }} />
                                     </Col>
                                 </Row>
                             </div>
