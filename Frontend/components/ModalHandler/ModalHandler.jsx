@@ -46,7 +46,7 @@ const ModalComponent =
 
             render() {
 
-                const modalClassName = (this.props.className ? this.props.className : '') + (this.props.textCenter ? ' text-center' : '');
+                const modalClassName = (this.props.className ? this.props.className : '') + (this.props.textCenter ? 'text-center' : '');
 
                 return (
                     this.state.inDOM ?
@@ -107,7 +107,7 @@ export default class ModalHandler {
     getComponent(options) {
 
         return (
-            <ModalComponent {...Object.assign({ inner: this.inner }, options) } />
+            <ModalComponent {...Object.assign({ inner: this.inner }, options)} />
         );
     }
 
