@@ -18,6 +18,7 @@ class ProductDetail2 extends React.Component {
 
         super(props);
 
+        this.editViewModel = props.editViewModel;
         this.viewModel = props.viewModel;
 
         this.activeLang = this.props.store.langStore.active;
@@ -130,7 +131,7 @@ class ProductDetail2 extends React.Component {
                                                     <DropdownEditor
                                                         id="drpProdProp"
                                                         className={'form-control s-input' + (prodModel.isPropertyValid() ? '' : '-error') + ' s-ellipsis'}
-                                                        disabled={prodModel.isSaving || (prodGroup && prodGroup.property ? true : false)}
+                                                        disabled={(this.editViewModel ? this.editViewModel.isStep2ReadOnly : false) || (prodGroup && prodGroup.property ? true : false)}
                                                         title={
                                                             prodGroup && prodGroup.property ?
                                                                 prodGroup.property.getFullName()
@@ -194,6 +195,7 @@ class ProductDetail2 extends React.Component {
                                             :
                                             <div className="form-group s-form-group">
                                                 <input
+                                                    disabled={this.editViewModel ? this.editViewModel.isStep2ReadOnly : false}
                                                     type="number"
                                                     min={0}
                                                     className={'form-control s-input' + (!prodModel.property || prodModel.property.isLotSizeValid() ? '' : '-error')}
@@ -242,7 +244,7 @@ class ProductDetail2 extends React.Component {
                                                 <DropdownEditor
                                                     id="drpProdProp"
                                                     className={'form-control s-input' + (prodModel.isProjectValid() ? '' : '-error') + ' s-ellipsis'}
-                                                    disabled={prodModel.isSaving || (prodGroup && prodGroup.project ? true : false)}
+                                                    disabled={(this.editViewModel ? this.editViewModel.isStep2ReadOnly : false) || (prodGroup && prodGroup.project ? true : false)}
                                                     title={
                                                         prodGroup && prodGroup.project ?
                                                             prodGroup.project.getName()
@@ -317,6 +319,19 @@ class ProductDetail2 extends React.Component {
                 <div style={{ minHeight: 250 }}>
 
                     <ProductDetailToolBar
+                        isReadOnly={this.editViewModel && this.editViewModel.isStep2ReadOnly}
+                        onEdit={e => {
+
+                            if (this.editViewModel && this.editViewModel.isEditable()) {
+                                this.editViewModel.execAction(self => self.isStep2ReadOnly = false);
+                            }
+                        }}
+                        onRevert={e => {
+
+                            if (this.editViewModel && !this.editViewModel.isStep2ReadOnly) {
+                                this.editViewModel.execAction(self => self.isStep2ReadOnly = true);
+                            }
+                        }}
                         activeLang={this.activeLang}
                         undoManager={this.undoManager} />
 
@@ -326,7 +341,7 @@ class ProductDetail2 extends React.Component {
                         onSelect={key => this.onTabSelect(prodModel, key)}>
                         <Tab
                             style={{ position: 'relative' }}
-                            disabled={prodModel.isSaving}
+                            disabled={prodModel.isSaving || (this.editViewModel ? this.editViewModel.isStep2ReadOnly : false)}
                             eventKey={10}
                             title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Rsl'], 10)}>
                             {
@@ -340,7 +355,7 @@ class ProductDetail2 extends React.Component {
                         </Tab>
                         <Tab
                             style={{ position: 'relative' }}
-                            disabled={prodModel.isSaving}
+                            disabled={prodModel.isSaving || (this.editViewModel ? this.editViewModel.isStep2ReadOnly : false)}
                             eventKey={20}
                             title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Lfs'], 20)}>
                             {
@@ -358,7 +373,7 @@ class ProductDetail2 extends React.Component {
                         </Tab>
                         <Tab
                             style={{ position: 'relative' }}
-                            disabled={prodModel.isSaving}
+                            disabled={prodModel.isSaving || (this.editViewModel ? this.editViewModel.isStep2ReadOnly : false)}
                             eventKey={30}
                             title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Prj'], 30)}>
                             {

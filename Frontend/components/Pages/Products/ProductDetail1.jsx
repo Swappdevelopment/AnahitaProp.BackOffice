@@ -27,6 +27,7 @@ class ProductDetail1 extends React.Component {
             isPopNewFamOpen: false
         };
 
+        this.editViewModel = props.editViewModel;
         this.viewModel = props.viewModel;
 
         this.activeLang = this.props.store.langStore.active;
@@ -57,6 +58,7 @@ class ProductDetail1 extends React.Component {
                                         :
                                         <div className="form-group s-form-group">
                                             <input
+                                                disabled={this.editViewModel ? this.editViewModel.isStep1ReadOnly : false}
                                                 type={params1.inputType ? params1.inputType : 'text'}
                                                 className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
                                                 value={params1.getValue()}
@@ -90,6 +92,7 @@ class ProductDetail1 extends React.Component {
                                         :
                                         <div className="form-group s-form-group">
                                             <input
+                                                disabled={this.editViewModel ? this.editViewModel.isStep1ReadOnly : false}
                                                 type={params2.inputType ? params2.inputType : 'text'}
                                                 className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
                                                 min={params2.inputType === 'number' ? params2.min : undefined}
@@ -125,6 +128,19 @@ class ProductDetail1 extends React.Component {
                 <div>
 
                     <ProductDetailToolBar
+                        isReadOnly={this.editViewModel && this.editViewModel.isStep1ReadOnly}
+                        onEdit={e => {
+
+                            if (this.editViewModel && this.editViewModel.isEditable()) {
+                                this.editViewModel.execAction(self => self.isStep1ReadOnly = false);
+                            }
+                        }}
+                        onRevert={e => {
+
+                            if (this.editViewModel && !this.editViewModel.isStep1ReadOnly) {
+                                this.editViewModel.execAction(self => self.isStep1ReadOnly = true);
+                            }
+                        }}
                         activeLang={this.activeLang}
                         undoManager={this.undoManager} />
 
@@ -245,8 +261,8 @@ class ProductDetail1 extends React.Component {
                                                                     <div className="form-group s-form-group">
                                                                         <DropdownEditor
                                                                             id="drpCurrency"
+                                                                            disabled={this.editViewModel ? this.editViewModel.isStep1ReadOnly : false}
                                                                             className={'form-control s-input' + (prodModel.isPriceValid() ? '' : '-error') + ' s-ellipsis'}
-                                                                            disabled={prodModel.isSaving}
                                                                             title={prodModel.currencyCode}>
                                                                             {
                                                                                 this.viewModel.currencies.map((v, i) => {
@@ -297,7 +313,7 @@ class ProductDetail1 extends React.Component {
                                                                     <Cleave
                                                                         type="text"
                                                                         className={'form-control s-input' + (prodModel.isPriceValid() ? '' : '-error')}
-                                                                        disabled={prodModel.isSaving}
+                                                                        disabled={this.editViewModel ? this.editViewModel.isStep1ReadOnly : false}
                                                                         options={{
                                                                             numeral: true,
                                                                             numeralThousandsGroupStyle: 'thousand',
@@ -340,7 +356,6 @@ class ProductDetail1 extends React.Component {
                                 label: this.activeLang.labels['lbl_Family'],
                                 getInnerElement: () => (
                                     <div>
-
                                         {
                                             prodModel.isSaving ?
                                                 <WaitBlock fullWidth height={38} />
@@ -350,7 +365,7 @@ class ProductDetail1 extends React.Component {
                                                         <DropdownEditor
                                                             id="drpFamily"
                                                             className={'form-control s-input' + (prodModel.isFamilyValid() ? '' : '-error') + ' s-ellipsis'}
-                                                            disabled={prodModel.isSaving || prodModel.group_Id > 0}
+                                                            disabled={(this.editViewModel ? this.editViewModel.isStep1ReadOnly : false) || prodModel.group_Id > 0}
                                                             title={prodModel.productFamily ? prodModel.productFamily.getName(true) : ''}>
                                                             {
                                                                 this.viewModel.prodFamilies.map((v, i) => {

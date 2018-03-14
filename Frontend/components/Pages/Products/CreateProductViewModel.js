@@ -17,9 +17,7 @@ const CreateProductViewModel = types.model(
             if (func) {
                 func(self);
             }
-        }
-    }))
-    .actions(self => ({
+        },
 
         initNewProduct: allLanguages => {
 
