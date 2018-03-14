@@ -72,8 +72,8 @@ class CreateProduct extends React.Component {
     render() {
 
         return (
-            <div style={{ padding: '5px 40px 0 40px' }}>
-                <h4>
+            <div>
+                {/* <h4>
                     {
                         (() => {
 
@@ -93,7 +93,7 @@ class CreateProduct extends React.Component {
                             }
                         })()
                     }
-                </h4>
+                </h4> */}
                 {
                     this.wizardViewModel.stepsStack.map((stepName, i) => {
 

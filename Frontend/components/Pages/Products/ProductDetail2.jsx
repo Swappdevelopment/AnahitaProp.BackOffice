@@ -111,7 +111,7 @@ class ProductDetail2 extends React.Component {
         const prodGroup = prodModel.group;
 
         return (
-            <Row style={{ paddingTop: 30 }}>
+            <Row style={{ padding: '0 20px' }}>
                 {
                     hideProperty ?
                         null
