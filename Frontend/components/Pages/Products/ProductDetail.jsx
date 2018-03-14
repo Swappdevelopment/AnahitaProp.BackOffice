@@ -191,8 +191,6 @@ class ProductDetail extends React.Component {
                                     <Col md={4}>
                                         <Switch
                                             showSpinner={prodModel.isChangingStatus}
-                                            checkedColor={'blue'}
-                                            unCheckedColor={'purple'}
                                             checked={prodModel.status === 1}
                                             onChange={e => {
 
