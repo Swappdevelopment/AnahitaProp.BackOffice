@@ -14,6 +14,8 @@ export default class ProductRow extends React.Component {
 
         if (value && index >= 0) {
 
+            // value.isChangingStatus = true;
+
             if (value.isLazyWait) {
 
                 return (
@@ -66,7 +68,7 @@ export default class ProductRow extends React.Component {
                                         overlay={Helper.getTooltip(`tltp-VwSubProds-${value.genId}`, activeLang.labels["lbl_VwSubProds"])}>
 
                                         <Button
-                                            className="s-btn-empty"
+                                            className="s-btn-small-secondary-empty"
                                             onClick={this.props.onShowSubProducts}>
                                             <span className="la la-arrow-right"></span>
                                         </Button>

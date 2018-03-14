@@ -168,9 +168,12 @@ class ProductDetail extends React.Component {
                     paShowSaveButton={() => true}
                     saveBtnDisabled={() => !prodModel || !prodModel.requiresSave()}
                     paGlobalSaveOnClick={() => this.viewModel.saveProduct(prodModel)}
-                    hideAdd />
+                    hideAdd
+                    hideSave
+                    hideStatus />
 
                 <div className="container">
+                
                     <Row>
                         <Col md={10} mdOffset={1}>
                             <div className="s-portlet" style={{ padding: '30px 40px' }}>

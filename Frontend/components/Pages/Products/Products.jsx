@@ -414,7 +414,7 @@ class Products extends React.Component {
                     : this.viewModel.groups.map(this.getGroupsRow)}
                 hideNext
                 hidePrev
-
+                hideActive
                 hidePage={this.viewModel.selectedValue || this.viewModel.selectedGroup ? true : false}
                 getSiblings={() => {
 

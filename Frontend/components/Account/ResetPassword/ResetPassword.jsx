@@ -129,7 +129,7 @@ const ResetPassword =
                                                     </div>
                                                 </Alert>
 
-                                                <Button className="s-btn-big-primary" onClick={e => { this.routeStore.goToRootPage() }}>
+                                                <Button className="s-btn-large-primary" onClick={e => { this.routeStore.goToRootPage() }}>
                                                     {this.activeLang.labels['lbl_Back']}
                                                 </Button>
                                             </div>
@@ -146,7 +146,7 @@ const ResetPassword =
                                                 (
                                                     this.viewModel.criticalError ?
                                                         <div className="s-reset-form">
-                                                            <Button className="s-btn-big-primary" onClick={e => { this.verifyWithServer(true) }}>
+                                                            <Button className="s-btn-large-primary" onClick={e => { this.verifyWithServer(true) }}>
                                                                 {this.activeLang.labels['lbl_Retry']}
                                                             </Button>
                                                         </div>
@@ -155,7 +155,7 @@ const ResetPassword =
 
                                                             <p>{this.activeLang.msgs['msg_PsswrdRstCmplt'] + '!'}</p>
 
-                                                            <Button className="s-btn-big-primary" onClick={e => { this.routeStore.goToRootPage() }}>
+                                                            <Button className="s-btn-large-primary" onClick={e => { this.routeStore.goToRootPage() }}>
                                                                 {this.activeLang.labels['lbl_Back']}
                                                             </Button>
 

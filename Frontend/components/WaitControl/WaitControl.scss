@@ -10,7 +10,7 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
-    z-index: 1000;
+    z-index: 99;
 
     &.opacity-50 {
         background-color: $opacity;

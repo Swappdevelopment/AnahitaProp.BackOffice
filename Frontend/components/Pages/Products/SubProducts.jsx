@@ -98,7 +98,8 @@ class SubProducts extends React.Component {
           getTableRows={() => prodGroup.subProducts.map(this.getProductsRow)}
 
           hidePage={this.viewModel.selectedSubValue ? true : false}
-
+          hideStatus
+          hideActive
           getSiblings={() => (
             this.viewModel.selectedSubValue ?
               <ProductDetail key="SubProductDetail" viewModel={this.viewModel} errorHandler={this.errorHandler} isSubProduct />
