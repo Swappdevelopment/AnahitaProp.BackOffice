@@ -156,7 +156,7 @@ class ProductDetail2 extends React.Component {
                                                                                 },
                                                                                 {
                                                                                     key: 'property',
-                                                                                    value: prodModel.property_Id,
+                                                                                    value: prodModel.property_Id > 0 ? prodModel.property_Id : null,
                                                                                     model: prodModel
                                                                                 }
                                                                             ]);

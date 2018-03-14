@@ -1,4 +1,4 @@
-import { types, detach, destroy, onPatch } from 'mobx-state-tree';
+import { types, detach, destroy, onPatch, getParent } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
 import ItemFieldModel from './ItemFieldModel';
@@ -9,6 +9,26 @@ import FlagLinkModel from './FlagLinkModel';
 import EntityFileModelWrapper from './EntityFileModelWrapper';
 
 import Helper from '../Helper/Helper';
+
+
+
+const productFamilyReference = types.maybe(
+    types.reference(ProdFamilyModel, {
+
+        get(identifier, parent) {
+
+            const pp = getParent(getParent(parent));
+
+            return (pp ? pp.prodFamilies.find(pf => pf.id === identifier) : null) || null
+        },
+        set(value) {
+            debugger;
+
+            return value
+        }
+    })
+)
+
 
 
 const getObject = () => {
@@ -34,7 +54,8 @@ const getObject = () => {
             isGroup: false,
             names: types.optional(types.array(ItemFieldModel), []),
             descs: types.optional(types.array(ItemFieldModel), []),
-            productFamily: types.maybe(types.reference(ProdFamilyModel), types.null),
+            productFamily: productFamilyReference,
+            // productFamily: types.maybe(types.reference(ProdFamilyModel), types.null),
             originalValue: types.optional(types.frozen, null),
             property: types.maybe(types.reference(PropertyModel), types.null),
             project: types.maybe(types.reference(ProjectModel), types.null),
@@ -43,9 +64,6 @@ const getObject = () => {
         },
         BaseModel.getBaseObject());
 };
-
-
-const reorderSessions = [];
 
 
 const ProductModel = types.model(
@@ -57,6 +75,7 @@ const ProductModel = types.model(
             isSaving: false,
             isLazyWait: false,
             isGettingFlags: false,
+            isGettingFiles: false,
             isGettingDescs: false,
             isChangingStatus: false,
             isChangingHideSearch: false,
@@ -124,6 +143,15 @@ const ProductModel = types.model(
                 self.group = null;
             }
 
+            if (self.productFamily_Id > 0) {
+
+                self.productFamily = self.productFamily_Id;
+            }
+            else {
+
+                self.productFamily = null;
+            }
+
             if (value.names && value.names.length > 0) {
 
                 self.names.push(...value.names.map((v, i) => {
@@ -165,7 +193,7 @@ const ProductModel = types.model(
                     const targetIndex = tempArray.length > 0 ? tempArray[0].i : 0;
 
                     if (targetIndex !== index && targetIndex >= 0) {
-                        
+
                         for (let i = 0; i < self.files.length; i++) {
 
                             if (index > targetIndex) {
@@ -188,15 +216,6 @@ const ProductModel = types.model(
 
                         self.files.splice(targetIndex, 0, file.wrapper);
 
-
-                        const sessionCollection = self.files.map(f => {
-                            const result = f.getValue();
-                            result.recordState = 20;
-                            return result;
-                        });
-
-                        reorderSessions.push(sessionCollection);
-
                         // self.saveReorderSession();
                     }
                 }
@@ -204,23 +223,26 @@ const ProductModel = types.model(
         },
         saveReorderSession: () => {
 
-            if (reorderSessions.length > 0) {
+            if (!self.isGettingFiles) {
 
+                self.isGettingFiles = true;
                 let idCounter = -1;
+
+                const filesToSave = self.files.filter(w => w.model && w.model.isModified()).map(w => w.getValue());
 
                 Helper.RunPromise(
                     {
                         promise: Helper.FetchPromisePost(
-                            '/products/saveProductFiles/', { files: reorderSessions[0] }),
+                            '/products/saveProductFiles/', { files: filesToSave }),
                         success: data => {
 
-                            for (let item of reorderSessions[0]) {
+                            for (let item of filesToSave) {
 
-                                const value = self.flags.find(f => f.model && f.model.id === item.id);
+                                const value = self.files.find(f => f.model && f.model.id === item.id);
 
-                                if (value && value.originalValue) {
+                                if (value && value.model && value.model.originalValue) {
 
-                                    value.setOriginalValueProperty({ detailRank: item.detailRank });
+                                    value.model.setOriginalValueProperty({ detailRank: item.detailRank });
                                 }
                             }
                         },
@@ -238,9 +260,7 @@ const ProductModel = types.model(
                     },
                     () => {
 
-                        reorderSessions.splice(0, 1);
-
-                        self.saveReorderSession();
+                        self.execAction(() => self.isGettingFiles = false);
                     }
                 );
             }

@@ -35,7 +35,6 @@ const CreateProductViewModel = types.model(
                 descs: [],
             };
 
-
             if (allLanguages) {
 
                 for (let [key, value] of Object.entries(allLanguages)) {

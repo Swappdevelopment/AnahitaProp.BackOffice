@@ -332,7 +332,6 @@ class Products extends React.Component {
                     </table>
                 }
                 paOnAdd={e => {
-                    //this.viewModel.selectedValue = this.viewModel.getNewProducts();
                     this.modalHandler.show();
                 }}
                 paShowSaveButton={e => {
@@ -344,6 +343,7 @@ class Products extends React.Component {
 
                     this.clearAndQuery();
                 }}
+                paDefaultStatus={this.viewModel.statusType}
                 paStatusAll={e => {
 
                     this.viewModel.statusType = null;
@@ -438,6 +438,7 @@ class Products extends React.Component {
 
                 getModalBody={() => (
                     <CreateProduct
+                        isGroup={this.state.tabKey === 1}
                         isActive={this.viewModel.isModalShown}
                         viewModel={this.viewModel}
                         errorHandler={this.errorHandler}

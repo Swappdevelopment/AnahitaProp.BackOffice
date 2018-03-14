@@ -73,7 +73,6 @@ class ProductDetail5 extends React.Component {
                                 if (deleteCallback) {
                                     deleteCallback();
                                 }
-
                             }}>
                             {this.activeLang.labels['lbl_Delete']}
                         </Button>
@@ -491,7 +490,8 @@ class ProductDetail5 extends React.Component {
                             <Button
                                 disabled={!prodModel.files.find(w => w.model && w.model.isModified())}
                                 style={{ marginLeft: 5 }}
-                                className="s-btn-small-primary">
+                                className="s-btn-small-primary"
+                                onClick={e => prodModel.saveReorderSession()}>
                                 <span className="la la-save"></span>
                             </Button>
                         </OverlayTrigger>

@@ -974,7 +974,7 @@ ProductsViewModel.init = (activeLang) => {
 
     self.activeLang = activeLang;
     self.idGenerator = 0;
-    self.statusType = 1;
+    self.statusType = null;
 
     self.counterNewProdFile = -1;
 

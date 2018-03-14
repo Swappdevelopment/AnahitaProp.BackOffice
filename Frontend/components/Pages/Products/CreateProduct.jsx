@@ -196,7 +196,17 @@ class CreateProduct extends React.Component {
                                         switch (this.wizardViewModel.stepsStack.length) {
 
                                             case 1:
-                                                proceed = this.wizardViewModel.isStep1Valid();
+                                                if (this.wizardViewModel.isStep1Valid()) {
+
+                                                    proceed = true;
+
+                                                    const temp = this.getNewProduct();
+
+                                                    if (temp) {
+
+                                                        temp.execAction(() => temp.isGroup = this.props.isGroup ? true : false);
+                                                    }
+                                                }
                                                 break;
 
                                             case 2:

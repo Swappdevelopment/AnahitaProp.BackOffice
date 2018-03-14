@@ -19,7 +19,7 @@ const PageActions = inject("store")(
 
                 this.activeLang = props.store.langStore.active;
 
-                this.state = { statusType: 1 };
+                this.state = { statusType: props.paDefaultStatus === undefined ? 1 : props.paDefaultStatus };
                 bootstrapUtils.addStyle(Button, 'none');
 
                 this.handleScroll = this.handleScroll.bind(this);
@@ -46,6 +46,7 @@ const PageActions = inject("store")(
                     });
                 }
                 else {
+
                     this.setState({
                         affix: false
                     });
@@ -137,7 +138,7 @@ const PageActions = inject("store")(
                                         bsStyle="none"
                                         noCaret
                                         title={
-                                            this.activeLang.labels[`lbl_Active_${this.state.statusType < 0 ? '' : this.state.statusType}`]
+                                            this.activeLang.labels[`lbl_Active_${this.state.statusType === null ? '' : this.state.statusType}`]
                                         }>
 
                                         <div className="s-dropdown-wrapper">
@@ -146,7 +147,7 @@ const PageActions = inject("store")(
                                             <div className="s-dropdown-content">
 
                                                 <MenuItem
-                                                    className={this.state.statusType == -1 ? 'active' : ''}
+                                                    className={this.state.statusType == 1 || this.state.statusType == 0 ? '' : 'active'}
                                                     onClick={e => {
 
                                                         if (this.props.paStatusAll) {
@@ -154,7 +155,7 @@ const PageActions = inject("store")(
                                                             this.props.paStatusAll();
                                                         }
 
-                                                        this.setState({ statusType: -1 })
+                                                        this.setState({ statusType: null })
                                                     }}>
                                                     {this.activeLang.labels['lbl_Active_']}
                                                 </MenuItem>
