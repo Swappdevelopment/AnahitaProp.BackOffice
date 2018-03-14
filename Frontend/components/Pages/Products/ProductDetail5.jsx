@@ -455,7 +455,7 @@ class ProductDetail5 extends React.Component {
 
                 return (
                     <div>
-                        <div>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
                             <input
                                 ref={r => btnBrowse = r}
                                 style={{ display: 'none' }}

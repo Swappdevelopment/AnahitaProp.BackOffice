@@ -123,7 +123,7 @@ const ConfirmEmail =
                                             </div>
 
                                             <div className="s-confirm-form-action">
-                                                <Button className="s-btn-big-primary" onClick={e => { this.routeStore.goToRootPage() }}>
+                                                <Button className="s-btn-large-primary" onClick={e => { this.routeStore.goToRootPage() }}>
                                                     {this.activeLang.labels['lbl_Back']}
                                                 </Button>
                                             </div>
@@ -142,7 +142,7 @@ const ConfirmEmail =
                                             (
                                                 this.viewModel.criticalError ?
                                                     <div className="s-confirm-form">
-                                                        <Button className="s-btn-big-primary" onClick={e => { this.verifyWithServer() }}>
+                                                        <Button className="s-btn-large-primary" onClick={e => { this.verifyWithServer() }}>
                                                             {this.activeLang.labels['lbl_Retry']}
                                                         </Button>
                                                     </div>
@@ -153,7 +153,7 @@ const ConfirmEmail =
                                                         <h5>{this.activeLang.labels["lbl_EmailConfirmed"]}</h5>
 
                                                         <div className="s-confirm-form-action">
-                                                            <Button className="s-btn-big-primary" onClick={e => { this.routeStore.goToRootPage() }}>
+                                                            <Button className="s-btn-large-primary" onClick={e => { this.routeStore.goToRootPage() }}>
                                                                 {this.activeLang.labels['lbl_Back']}
                                                             </Button>
                                                         </div>

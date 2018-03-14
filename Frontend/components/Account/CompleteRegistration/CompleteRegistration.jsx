@@ -198,7 +198,7 @@ const CompleteRegistration =
                                                 </div>
                                             </Alert>
 
-                                            <Button className="s-btn-big-primary" onClick={e => { this.routeStore.goToRootPage() }}>
+                                            <Button className="s-btn-large-primary" onClick={e => { this.routeStore.goToRootPage() }}>
                                                 {this.activeLang.labels['lbl_Back']}
                                             </Button>
                                         </div>
@@ -215,7 +215,7 @@ const CompleteRegistration =
                                             (
                                                 this.viewModel.criticalError ?
                                                     <div className="s-compreg-form">
-                                                        <Button className="s-btn-big-primary" onClick={e => { this.verifyWithServer() }}>
+                                                        <Button className="s-btn-large-primary" onClick={e => { this.verifyWithServer() }}>
                                                             {this.activeLang.labels['lbl_Retry']}
                                                         </Button>
                                                     </div>
@@ -326,7 +326,7 @@ const CompleteRegistration =
 
                                                         <div className="s-compreg-form-action">
                                                             <Button
-                                                                className="s-btn-big-primary"
+                                                                className="s-btn-large-primary"
                                                                 disabled={this.viewModel.processingRegistration}
                                                                 onClick={e => {
 

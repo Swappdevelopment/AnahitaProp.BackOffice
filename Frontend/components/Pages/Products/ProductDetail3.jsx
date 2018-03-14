@@ -123,7 +123,7 @@ class ProductDetail3 extends React.Component {
 
             if (prodModel.isGettingFlags) {
 
-                return <WaitControl show={true} />;
+                return <WaitControl show={true} isRelative height={200} />
             }
             else {
 

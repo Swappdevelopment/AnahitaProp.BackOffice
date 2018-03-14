@@ -6,6 +6,7 @@ import { Row, Col, Button, Tabs, Tab, Label } from "react-bootstrap";
 import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
+import WaitControl from '../../WaitControl/WaitControl';
 import WaitBlock from '../../WaitBlock/WaitBlock';
 
 import ProductDetailToolBar from './ProductDetailToolBar';
@@ -346,9 +347,8 @@ class ProductDetail2 extends React.Component {
                             title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Rsl'], 10)}>
                             {
                                 this.viewModel.isGettingProperties ?
-                                    <span className="spinner" style={{ position: 'absolute' }} />
+                                    <WaitControl show={true} isRelative height={200} />
                                     :
-
                                     this.getPropertyChoiceContent({ prodModel, hideProject: true })
 
                             }
@@ -360,7 +360,7 @@ class ProductDetail2 extends React.Component {
                             title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Lfs'], 20)}>
                             {
                                 this.viewModel.isGettingProperties || this.viewModel.isGettingProjects ?
-                                    <span className="spinner" style={{ position: 'absolute' }} />
+                                    <WaitControl show={true} isRelative height={200} />
                                     :
 
                                     this.getPropertyChoiceContent(
@@ -378,7 +378,7 @@ class ProductDetail2 extends React.Component {
                             title={this.getTabHeader(prodModel, this.activeLang.labels['lbl_Prj'], 30)}>
                             {
                                 this.viewModel.isGettingProjects ?
-                                    <span className="spinner" style={{ position: 'absolute' }} />
+                                    <WaitControl show={true} isRelative height={200} />
                                     :
                                     this.getPropertyChoiceContent(
                                         {

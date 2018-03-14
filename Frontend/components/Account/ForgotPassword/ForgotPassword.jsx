@@ -116,7 +116,7 @@ const ForgotPassword = inject("store")(
                     <p>{this.activeLang.msgs["msg_RstEmailSent"]}</p>
 
                     <NavLink to="/login">
-                      <Button className="s-btn-big-primary">
+                      <Button className="s-btn-large-primary">
                         {this.activeLang.labels['lbl_Back']}
                       </Button>
                     </NavLink>
@@ -146,7 +146,7 @@ const ForgotPassword = inject("store")(
 
                     <div className="s-forgot-form-action">
 
-                      <Button onClick={this.sendForToken} className="s-btn-big-primary">
+                      <Button onClick={this.sendForToken} className="s-btn-large-primary">
                         {
                           this.viewModel.queryingServer ?
                             <span>{this.activeLang.labels['lbl_Request']}<i className="spinner-right"></i></span>
@@ -156,7 +156,7 @@ const ForgotPassword = inject("store")(
                       </Button>
 
                       <NavLink to="/login">
-                        <Button className="s-btn-big-primary-border">
+                        <Button className="s-btn-large-primary-border">
                           {this.activeLang.labels['lbl_Cancel']}
                         </Button>
                       </NavLink>

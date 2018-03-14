@@ -170,7 +170,7 @@ const Login =
 
                                 <div className="s-login-form-action">
 
-                                    <Button onClick={this.signIn} className="s-btn-big-primary">
+                                    <Button onClick={this.signIn} className="s-btn-large-primary">
                                         {
                                             this.viewModel.queryingServer ?
                                                 <span>{this.activeLang.labels['lbl_SignIn']}<i className="spinner-right"></i></span>

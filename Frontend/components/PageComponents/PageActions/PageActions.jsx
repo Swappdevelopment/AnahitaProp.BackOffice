@@ -311,7 +311,7 @@ const PageActions = inject("store")(
                                                         rootClose
                                                         overlay={
                                                             Helper.getTooltip(
-                                                                `tltpPageRightNav-${this.props.key}`,
+                                                                `tltpPageRightNav`,
                                                                 sideScrollNav.getRightLabel ? sideScrollNav.getRightLabel() : '')}>
                                                         <div
                                                             className={this.props.hideNext ? 'hidden' : 's-page-action-next hidden-xs hidden-sm'}
@@ -327,6 +327,13 @@ const PageActions = inject("store")(
                                         null
                                 }
 
+                                <div className={this.props.hideActive ? 'hidden' : 's-page-action-active'}>
+                                    <Button
+                                        className="s-btn-large-green">
+                                        {this.activeLang.labels["lbl_Active"]}
+                                    </Button>
+
+                                </div>
                             </div>
 
                         </div >

@@ -253,7 +253,7 @@ const ChangePassword =
                                                                         null
                                                                         :
                                                                         <NavLink to="/login">
-                                                                            <Button className="s-btn-big-primary">
+                                                                            <Button className="s-btn-large-primary">
                                                                                 {this.activeLang.labels['lbl_Back']}
                                                                             </Button>
                                                                         </NavLink>
@@ -322,7 +322,7 @@ const ChangePassword =
 
                                                                     <div className={this.props.accountChangeWrapper ? "s-change-form-action s-m-0" : "s-change-form-action"}>
 
-                                                                        <Button onClick={this.changePassword} className="s-btn-big-primary" disabled={this.viewModel.queryingServer}>
+                                                                        <Button onClick={this.changePassword} className="s-btn-large-primary" disabled={this.viewModel.queryingServer}>
                                                                             {
                                                                                 this.viewModel.queryingServer ?
 

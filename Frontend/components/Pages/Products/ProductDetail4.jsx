@@ -55,7 +55,7 @@ class ProductDetail4 extends React.Component {
                     <Col md={params.smallInput ? 5 : 10}>
                         {
                             params.isDisabled() ?
-                                <WaitBlock fullWidth height={params.minHeight ? params.minHeight : 200} />
+                                <WaitControl show={true} isRelative height={200} />
                                 :
                                 <div className="form-group s-form-group">
                                     <textarea
@@ -98,7 +98,7 @@ class ProductDetail4 extends React.Component {
 
             if (prodModel.isGettingDescs) {
 
-                return <WaitControl show={true} />;
+                return <WaitControl show={true} isRelative height={400} />;
             }
 
             const groups = [];
