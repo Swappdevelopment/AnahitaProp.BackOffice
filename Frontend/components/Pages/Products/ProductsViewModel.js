@@ -17,6 +17,7 @@ import Helper from '../../../Helper/Helper';
 
 
 const _onSelectedValueChangeCallbacks = [];
+const _onPropertyChanged = [];
 
 
 const ProductsViewModel = types.model(
@@ -129,11 +130,13 @@ const ProductsViewModel = types.model(
 
         saveProduct: (value, successCallback) => {
 
-            if (value && !value.isSaving && (value.recordState > 0 || value.isModified()) && value.isValid && value.isValid()) {
+            if (value && !value.isSaving && (value.recordState > 0 || value.isModified())) {   // && value.isValid && value.isValid()) {
 
                 value.execAction(prod => prod.isSaving = true);
 
                 let idCounter = -1;
+
+                const propertyChanging = value.recordState !== 30 && (!value.originalValue || value.property_Id !== value.originalValue.property_Id);
 
                 Helper.RunPromise(
                     {
@@ -167,6 +170,16 @@ const ProductsViewModel = types.model(
 
                                             value.resetOriginalValue(data.propertyFlags);
                                             break;
+                                    }
+                                }
+
+                                if (propertyChanging) {
+
+                                    for (const cb of _onPropertyChanged) {
+
+                                        if (cb) {
+                                            cb();
+                                        }
                                     }
                                 }
 
@@ -893,6 +906,25 @@ const ProductsViewModel = types.model(
 
                 if (index >= 0) {
                     _onSelectedValueChangeCallbacks.splice(index, 1);
+                }
+            }
+        },
+
+        bindOnPropertyChanged: callback => {
+
+            if (callback) {
+                _onPropertyChanged.push(callback);
+            }
+        },
+
+        unbindOnPropertyChanged: callback => {
+
+            if (callback) {
+
+                const index = _onPropertyChanged.indexOf(callback);
+
+                if (index >= 0) {
+                    _onPropertyChanged.splice(index, 1);
                 }
             }
         }

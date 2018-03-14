@@ -4,6 +4,8 @@ import { observer, inject } from 'mobx-react';
 import { Row, Col } from "react-bootstrap";
 import LazyLoad from 'react-lazy-load';
 
+import Switch from '../../Sw_Switch';
+
 import PageActions from '../../PageComponents/PageActions/PageActions';
 import ProductDetail1 from './ProductDetail1';
 import ProductDetail2 from './ProductDetail2';
@@ -167,6 +169,10 @@ class ProductDetail extends React.Component {
                             }
                         });
                     }}
+                    paRefresh={e => {
+
+                        this.viewModel.getProduct(prodModel);
+                    }}
                     paShowSaveButton={() => true}
                     saveBtnDisabled={() => !prodModel || !prodModel.requiresSave()}
                     paGlobalSaveOnClick={() => this.viewModel.saveProduct(prodModel)}
@@ -180,13 +186,17 @@ class ProductDetail extends React.Component {
                             <div className="s-portlet" style={{ padding: '30px 40px' }}>
                                 <Row>
                                     <Col md={2}>
-                                        <label style={{marginTop: 8}}>{this.activeLang.labels['lbl_Active']}</label>
+                                        <label style={{ marginTop: 8 }}>{this.activeLang.labels['lbl_Active']}</label>
                                     </Col>
                                     <Col md={4}>
-                                        <label className="s-switch" >
+                                        <Switch
+                                            color='blue'
+                                            checked={prodModel.status === 1}
+                                            onChange={e => prodModel.execAction(() => prodModel.status = e.target.checked ? 1 : 0)} />
+                                        {/* <label className="s-switch" >
                                             <input type="checkbox" />
                                             <span className="slider round"></span>
-                                        </label>
+                                        </label> */}
                                     </Col>
                                 </Row>
                             </div>

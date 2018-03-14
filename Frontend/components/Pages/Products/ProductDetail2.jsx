@@ -321,6 +321,7 @@ class ProductDetail2 extends React.Component {
 
                     <ProductDetailToolBar
                         isReadOnly={this.editViewModel && this.editViewModel.isStep2ReadOnly}
+                        isEditDisabled={this.editViewModel && !this.editViewModel.isEditable()}
                         onEdit={e => {
 
                             if (this.editViewModel && this.editViewModel.isEditable()) {
@@ -331,6 +332,12 @@ class ProductDetail2 extends React.Component {
 
                             if (this.editViewModel && !this.editViewModel.isStep2ReadOnly) {
                                 this.editViewModel.execAction(self => self.isStep2ReadOnly = true);
+                            }
+                        }}
+                        onSave={e => {
+
+                            if (prodModel.isStep2Valid()) {
+                                this.viewModel.saveProduct(prodModel, () => this.editViewModel.execAction(self => self.isStep2ReadOnly = true));
                             }
                         }}
                         activeLang={this.activeLang}

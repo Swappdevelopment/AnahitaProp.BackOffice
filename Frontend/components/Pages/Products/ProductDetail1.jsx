@@ -129,6 +129,7 @@ class ProductDetail1 extends React.Component {
 
                     <ProductDetailToolBar
                         isReadOnly={this.editViewModel && this.editViewModel.isStep1ReadOnly}
+                        isEditDisabled={this.editViewModel && !this.editViewModel.isEditable()}
                         onEdit={e => {
 
                             if (this.editViewModel && this.editViewModel.isEditable()) {
@@ -139,6 +140,12 @@ class ProductDetail1 extends React.Component {
 
                             if (this.editViewModel && !this.editViewModel.isStep1ReadOnly) {
                                 this.editViewModel.execAction(self => self.isStep1ReadOnly = true);
+                            }
+                        }}
+                        onSave={e => {
+
+                            if (prodModel.isStep1Valid()) {
+                                this.viewModel.saveProduct(prodModel, () => this.editViewModel.execAction(self => self.isStep1ReadOnly = true));
                             }
                         }}
                         activeLang={this.activeLang}
@@ -176,11 +183,11 @@ class ProductDetail1 extends React.Component {
                                     key: `names-${i}`,
 
                                     label: this.activeLang.labels['lbl_Name'] + ' ' +
-                                        (prodName.language_Code ?
-                                            prodName.language_Code.toUpperCase() :
-                                            (
-                                                prodName.language ? prodName.language.code : ''
-                                            )),
+                                    (prodName.language_Code ?
+                                        prodName.language_Code.toUpperCase() :
+                                        (
+                                            prodName.language ? prodName.language.code : ''
+                                        )),
 
                                     isValid: prodName.isValueValid,
                                     isDisabled: () => prodModel.isSaving,

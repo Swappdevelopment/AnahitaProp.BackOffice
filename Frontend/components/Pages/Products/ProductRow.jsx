@@ -114,8 +114,7 @@ class ProductRow extends React.Component {
                                     <span className="spinner"></span>
                                     :
                                     <Checkbox className="s-checkbox"
-
-                                        defaultChecked={value.status === 1 ? true : false}
+                                        checked={value.status === 1}
                                         onChange={e => {
 
                                             if (value.id > 0) {

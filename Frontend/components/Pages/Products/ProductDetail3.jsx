@@ -27,12 +27,14 @@ class ProductDetail3 extends React.Component {
     componentWillMount() {
 
         this.viewModel.bindOnSelectedValueChange(this.viewModel.getFlags);
+        this.viewModel.bindOnPropertyChanged(this.viewModel.getFlags);
 
         this.viewModel.getFlags(this.props.getSelectedValue());
     }
 
     componentWillUnmount() {
         this.viewModel.unbindOnSelectedValueChange(this.viewModel.getFlags);
+        this.viewModel.unbindOnPropertyChanged(this.viewModel.getFlags);
     }
 
     getInputElement = (params1, params2) => {
@@ -152,6 +154,7 @@ class ProductDetail3 extends React.Component {
 
                             <ProductDetailToolBar
                                 isReadOnly={this.editViewModel && this.editViewModel.isStep3ReadOnly}
+                                isEditDisabled={this.editViewModel && !this.editViewModel.isEditable()}
                                 onEdit={e => {
 
                                     if (this.editViewModel && this.editViewModel.isEditable()) {
@@ -163,6 +166,10 @@ class ProductDetail3 extends React.Component {
                                     if (this.editViewModel && !this.editViewModel.isStep3ReadOnly) {
                                         this.editViewModel.execAction(self => self.isStep3ReadOnly = true);
                                     }
+                                }}
+                                onSave={e => {
+
+                                    this.viewModel.saveProduct(prodModel, () => this.editViewModel.execAction(self => self.isStep3ReadOnly = true));
                                 }}
                                 activeLang={this.activeLang}
                                 undoManager={this.undoManager} />

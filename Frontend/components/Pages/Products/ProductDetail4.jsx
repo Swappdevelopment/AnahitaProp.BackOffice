@@ -124,6 +124,7 @@ class ProductDetail4 extends React.Component {
 
                     <ProductDetailToolBar
                         isReadOnly={this.editViewModel && this.editViewModel.isStep4ReadOnly}
+                        isEditDisabled={this.editViewModel && !this.editViewModel.isEditable()}
                         onEdit={e => {
 
                             if (this.editViewModel && this.editViewModel.isEditable()) {
@@ -135,6 +136,10 @@ class ProductDetail4 extends React.Component {
                             if (this.editViewModel && !this.editViewModel.isStep4ReadOnly) {
                                 this.editViewModel.execAction(self => self.isStep4ReadOnly = true);
                             }
+                        }}
+                        onSave={e => {
+
+                            this.viewModel.saveProduct(prodModel, () => this.editViewModel.execAction(self => self.isStep4ReadOnly = true));
                         }}
                         activeLang={this.activeLang}
                         undoManager={this.undoManager} />
@@ -153,7 +158,6 @@ class ProductDetail4 extends React.Component {
                                 return (
                                     <Tab
                                         key={i}
-                                        disabled={this.editViewModel ? this.editViewModel.isStep4ReadOnly : false}
                                         eventKey={i}
                                         title={<span>{this.activeLang.labels['lbl_Desc']} {g.langCode}</span>}>
                                         <Row style={{ padding: '0 20px' }}>

@@ -239,7 +239,12 @@ class CreateProduct extends React.Component {
                                 }
                                 else {
 
-                                    this.props.modalHandler.hide();
+                                    this.viewModel.saveProduct(
+                                        this.wizardViewModel.target,
+                                        result => {
+
+                                            this.props.modalHandler.hide();
+                                        });
                                 }
                             }}>
                             {this.activeLang.labels[this.wizardViewModel.stepsStack.length >= 4 ? 'lbl_Finish' : 'lbl_Next']}

@@ -28,7 +28,7 @@ export default class ProductDetailToolBar extends React.Component {
                                 rootClose
                                 overlay={Helper.getTooltip(
                                     "tltpDelete",
-                                    this.activeLang.labels["lbl_Revert"]
+                                    this.activeLang.labels["lbl_Cancel"]
                                 )}>
                                 <Button
                                     style={{ marginRight: 5 }}
@@ -79,6 +79,7 @@ export default class ProductDetailToolBar extends React.Component {
                                     this.activeLang.labels["lbl_Edit"]
                                 )}>
                                 <Button
+                                    disabled={this.props.isEditDisabled ? true : false}
                                     className="s-btn-small-secondary"
                                     onClick={e => {
 
@@ -91,10 +92,25 @@ export default class ProductDetailToolBar extends React.Component {
                                 </Button>
                             </OverlayTrigger>
                             :
-                            <Button
-                                className="s-btn-small-primary">
-                                <span className="la la-save"></span>
-                            </Button>
+                            <OverlayTrigger
+                                placement="top"
+                                rootClose
+                                overlay={Helper.getTooltip(
+                                    "tltpSave",
+                                    this.activeLang.labels["lbl_Save"]
+                                )}>
+                                <Button
+                                    className="s-btn-small-primary"
+                                    onClick={e => {
+
+                                        if (this.props.onSave) {
+
+                                            this.props.onSave(e);
+                                        }
+                                    }}>
+                                    <span className="la la-save"></span>
+                                </Button>
+                            </OverlayTrigger>
                     }</div>
             </div>
 

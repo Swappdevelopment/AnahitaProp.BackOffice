@@ -387,6 +387,27 @@ const ProductModel = types.model(
                         && self.isProjectValid()
                         && (!self.property || self.property.isValid())));
         },
+        isStep1Valid: () => {
+
+
+            self.execAction(() => self.receivedInput = true);
+
+            return self.isCodeValid()
+                && self.isNetSizeValid()
+                && self.isGrossSizeValid()
+                && self.isCurrencyValid()
+                && self.isPriceValid()
+                && self.isFamilyValid()
+                && !self.names.find((v, i) => !v.isValid());
+        },
+        isStep2Valid: () => {
+
+            self.execAction(() => self.receivedInput = true);
+
+            return self.isPropertyValid()
+                && self.isProjectValid()
+                && (!self.property || self.property.isValid());
+        },
         getPropertyFlags: colRefFilter => {
 
             if (self.property) {

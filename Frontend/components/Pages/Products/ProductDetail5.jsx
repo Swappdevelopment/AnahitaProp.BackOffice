@@ -66,11 +66,14 @@ class ProductDetail5 extends React.Component {
                             className="s-btn-small-redDark"
                             onClick={e => {
 
-                                prodModel.deleteProductFile(entFile);
+                                setTimeout(() => {
+                                    prodModel.deleteProductFile(entFile);
 
-                                if (deleteCallback) {
-                                    deleteCallback();
-                                }
+                                    if (deleteCallback) {
+                                        deleteCallback();
+                                    }
+                                }, 2000);
+
                             }}>
                             {this.activeLang.labels['lbl_Delete']}
                         </Button>
