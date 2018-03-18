@@ -12,22 +12,31 @@ import Helper from '../Helper/Helper';
 
 
 
-const productFamilyReference = types.maybe(
-    types.reference(ProdFamilyModel, {
-
-        get(identifier, parent) {
+const productFamilyReference =
+    BaseModel.genModelReference(
+        ProdFamilyModel,
+        (identifier, parent) => {
 
             const pp = getParent(getParent(parent));
+            return (pp ? pp.prodFamilies.find(pf => pf.id === identifier) : null) || null;
+        });
 
-            return (pp ? pp.prodFamilies.find(pf => pf.id === identifier) : null) || null
-        },
-        set(value) {
-            debugger;
+// const productFamilyReference = types.maybe(
+//     types.reference(ProdFamilyModel, {
 
-            return value
-        }
-    })
-)
+//         get(identifier, parent) {
+
+//             const pp = getParent(getParent(parent));
+
+//             return (pp ? pp.prodFamilies.find(pf => pf.id === identifier) : null) || null
+//         },
+//         set(value) {
+//             debugger;
+
+//             return value
+//         }
+//     })
+// );
 
 
 

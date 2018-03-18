@@ -139,4 +139,25 @@ export default class BaseModel {
 
         return {};
     }
+
+    static genModelReference(model, getReference) {
+
+        if (model && getReference) {
+
+            return types.maybe(
+                types.reference(model, {
+
+                    get(identifier, parent) {
+
+                        return getReference(identifier, parent);
+                    },
+                    set(value) {
+
+                        return value
+                    }
+                }));
+        }
+
+        return null;
+    }
 }
