@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { OverlayTrigger, Button, Popover } from 'react-bootstrap';
+import { Overlay, OverlayTrigger, Button, Popover } from 'react-bootstrap';
 
 import Helper from '../../Helper/Helper';
 
@@ -10,6 +10,8 @@ export default class QuickAddPoper extends React.Component {
     constructor(props) {
 
         super(props);
+
+        this.state = { show: false };
     }
 
     componentWillReceiveProps(newProps) {
@@ -31,33 +33,61 @@ export default class QuickAddPoper extends React.Component {
             return this.props.popActionComponent;
         }
 
-
         const btnPop = (
             <Button
+                ref={r => this.target = r}
                 style={{
                     marginTop: 4
                 }}
+                onClick={e => {
+
+                    if (this.state.show) {
+
+                        this.onClose();
+                    }
+                    else {
+
+                        this.onShow();
+                    }
+
+                    if (this.props.onClick)
+                        this.props.onClick(e);
+                }}
                 className="s-btn-small-secondary-empty"
-                disabled={this.props.isActionDisable ? this.props.isActionDisable() : false}>
+                disabled={this.props.disabled ? true : false}>
                 <span className="flaticon-add"></span>
             </Button>
         );
 
-
         if (this.props.tooltip) {
 
             return (
-
                 <OverlayTrigger
                     placement="top"
                     rootClose
-                    overlay={Helper.getTooltip(`tltp-QuickAddPoper-${this.props.id}`, this.props.tooltip)}>
+                    overlay={this.state.show ? <span /> : Helper.getTooltip(`tltp-QuickAddPoper-${this.props.id}`, this.props.tooltip)}>
                     {btnPop}
                 </OverlayTrigger>
             );
         }
 
         return btnPop;
+    }
+
+    onShow = () => {
+
+        this.setState({ show: true });
+
+        if (this.props.onShow)
+            this.props.onShow();
+    }
+
+    onClose = () => {
+
+        this.setState({ show: false });
+
+        if (this.props.onHide)
+            this.props.onHide();
     }
 
     render() {
@@ -72,20 +102,25 @@ export default class QuickAddPoper extends React.Component {
         };
 
         return (
-            <OverlayTrigger
-                ref={r => {
-                    ovt = r;
-                    if (ovt && this.props.isOpen) {
-                        ovt.show();
-                    }
-                }}
-                rootClose
-                trigger="click"
-                placement={this.props.popPlacement ? this.props.popPlacement : 'bottom'}
-                container={this.props.container ? this.props.container : this}
-                overlay={<Popover id={`pop-QuickAddPoper-${this.props.id}`}>{this.props.children}</Popover>}>
+
+            <div>
+                <Overlay
+                    rootClose
+                    show={this.state.show}
+                    onHide={this.onClose}
+                    target={this.target}
+                    placement={this.props.popPlacement ? this.props.popPlacement : 'bottom'}
+                    container={this.props.container ? this.props.container : this}>
+
+                    <Popover id={`pop-QuickAddPoper-${this.props.id}`}>
+                        <div style={{ padding: '10px 20px' }}>
+                            {this.props.children}
+                        </div>
+                    </Popover>
+
+                </Overlay>
                 {this.getPopActionComponent()}
-            </OverlayTrigger>
+            </div>
         );
     }
 }

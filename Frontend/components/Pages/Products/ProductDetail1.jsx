@@ -15,6 +15,7 @@ import UndoManager from '../../../Helper/UndoManager';
 
 import QuickAddPoper from '../../QuickAddPoper';
 import ProdFamilyQuickAddContainer from '../ProductFamilies/QuickAddContainer';
+import ProdFamilyModel from '../../../Models/ProdFamilyModel';
 
 
 class ProductDetail1 extends React.Component {
@@ -410,21 +411,29 @@ class ProductDetail1 extends React.Component {
                                                                 })
                                                             }
                                                         </DropdownEditor>
-                                                        {/* <Row>
+                                                        <Row>
                                                             <Col md={11}>
-                                                                
+
                                                             </Col>
                                                             <Col md={1}>
                                                                 <QuickAddPoper
                                                                     id="qadd-prodFamily"
+                                                                    disabled={(this.editViewModel ? this.editViewModel.isStep1ReadOnly : false) || prodModel.group_Id > 0}
                                                                     isOpen={this.state.isPopNewFamOpen}
+                                                                    onShow={e => this.setState({ isPopNewFamOpen: true })}
+                                                                    onHide={e => this.setState({ isPopNewFamOpen: false })}
                                                                     popPlacement="top"
                                                                     container={this.props.rootContainer}
                                                                     tooltip={this.activeLang.labels['lbl_AddNewFam']}>
-                                                                    <ProdFamilyQuickAddContainer />
+                                                                    <ProdFamilyQuickAddContainer
+                                                                        familyTypes={this.viewModel.prodFamilyTypes}
+                                                                        model={this.state.isPopNewFamOpen ?
+                                                                            ProdFamilyModel.toBeAdded(this.props.store.langStore)
+                                                                            :
+                                                                            null} />
                                                                 </QuickAddPoper>
                                                             </Col>
-                                                        </Row> */}
+                                                        </Row>
                                                     </div>
                                                 </div>
                                         }

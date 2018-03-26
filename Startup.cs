@@ -61,7 +61,7 @@ namespace AnahitaProp.BackOffice
                 {
                     case SessionEnvironment.Development:
                         connStr = DevSecrets.GetSecretValue("connectionStrings:anahitaProp:local:mysql");
-                        connStr = Configuration["ConnectionStrings:production:value"];
+                        //connStr = Configuration["ConnectionStrings:production:value"];
                         break;
 
                     case SessionEnvironment.Staging:

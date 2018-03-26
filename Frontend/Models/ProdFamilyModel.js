@@ -8,6 +8,7 @@ const getObject = () => {
 
     return Object.assign(
         {
+            receivedInput: types.optional(types.boolean, false),
             slug: types.optional(types.string, ''),
             type_Id: types.maybe(types.number, types.null),
             type: types.optional(types.frozen, null),
@@ -26,10 +27,8 @@ const ProdFamilyModel = types.model(
         getObject())
 ).actions(
     self => ({
-        execAction: cb => {
+        execAction: cb => { if (cb) cb(self); },
 
-            if (cb) cb();
-        },
         sync: value => {
 
             self.originalValue = value;
@@ -50,6 +49,7 @@ const ProdFamilyModel = types.model(
                         value: v.value,
                         language_Id: v.language_Id,
                         language_Code: v.language_Code ? v.language_Code.toLowerCase() : '',
+                        language: v.language
                     });
                 }));
             }
@@ -57,7 +57,7 @@ const ProdFamilyModel = types.model(
     })).views(self => ({
 
         getName: withType => {
-            
+
             let result = ''
 
             if (self.names && self.names.length > 0) {
@@ -83,6 +83,14 @@ const ProdFamilyModel = types.model(
 
             return result;
         },
+
+        isTypeValid: () => self.receivedInput ? (self.type_Id > 0 ? true : false) : true,
+        isValid: () => {
+
+            self.execAction(() => self.receivedInput = true);
+
+            return self.isTypeValid();
+        }
     }));
 
 
@@ -91,7 +99,7 @@ ProdFamilyModel.getObject = getObject;
 ProdFamilyModel.init = (value, genId, activeLangCode) => {
 
     const self = ProdFamilyModel.create({
-        id: value && value.id >= 0 ? value.id : 0
+        id: value && value.id !== 0 ? value.id : 0
     });
 
     self.genId = genId;
@@ -115,6 +123,33 @@ ProdFamilyModel.init = (value, genId, activeLangCode) => {
     };
 
     return self;
+};
+
+
+let _toBeAddedCounter = 0;
+
+ProdFamilyModel.toBeAdded = langStore => {
+
+    const model = {
+        id: -(++_toBeAddedCounter),
+        recordState: 10,
+        names: []
+    };
+
+    for (let [key, value] of Object.entries(langStore.allLanguages)) {
+
+        model.names.push({
+            id: -(++_toBeAddedCounter),
+            language: {
+                code: key.toUpperCase()
+            }
+        });
+    }
+
+    return ProdFamilyModel.init(
+        model,
+        ++_toBeAddedCounter,
+        langStore && langStore.active ? langStore.active.code : '');
 };
 
 export default ProdFamilyModel;

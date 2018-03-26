@@ -1,89 +1,60 @@
 import React from 'react';
+import { observer, inject } from 'mobx-react';
 
 import { Row, Col, Button } from 'react-bootstrap';
 
 import WaitBlock from '../../WaitBlock/WaitBlock';
+import DropdownEditor from '../../DropdownEditor/DropdownEditor';
+import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
 
-export default class QuickAddContainer extends React.Component {
+class QuickAddContainer extends React.Component {
 
     constructor(props) {
 
         super(props);
+
+        this.activeLang = this.props.store.langStore.active;
     }
 
-    getInputElement = (params1, params2) => {
+    getInputElement = (params) => {
 
-        if (params1) {
+        if (params) {
 
             return (
-                <div className="s-row-center row" key={params1.key}>
-                    <Col md={2}>
-                        <label>{params1.label}</label>
+                <div className="s-row-center row" key={params.key}>
+                    <Col md={3}>
+                        <label>{params.label}</label>
                     </Col>
                     {
-                        params1.getInnerElement ?
+                        params.getInnerElement ?
 
-                            <Col md={params2 ? 4 : (params1.smallInput ? 4 : 8)}>
-                                {params1.getInnerElement()}
+                            <Col md={9}>
+                                {params.getInnerElement()}
                             </Col>
                             :
-                            <Col md={params2 ? 4 : (params1.smallInput ? 4 : 8)}>
+                            <Col md={9}>
                                 {
-                                    params1.isDisabled() ?
+                                    params.isWaiting && params.isWaiting() ?
                                         <WaitBlock fullWidth height={38} />
                                         :
                                         <div className="form-group s-form-group">
                                             <input
-                                                type={params1.inputType ? params1.inputType : 'text'}
-                                                className={'form-control s-input' + (!params1.isValid || params1.isValid() ? '' : '-error')}
-                                                value={params1.getValue()}
-                                                min={params1.inputType === 'number' ? params1.min : undefined}
-                                                onChange={params1.setValue} />
+                                                type={params.inputType ? params.inputType : 'text'}
+                                                className={'form-control s-input' + (!params.isValid || params.isValid() ? '' : '-error')}
+                                                value={params.getValue()}
+                                                min={params.inputType === 'number' ? params.min : undefined}
+                                                onChange={params.setValue} />
                                         </div>
 
                                 }
                                 {
-                                    !params1.isValid || params1.isValid() ?
+                                    !params.isValid || params.isValid() ?
                                         null
                                         :
-                                        <small className="s-label-error">{params1.errMsg ? params1.errMsg : this.activeLang.msgs['msg_ValReq']}</small>
+                                        <small className="s-label-error">{params.errMsg ? params.errMsg : this.activeLang.msgs['msg_ValReq']}</small>
                                 }
                             </Col>
-                    }
-                    {
-                        params2 ?
-                            <Col md={2}>
-                                <label>{params2.label}</label>
-                            </Col>
-                            :
-                            null
-                    }
-                    {
-                        params2 ?
-                            <Col md={4}>
-                                {
-                                    params1.isDisabled() ?
-                                        <WaitBlock fullWidth height={38} />
-                                        :
-                                        <div className="form-group s-form-group">
-                                            <input
-                                                type={params2.inputType ? params2.inputType : 'text'}
-                                                className={'form-control s-input' + (!params2.isValid || params2.isValid() ? '' : '-error')}
-                                                min={params2.inputType === 'number' ? params2.min : undefined}
-                                                value={params2.getValue()}
-                                                onChange={params2.setValue} />
-                                        </div>
-                                }
-                                {
-                                    !params2.isValid || params2.isValid() ?
-                                        null
-                                        :
-                                        <small className="s-label-error">{params2.errMsg ? params2.errMsg : this.activeLang.msgs['msg_ValReq']}</small>
-                                }
-                            </Col>
-                            :
-                            null
                     }
                 </div>
             );
@@ -95,8 +66,103 @@ export default class QuickAddContainer extends React.Component {
 
     render() {
 
-        return (
-            <div></div>
-        );
+        const model = this.props.model;
+
+        if (model) {
+
+            return (
+                <Row>
+                    {
+                        model.names.map((modelName, i) => {
+
+                            return this.getInputElement({
+                                key: `names-${i}`,
+
+                                label: this.activeLang.labels['lbl_Name'] + ' ' +
+                                (modelName.language_Code ?
+                                    modelName.language_Code.toUpperCase() :
+                                    (
+                                        modelName.language ? modelName.language.code : ''
+                                    )),
+
+                                isValid: modelName.isValueValid,
+                                isWaiting: () => model.isSaving,
+                                getValue: () => modelName.value ? modelName.value : '',
+                                setValue: e => {
+
+                                    modelName.execAction(self => {
+
+                                        self.value = e.target.value;
+                                        self.receivedInput = true;
+                                    });
+                                    model.execAction(self => self.receivedInput = true);
+                                }
+                            });
+                        })
+                    }
+
+                    {
+                        this.getInputElement({
+                            label: this.activeLang.labels['lbl_Type'],
+                            getInnerElement: () => (
+                                <div>
+                                    {
+                                        model.isSaving ?
+                                            <WaitBlock fullWidth height={38} />
+                                            :
+                                            <div className="s-dropdown-modal">
+                                                <div className="form-group s-form-group">
+                                                    <DropdownEditor
+                                                        id="drpFamily-Type"
+                                                        className={'form-control s-input' + (model.isTypeValid() ? '' : '-error') + ' s-ellipsis'}
+                                                        disabled={(this.editViewModel ? this.editViewModel.isStep1ReadOnly : false) || model.group_Id > 0}
+                                                        title={model.type ? model.type.name : ''}>
+                                                        {
+                                                            (this.props.familyTypes ? this.props.familyTypes : []).map((v, i) => {
+
+                                                                return (
+                                                                    <DropdownEditorMenu
+                                                                        active={v.id === model.productFamily_Id}
+                                                                        key={v.id}
+                                                                        onClick={e => {
+
+                                                                            debugger;
+                                                                            model.execAction(self => {
+
+                                                                                self.type_Id = v.id;
+                                                                                self.type = Object.assign({}, v);
+                                                                                self.receivedInput = true;
+                                                                            });
+                                                                        }}>
+                                                                        {v.name}
+                                                                    </DropdownEditorMenu>
+                                                                );
+                                                            })
+                                                        }
+                                                    </DropdownEditor>
+                                                </div>
+                                            </div>
+                                    }
+                                    {
+                                        model.isTypeValid() ?
+                                            null
+                                            :
+                                            <small className="s-label-error">
+                                                {this.activeLang.msgs['msg_InvldValue']}
+                                            </small>
+                                    }
+                                </div>
+                            )
+                        })
+                    }
+
+                </Row>
+            );
+        }
+
+        return null;
     }
 }
+
+
+export default inject('store')(observer(QuickAddContainer));
