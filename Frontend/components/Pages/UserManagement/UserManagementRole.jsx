@@ -39,7 +39,7 @@ const UserManagementRole = inject("store")(
 
                     Helper.RunPromise(
                         {
-                            promise: Helper.FetchPromiseGet('/Lookup/getRoles/'),
+                            promise: Helper.CreateGetPromise('/Lookup/getRoles/'),
                             success: data => {
 
                                 if (data && data.length > 0) {

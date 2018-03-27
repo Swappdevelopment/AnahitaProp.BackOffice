@@ -7,6 +7,8 @@ import WaitBlock from '../../WaitBlock/WaitBlock';
 import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
+import ProductFamiliesViewModel from './ProductFamiliesViewModel';
+
 
 class QuickAddContainer extends React.Component {
 
@@ -15,6 +17,21 @@ class QuickAddContainer extends React.Component {
         super(props);
 
         this.activeLang = this.props.store.langStore.active;
+
+        this.viewModel = ProductFamiliesViewModel.init();
+
+
+        this.viewModel.execAction(self => {
+
+            if (props.model) {
+                self.families.push(props.model);
+                self.selectedValue = props.model.id;
+            }
+
+            if (props.familyTypes && props.familyTypes.length > 0) {
+                self.types.push(...props.familyTypes);
+            }
+        });
     }
 
     getInputElement = (params) => {
@@ -66,7 +83,7 @@ class QuickAddContainer extends React.Component {
 
     render() {
 
-        const model = this.props.model;
+        const model = this.viewModel.selectedValue;
 
         if (model) {
 
@@ -118,7 +135,7 @@ class QuickAddContainer extends React.Component {
                                                         disabled={(this.editViewModel ? this.editViewModel.isStep1ReadOnly : false) || model.group_Id > 0}
                                                         title={model.type ? model.type.name : ''}>
                                                         {
-                                                            (this.props.familyTypes ? this.props.familyTypes : []).map((v, i) => {
+                                                            this.viewModel.types.map((v, i) => {
 
                                                                 return (
                                                                     <DropdownEditorMenu
@@ -126,7 +143,6 @@ class QuickAddContainer extends React.Component {
                                                                         key={v.id}
                                                                         onClick={e => {
 
-                                                                            debugger;
                                                                             model.execAction(self => {
 
                                                                                 self.type_Id = v.id;
@@ -151,10 +167,29 @@ class QuickAddContainer extends React.Component {
                                                 {this.activeLang.msgs['msg_InvldValue']}
                                             </small>
                                     }
+
                                 </div>
                             )
                         })
                     }
+
+                    <br />
+
+                    <Button
+                        className="s-btn-primary"
+                        onClick={e => {
+
+                            if (this.props.isSaving) this.props.isSaving(true);
+
+                            this.viewModel.save(
+                                model,
+                                this.props.onSuccess,
+                                () => { if (this.props.isSaving) this.props.isSaving(false); });
+
+                            if (this.props.close) this.props.close();
+                        }}>
+                        {this.activeLang.labels['lbl_Save']}
+                    </Button>
 
                 </Row>
             );

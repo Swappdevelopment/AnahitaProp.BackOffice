@@ -10,8 +10,6 @@ export default class QuickAddPoper extends React.Component {
     constructor(props) {
 
         super(props);
-
-        this.state = { show: false };
     }
 
     componentWillReceiveProps(newProps) {
@@ -24,7 +22,6 @@ export default class QuickAddPoper extends React.Component {
             }
         }
     }
-
 
     getPopActionComponent = () => {
 
@@ -41,9 +38,9 @@ export default class QuickAddPoper extends React.Component {
                 }}
                 onClick={e => {
 
-                    if (this.state.show) {
+                    if (this.props.isOpen) {
 
-                        this.onClose();
+                        this.onHide();
                     }
                     else {
 
@@ -65,7 +62,7 @@ export default class QuickAddPoper extends React.Component {
                 <OverlayTrigger
                     placement="top"
                     rootClose
-                    overlay={this.state.show ? <span /> : Helper.getTooltip(`tltp-QuickAddPoper-${this.props.id}`, this.props.tooltip)}>
+                    overlay={this.props.isOpen ? <span /> : Helper.getTooltip(`tltp-QuickAddPoper-${this.props.id}`, this.props.tooltip)}>
                     {btnPop}
                 </OverlayTrigger>
             );
@@ -82,7 +79,7 @@ export default class QuickAddPoper extends React.Component {
             this.props.onShow();
     }
 
-    onClose = () => {
+    onHide = () => {
 
         this.setState({ show: false });
 
@@ -92,27 +89,47 @@ export default class QuickAddPoper extends React.Component {
 
     render() {
 
-        let ovt = null;
+        if (this.props.isWaitOn) {
 
-        this.onHide = () => {
+            return (
+                <span className="spinner" />
+            );
+        }
 
-            if (ovt) {
-                ovt.hide();
-            }
-        };
+        const popStyles = {};
+
+        if (this.props.width > 0) {
+            popStyles.maxWidth = this.props.width;
+        }
 
         return (
 
             <div>
                 <Overlay
-                    rootClose
-                    show={this.state.show}
-                    onHide={this.onClose}
+                    rootClose={this.props.rootClose ? true : false}
+                    show={this.props.isOpen}
+                    onHide={this.onHide}
                     target={this.target}
                     placement={this.props.popPlacement ? this.props.popPlacement : 'bottom'}
                     container={this.props.container ? this.props.container : this}>
 
-                    <Popover id={`pop-QuickAddPoper-${this.props.id}`}>
+                    <Popover id={`pop-QuickAddPoper-${this.props.id}`} style={popStyles}>
+                        {
+                            this.props.title || !this.props.hideCloseButton ?
+                                <div>
+                                    <h4 className="clr-fore-primary">{this.props.title}</h4>
+                                    {
+                                        this.props.hideCloseButton ?
+                                            null
+                                            :
+                                            <Button bsSize="xsmall" onClick={this.onHide}>
+                                                <span className="la la-times"></span>
+                                            </Button>
+                                    }
+                                </div>
+                                :
+                                null
+                        }
                         <div style={{ padding: '10px 20px' }}>
                             {this.props.children}
                         </div>

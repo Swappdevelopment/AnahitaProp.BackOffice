@@ -203,7 +203,7 @@ class Products extends React.Component {
 
             Helper.RunPromise(
                 {
-                    promise: Helper.FetchPromisePost(
+                    promise: Helper.CreatePostPromise(
                         '/products/changeBoolean',
                         {
                             id: value.id,

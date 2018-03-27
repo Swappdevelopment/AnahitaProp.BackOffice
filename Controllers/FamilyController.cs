@@ -29,7 +29,7 @@ namespace AnahitaProp.BackOffice
 
             try
             {
-                prodFamily = Helper.JSonCamelDeserializeObject<ProductFamily>(param?.JGetPropVal<JObject>("data"));
+                prodFamily = Helper.JSonCamelDeserializeObject<ProductFamily>(param);
 
                 if (prodFamily != null)
                 {
@@ -42,7 +42,17 @@ namespace AnahitaProp.BackOffice
                                 prodFamily.Slug = string.IsNullOrEmpty(prodFamily.Slug) ? prodFamily.Names[0].Value.ToSlug() : prodFamily.Slug;
 
                                 toSave.Add(prodFamily);
-                                toSave.AddRange(prodFamily.Names.Select(l => l.SetRecordState(RecordState.Added)));
+                                toSave.AddRange(prodFamily.Names.Select(nm =>
+                                {
+                                    nm.AddCommand("ProductFamily_Id", $"SELECT ID FROM ProductFamilys WHERE Slug = '{prodFamily.Slug}' ");
+
+                                    if (nm.Language_Id <= 0 && !string.IsNullOrEmpty(nm.Language?.Code))
+                                    {
+                                        nm.AddCommand("Language_Id", $"SELECT ID FROM Languages WHERE Code = '{nm.Language.Code}' ");
+                                    }
+
+                                    return nm.SetRecordState(RecordState.Added);
+                                }));
                             }
                             break;
 
@@ -77,17 +87,18 @@ namespace AnahitaProp.BackOffice
                     {
                         _dbi.ManageIdentityModels(toSave.ToArray());
 
-                        if (prodFamily != null)
+                        if (prodFamily != null && prodFamily.RecordState != RecordState.Deleted)
                         {
-                            if (prodFamily.RecordState != RecordState.Deleted)
-                            {
-                                prodFamily = _dbi.GetProductFamilys(slug: prodFamily.Slug, withNames: true).FirstOrDefault();
-                            }
+                            prodFamily = _dbi.GetProductFamilys(slug: prodFamily.Slug, withNames: true, withTypes: true).FirstOrDefault();
                         }
+                    }
+                    else
+                    {
+                        prodFamily = null;
                     }
                 }
 
-                return Json(new { result = prodFamily?.Simplify() });
+                return Json(prodFamily == null ? new { ok = false } : prodFamily.Simplify());
             }
             catch (Exception ex)
             {

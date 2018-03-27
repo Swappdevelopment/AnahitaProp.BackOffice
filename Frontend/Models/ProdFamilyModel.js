@@ -1,4 +1,4 @@
-import { types, clone } from 'mobx-state-tree';
+import { types, onPatch } from 'mobx-state-tree';
 
 import BaseModel from './BaseModel';
 import ItemFieldModel from './ItemFieldModel';
@@ -8,6 +8,7 @@ const getObject = () => {
 
     return Object.assign(
         {
+            isSaving: types.optional(types.boolean, false),
             receivedInput: types.optional(types.boolean, false),
             slug: types.optional(types.string, ''),
             type_Id: types.maybe(types.number, types.null),
@@ -56,6 +57,10 @@ const ProdFamilyModel = types.model(
         }
     })).views(self => ({
 
+        isModified: () => BaseModel.isSelfModified(self, self.originalValue),
+
+        requiresSaving: () => self.recordState > 0 || self.isModified(),
+
         getName: withType => {
 
             let result = ''
@@ -63,7 +68,35 @@ const ProdFamilyModel = types.model(
             if (self.names && self.names.length > 0) {
 
                 if (withType && self.type) {
-                    result = `  (${self.type.name})`;
+
+                    result = '  ';
+
+                    if (self.type.name) {
+
+                        result += `(${self.type.name})`;
+                    }
+                    else if (self.type.names && self.type.names.length > 0) {
+
+                        if (self.activeLangCode) {
+
+                            let nameItem = self.type.names.find(v => v.language_Code.toLowerCase() == self.activeLangCode.toLowerCase());
+
+                            nameItem = nameItem
+
+                            if (nameItem) {
+
+                                result += `(${nameItem.value})`;
+                            }
+                        }
+                        else {
+
+                            result += `(${self.type.names[0].value})`;
+                        }
+                    }
+                    else {
+
+                        result = '';
+                    }
                 }
 
                 if (self.activeLangCode) {
@@ -84,12 +117,25 @@ const ProdFamilyModel = types.model(
             return result;
         },
 
+        getValue: () => {
+
+            return Object.assign(
+                BaseModel.getValueFromSelf(self),
+                {
+                    slug: self.slug,
+                    type_Id: self.type_Id,
+                    name: self.name,
+                    type: self.type ? Object.assign({}, self.type) : null,
+                    names: self.names.map((v, i) => v.getValue())
+                });
+        },
+
         isTypeValid: () => self.receivedInput ? (self.type_Id > 0 ? true : false) : true,
         isValid: () => {
 
             self.execAction(() => self.receivedInput = true);
 
-            return self.isTypeValid();
+            return self.isTypeValid() && !self.names.find(n => !n.isValid());
         }
     }));
 
@@ -109,18 +155,19 @@ ProdFamilyModel.init = (value, genId, activeLangCode) => {
 
     self.initDone = true;
 
+    onPatch(self, change => {
 
-    self.getValue = () => {
+        switch (change.path) {
 
-        return Object.assign(
-            BaseModel.getValueFromSelf(self),
-            {
-                slug: self.slug,
-                type_Id: self.type_Id,
-                name: self.name,
-                names: self.names.map((v, i) => v.getValue())
-            });
-    };
+            case '/receivedInput':
+
+                for (const nm of self.names) {
+
+                    nm.execAction(() => nm.receivedInput = self.receivedInput);
+                }
+                break;
+        }
+    });
 
     return self;
 };

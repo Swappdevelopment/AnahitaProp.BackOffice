@@ -89,7 +89,6 @@ namespace AnahitaProp.BackOffice
         }
 
 
-
         [HttpGet]
         [Access]
         [ResponseCache(Duration = 2592000)] // 30 Days
@@ -130,7 +129,6 @@ namespace AnahitaProp.BackOffice
         }
 
 
-
         [HttpGet]
         [Access]
         [ResponseCache(Duration = 2592000)] // 30 Days
@@ -156,7 +154,6 @@ namespace AnahitaProp.BackOffice
         }
 
 
-
         [HttpGet]
         [Access]
         public IActionResult GetProductFamilies()
@@ -179,7 +176,6 @@ namespace AnahitaProp.BackOffice
                 families = null;
             }
         }
-
 
 
         [HttpGet]

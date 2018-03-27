@@ -199,7 +199,7 @@ export default class Helper {
         }
     }
 
-    static FetchPromiseGet(url, params) {
+    static CreateGetPromise(url, params) {
 
         if (params) {
 
@@ -215,7 +215,7 @@ export default class Helper {
         return fetch(url, { credentials: 'same-origin' });
     }
 
-    static FetchPromisePost(url, param) {
+    static CreatePostPromise(url, param) {
 
         return fetch(url,
             {

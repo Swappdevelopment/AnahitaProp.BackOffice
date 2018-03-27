@@ -77,7 +77,7 @@ const Login =
 
                     Helper.RunPromise(
                         {
-                            promise: Helper.FetchPromisePost('/account/signin', param),
+                            promise: Helper.CreatePostPromise('/account/signin', param),
                             success: data => {
 
                                 if (data && data.ok === true) {

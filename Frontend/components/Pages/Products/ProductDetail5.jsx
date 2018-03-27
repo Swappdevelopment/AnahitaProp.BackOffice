@@ -120,7 +120,7 @@ class ProductDetail5 extends React.Component {
 
             Helper.RunPromise(
                 {
-                    promise: Helper.FetchPromisePost(
+                    promise: Helper.CreatePostPromise(
                         '/products/ChangeProductFileBoolean/',
                         {
                             id: value.id,

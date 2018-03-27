@@ -240,7 +240,7 @@ const ProductModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromisePost(
+                        promise: Helper.CreatePostPromise(
                             '/products/saveProductFiles/', { files: filesToSave }),
                         success: data => {
 
@@ -289,7 +289,7 @@ const ProductModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromisePost(
+                        promise: Helper.CreatePostPromise(
                             '/products/saveProductFiles/', param),
                         success: data => {
 

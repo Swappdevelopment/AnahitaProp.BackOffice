@@ -140,7 +140,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromisePost('/products/saveBasics', value.getValue()),
+                        promise: Helper.CreatePostPromise('/products/saveBasics', value.getValue()),
                         success: data => {
 
                             if (data && data.saved) {
@@ -245,7 +245,7 @@ const ProductsViewModel = types.model(
 
                     promises.push(
                         {
-                            promise: Helper.FetchPromiseGet(
+                            promise: Helper.CreateGetPromise(
                                 '/lookup/GetProductFamilyTypes/'),
                             success: data => {
 
@@ -287,7 +287,7 @@ const ProductsViewModel = types.model(
 
                     promises.push(
                         {
-                            promise: Helper.FetchPromiseGet(
+                            promise: Helper.CreateGetPromise(
                                 '/lookup/GetProductFamilies/'),
                             success: data => {
 
@@ -318,7 +318,7 @@ const ProductsViewModel = types.model(
 
                     promises.push(
                         {
-                            promise: Helper.FetchPromiseGet(
+                            promise: Helper.CreateGetPromise(
                                 '/lookup/GetCurrencies/'),
                             success: data => {
 
@@ -430,7 +430,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromiseGet('/products/get/', params),
+                        promise: Helper.CreateGetPromise('/products/get/', params),
                         success: data => {
 
                             if (data) {
@@ -515,7 +515,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromiseGet('/products/get/', { productID: prodModel.id }),
+                        promise: Helper.CreateGetPromise('/products/get/', { productID: prodModel.id }),
                         success: data => {
 
                             if (data && data.products && data.products.length > 0) {
@@ -564,7 +564,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromiseGet('/products/GetProductPropertiesDetails'),
+                        promise: Helper.CreateGetPromise('/products/GetProductPropertiesDetails'),
                         success: data => {
 
                             if (data && data.length) {
@@ -614,7 +614,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromiseGet('/products/GetProductProjectsDetails'),
+                        promise: Helper.CreateGetPromise('/products/GetProductProjectsDetails'),
                         success: data => {
 
                             if (data && data.length) {
@@ -664,7 +664,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromiseGet('/lookup/getFlagViews'),
+                        promise: Helper.CreateGetPromise('/lookup/getFlagViews'),
                         success: data => {
 
                             if (data && data.length > 0) {
@@ -737,7 +737,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromiseGet('/products/getProductFlags', { productID: prodModel.id }),
+                        promise: Helper.CreateGetPromise('/products/getProductFlags', { productID: prodModel.id }),
                         success: data => {
 
                             if (data) {
@@ -794,7 +794,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromiseGet('/products/getProductDescs', { productID: prodModel.id }),
+                        promise: Helper.CreateGetPromise('/products/getProductDescs', { productID: prodModel.id }),
                         success: data => {
 
                             if (data) {
@@ -846,7 +846,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.FetchPromiseGet('/products/getProductFiles', { productID: prodModel.id }),
+                        promise: Helper.CreateGetPromise('/products/getProductFiles', { productID: prodModel.id }),
                         success: data => {
 
                             if (data) {

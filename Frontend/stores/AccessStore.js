@@ -74,7 +74,7 @@ export default class AccessStore {
 
         Helper.RunPromise(
             {
-                promise: Helper.FetchPromisePost('/account/signout/', { signOut: true }),
+                promise: Helper.CreatePostPromise('/account/signout/', { signOut: true }),
                 success: data => {
                 },
                 incrementSession: () => {

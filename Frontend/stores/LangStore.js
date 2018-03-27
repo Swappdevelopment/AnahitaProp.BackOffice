@@ -22,7 +22,7 @@ export default class LangStore {
 
         Helper.RunPromise(
             {
-                promise: Helper.FetchPromiseGet(
+                promise: Helper.CreateGetPromise(
                     '/language/getlangscontent/',
                     {
                         lgv: Helper.getLangVersion(),

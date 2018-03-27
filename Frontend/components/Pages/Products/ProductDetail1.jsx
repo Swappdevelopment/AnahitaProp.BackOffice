@@ -25,7 +25,8 @@ class ProductDetail1 extends React.Component {
         super(props);
 
         this.state = {
-            isPopNewFamOpen: false
+            isPopNewFamOpen: false,
+            isSavingNewFamily: false
         };
 
         this.editViewModel = props.editViewModel;
@@ -116,6 +117,46 @@ class ProductDetail1 extends React.Component {
         }
 
         return null;
+    }
+
+
+    addAndSetProductFamily = (value, prodModel) => {
+
+        if (value && prodModel) {
+
+            this.viewModel.execAction(self => {
+
+                value = ProdFamilyModel.init(value, self.prodFamilies.length, this.activeLang.code);
+
+                self.prodFamilies.splice(0, 0, value);
+
+                this.setFamilyOnProdModel(prodModel, value);
+            });
+        }
+    };
+
+    setFamilyOnProdModel = (prodModel, value) => {
+
+        this.undoManager.pushToStack(
+            [
+                {
+                    key: 'productFamily_Id',
+                    value: prodModel.productFamily_Id,
+                    model: prodModel
+                },
+                {
+                    key: 'productFamily',
+                    value: prodModel.productFamily,
+                    model: prodModel
+                }
+            ]);
+
+        prodModel.execAction(self => {
+
+            self.productFamily_Id = value.id;
+            self.productFamily = value.id;
+            self.receivedInput = true;
+        });
     }
 
 
@@ -370,70 +411,67 @@ class ProductDetail1 extends React.Component {
                                                 :
                                                 <div className="s-dropdown-modal">
                                                     <div className="form-group s-form-group">
-                                                        <DropdownEditor
-                                                            id="drpFamily"
-                                                            className={'form-control s-input' + (prodModel.isFamilyValid() ? '' : '-error') + ' s-ellipsis'}
-                                                            disabled={(this.editViewModel ? this.editViewModel.isStep1ReadOnly : false) || prodModel.group_Id > 0}
-                                                            title={prodModel.productFamily ? prodModel.productFamily.getName(true) : ''}>
-                                                            {
-                                                                this.viewModel.prodFamilies.map((v, i) => {
+                                                        <table style={{ width: '100%' }}>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <DropdownEditor
+                                                                            id="drpFamily"
+                                                                            className={'form-control s-input' + (prodModel.isFamilyValid() ? '' : '-error') + ' s-ellipsis'}
+                                                                            disabled={(this.editViewModel ? this.editViewModel.isStep1ReadOnly : false) || prodModel.group_Id > 0}
+                                                                            title={prodModel.productFamily ? prodModel.productFamily.getName(true) : ''}>
+                                                                            {
+                                                                                this.viewModel.prodFamilies.map((v, i) => {
 
-                                                                    return (
-                                                                        <DropdownEditorMenu
-                                                                            active={v.id === prodModel.productFamily_Id}
-                                                                            key={v.id}
-                                                                            onClick={e => {
+                                                                                    return (
+                                                                                        <DropdownEditorMenu
+                                                                                            active={v.id === prodModel.productFamily_Id}
+                                                                                            key={v.id}
+                                                                                            onClick={e => {
 
-                                                                                this.undoManager.pushToStack(
-                                                                                    [
-                                                                                        {
-                                                                                            key: 'productFamily_Id',
-                                                                                            value: prodModel.productFamily_Id,
-                                                                                            model: prodModel
-                                                                                        },
-                                                                                        {
-                                                                                            key: 'productFamily',
-                                                                                            value: prodModel.productFamily,
-                                                                                            model: prodModel
-                                                                                        }
-                                                                                    ]);
-
-                                                                                prodModel.execAction(self => {
-
-                                                                                    self.productFamily_Id = v.id;
-                                                                                    self.productFamily = v.id;
-                                                                                    self.receivedInput = true;
-                                                                                });
-                                                                            }}>
-                                                                            {v.getName(true)}
-                                                                        </DropdownEditorMenu>
-                                                                    );
-                                                                })
-                                                            }
-                                                        </DropdownEditor>
-                                                        <Row>
-                                                            <Col md={11}>
-
-                                                            </Col>
-                                                            <Col md={1}>
-                                                                <QuickAddPoper
-                                                                    id="qadd-prodFamily"
-                                                                    disabled={(this.editViewModel ? this.editViewModel.isStep1ReadOnly : false) || prodModel.group_Id > 0}
-                                                                    isOpen={this.state.isPopNewFamOpen}
-                                                                    onShow={e => this.setState({ isPopNewFamOpen: true })}
-                                                                    onHide={e => this.setState({ isPopNewFamOpen: false })}
-                                                                    popPlacement="top"
-                                                                    container={this.props.rootContainer}
-                                                                    tooltip={this.activeLang.labels['lbl_AddNewFam']}>
-                                                                    <ProdFamilyQuickAddContainer
-                                                                        familyTypes={this.viewModel.prodFamilyTypes}
-                                                                        model={this.state.isPopNewFamOpen ?
-                                                                            ProdFamilyModel.toBeAdded(this.props.store.langStore)
-                                                                            :
-                                                                            null} />
-                                                                </QuickAddPoper>
-                                                            </Col>
-                                                        </Row>
+                                                                                                this.setFamilyOnProdModel(prodModel, v);
+                                                                                            }}>
+                                                                                            {v.getName(true)}
+                                                                                        </DropdownEditorMenu>
+                                                                                    );
+                                                                                })
+                                                                            }
+                                                                        </DropdownEditor>
+                                                                    </td>
+                                                                    <td>
+                                                                        <QuickAddPoper
+                                                                            id="qadd-prodFamily"
+                                                                            rootClose
+                                                                            width={400}
+                                                                            disabled={(this.editViewModel ? this.editViewModel.isStep1ReadOnly : false) || prodModel.group_Id > 0}
+                                                                            isOpen={this.state.isPopNewFamOpen}
+                                                                            onShow={e => this.setState({ isPopNewFamOpen: true })}
+                                                                            onHide={e => this.setState({ isPopNewFamOpen: false })}
+                                                                            isWaitOn={this.state.isSavingNewFamily}
+                                                                            popPlacement="top"
+                                                                            container={this.props.rootContainer}
+                                                                            title={this.activeLang.labels['lbl_AddNewFam']}
+                                                                            tooltip={this.activeLang.labels['lbl_AddNewFam']}>
+                                                                            {
+                                                                                this.state.isPopNewFamOpen ?
+                                                                                    <ProdFamilyQuickAddContainer
+                                                                                        close={() => this.setState({ isPopNewFamOpen: false })}
+                                                                                        familyTypes={this.viewModel.prodFamilyTypes}
+                                                                                        onSuccess={value => this.addAndSetProductFamily(value, prodModel)}
+                                                                                        isSaving={value => this.setState({ isSavingNewFamily: value ? true : false })}
+                                                                                        model={this.state.isPopNewFamOpen ?
+                                                                                            ProdFamilyModel.toBeAdded(this.props.store.langStore)
+                                                                                            :
+                                                                                            null}
+                                                                                    />
+                                                                                    :
+                                                                                    null
+                                                                            }
+                                                                        </QuickAddPoper>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                         }

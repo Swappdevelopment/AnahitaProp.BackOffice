@@ -36,7 +36,7 @@ const CompleteRegistration =
                 componentWillMount() {
 
                     Helper.RunPromise(
-                        Helper.FetchPromisePost('/Account/TrySignOut', { signOut: true })
+                        Helper.CreatePostPromise('/Account/TrySignOut', { signOut: true })
                     );
 
                     this.verifyWithServer();
@@ -58,7 +58,7 @@ const CompleteRegistration =
 
                         const options = [
                             {
-                                promise: Helper.FetchPromisePost('/account/verifyaccounttoken', { tokenValue: this.routeStore.currentRoute.mainParams[0], accountType: 210 }),
+                                promise: Helper.CreatePostPromise('/account/verifyaccounttoken', { tokenValue: this.routeStore.currentRoute.mainParams[0], accountType: 210 }),
                                 success: data => {
 
                                     if (data && data.ok) {
@@ -89,7 +89,7 @@ const CompleteRegistration =
 
                             options.push(
                                 {
-                                    promise: Helper.FetchPromisePost('/account/TrySignOut', { signOut: true })
+                                    promise: Helper.CreatePostPromise('/account/TrySignOut', { signOut: true })
                                 });
 
                             this.firstLoadDone = true;
@@ -129,7 +129,7 @@ const CompleteRegistration =
 
                     Helper.RunPromise(
                         {
-                            promise: Helper.FetchPromisePost(
+                            promise: Helper.CreatePostPromise(
                                 '/account/processRegistration',
                                 {
                                     tokenValue: this.routeStore.currentRoute.mainParams[0],

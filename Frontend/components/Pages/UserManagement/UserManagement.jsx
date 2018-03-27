@@ -62,7 +62,7 @@ const UserManagement =
 
                     Helper.RunPromise(
                         {
-                            promise: Helper.FetchPromiseGet('/AccountManagement/get/', params),
+                            promise: Helper.CreateGetPromise('/AccountManagement/get/', params),
                             success: data => {
 
                                 if (data && data.length > 0) {
@@ -207,7 +207,7 @@ const UserManagement =
 
                             Helper.RunPromise(
                                 {
-                                    promise: Helper.FetchPromisePost('/AccountManagement/CreateAccount', param),
+                                    promise: Helper.CreatePostPromise('/AccountManagement/CreateAccount', param),
                                     success: data => {
 
                                         if (data) {
@@ -279,7 +279,7 @@ const UserManagement =
 
                             Helper.RunPromise(
                                 {
-                                    promise: Helper.FetchPromisePost('/AccountManagement/AddRoleToAccount', record.getValue()),
+                                    promise: Helper.CreatePostPromise('/AccountManagement/AddRoleToAccount', record.getValue()),
                                     success: data => {
 
                                         if (data) {
@@ -325,7 +325,7 @@ const UserManagement =
 
                         Helper.RunPromise(
                             {
-                                promise: Helper.FetchPromisePost('/AccountManagement/SendSignupEmail', user.accountTokens[0]),
+                                promise: Helper.CreatePostPromise('/AccountManagement/SendSignupEmail', user.accountTokens[0]),
                                 success: data => {
 
                                     if (data) {
