@@ -14,11 +14,8 @@ const ItemFieldModel = types.model(
     }
 ).actions(
     self => ({
-        execAction: func => {
-            if (func) {
-                func(self);
-            }
-        },
+        execAction: func => { if (func) func(self); },
+        
         sync: value => {
 
             self.originalValue = value;

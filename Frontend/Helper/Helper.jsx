@@ -49,153 +49,157 @@ export default class Helper {
                 }
             }
 
-            incrementSession = incrementSession ? incrementSession : option[0].incrementSession;
-            sessionValid = sessionValid ? sessionValid : option[0].sessionValid;
+            if (option.length > 0) {
 
-            if (incrementSession) {
-                incrementSession();
-            }
-
-            const verifyAccess = error => {
-
-                if (error && error.statusCode === 403 && Helper.setNoAccess) {
-
-                    Helper.setNoAccess();
-
-                    return false;
+                incrementSession = incrementSession ? incrementSession : option[0].incrementSession;
+                sessionValid = sessionValid ? sessionValid : option[0].sessionValid;
+    
+                if (incrementSession) {
+                    incrementSession();
                 }
-
-                return true;
-            };
-
-            Promise.all(option.map((v, i) => v.promise))
-                .then(responses => {
-
-                    if (!Array.isArray(responses)) {
-
-                        responses = [responses];
+    
+                const verifyAccess = error => {
+    
+                    if (error && error.statusCode === 403 && Helper.setNoAccess) {
+    
+                        Helper.setNoAccess();
+    
+                        return false;
                     }
+    
+                    return true;
+                };
 
-                    if (!sessionValid || sessionValid()) {
 
-                        for (let index = 0; index < responses.length; index++) {
+                Promise.all(option.map((v, i) => v.promise))
+                    .then(responses => {
 
-                            const resp = responses[index];
+                        if (!Array.isArray(responses)) {
 
-                            // if (resp.url && resp.url.indexOf('getProductsFlags') >= 0) {
-
-                            //     resp.text().then(data => {
-
-                            //     });
-                            // }
-
-                            resp.json().then(data => {
-
-                                if (data.type === 'error') {
-
-                                    if (verifyAccess(data)) {
-
-                                        if (option[index].failure) {
-
-                                            option[index].failure(data);
-                                        }
-                                        else if (failure) {
-
-                                            failure(data);
-                                        }
-                                    }
-                                }
-                                else {
-
-                                    if (option[index].success) {
-
-                                        option[index].success(data);
-                                    }
-                                }
-
-                                if (option[index].complete) {
-
-                                    option[index].complete();
-                                }
-                                else if (complete) {
-
-                                    complete(data);
-                                }
-                            })
-                            // .catch(error => {
-
-                            // });
-
-                            // }
-                            // else {
-
-                            //     const error = {
-                            //         type: 'error',
-                            //         statusCode: resp.status
-                            //     };
-
-                            //     if (verifyAccess(error)) {
-
-                            //         if (option[index].failure) {
-
-                            //             option[index].failure(error);
-                            //         }
-                            //         else if (failure) {
-
-                            //             failure(error);
-                            //         }
-
-                            //         if (option[index].complete) {
-
-                            //             option[index].complete();
-                            //         }
-                            //         else if (complete) {
-
-                            //             complete(data);
-                            //         }
-                            //     }
-                            // }
+                            responses = [responses];
                         }
-                    }
-                })
-                .catch(error => {
-
-                    if (verifyAccess(error)) {
 
                         if (!sessionValid || sessionValid()) {
 
-                            if (failure) {
+                            for (let index = 0; index < responses.length; index++) {
 
-                                failure(error);
+                                const resp = responses[index];
+
+                                // if (resp.url && resp.url.indexOf('getProductsFlags') >= 0) {
+
+                                //     resp.text().then(data => {
+
+                                //     });
+                                // }
+
+                                resp.json().then(data => {
+
+                                    if (data.type === 'error') {
+
+                                        if (verifyAccess(data)) {
+
+                                            if (option[index].failure) {
+
+                                                option[index].failure(data);
+                                            }
+                                            else if (failure) {
+
+                                                failure(data);
+                                            }
+                                        }
+                                    }
+                                    else {
+
+                                        if (option[index].success) {
+
+                                            option[index].success(data);
+                                        }
+                                    }
+
+                                    if (option[index].complete) {
+
+                                        option[index].complete();
+                                    }
+                                    else if (complete) {
+
+                                        complete(data);
+                                    }
+                                })
+                                // .catch(error => {
+
+                                // });
+
+                                // }
+                                // else {
+
+                                //     const error = {
+                                //         type: 'error',
+                                //         statusCode: resp.status
+                                //     };
+
+                                //     if (verifyAccess(error)) {
+
+                                //         if (option[index].failure) {
+
+                                //             option[index].failure(error);
+                                //         }
+                                //         else if (failure) {
+
+                                //             failure(error);
+                                //         }
+
+                                //         if (option[index].complete) {
+
+                                //             option[index].complete();
+                                //         }
+                                //         else if (complete) {
+
+                                //             complete(data);
+                                //         }
+                                //     }
+                                // }
                             }
-                            else if (option) {
+                        }
+                    })
+                    .catch(error => {
 
-                                for (const optn of option) {
+                        if (verifyAccess(error)) {
 
-                                    if (optn.failure) {
+                            if (!sessionValid || sessionValid()) {
 
-                                        optn.failure(error);
+                                if (failure) {
+
+                                    failure(error);
+                                }
+                                else if (option) {
+
+                                    for (const optn of option) {
+
+                                        if (optn.failure) {
+
+                                            optn.failure(error);
+                                        }
                                     }
                                 }
-                            }
 
-                            if (complete) {
+                                if (complete) {
 
-                                complete(error);
-                            }
-                            else if (option) {
+                                    complete(error);
+                                }
+                                else if (option) {
 
-                                for (const optn of option) {
+                                    for (const optn of option) {
 
-                                    if (optn.complete) {
+                                        if (optn.complete) {
 
-                                        optn.complete(error);
+                                            optn.complete(error);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+            }
         }
     }
 

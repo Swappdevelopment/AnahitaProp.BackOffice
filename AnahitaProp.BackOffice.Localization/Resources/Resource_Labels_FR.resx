@@ -546,4 +546,22 @@
   <data name="lbl_Finish" xml:space="preserve">
     <value>Terminer</value>
   </data>
+  <data name="lbl_AddNewProp" xml:space="preserve">
+    <value>Ajouter une nouvelle Propriétée</value>
+  </data>
+  <data name="lbl_Nbh" xml:space="preserve">
+    <value>Voisinage</value>
+  </data>
+  <data name="lbl_SaveNwProp" xml:space="preserve">
+    <value>Sauvegarder la Propriétée</value>
+  </data>
+  <data name="lbl_SaveNwPropAndNbh" xml:space="preserve">
+    <value>Sauvegarder la Propriétée &amp; le Voisinage</value>
+  </data>
+  <data name="lbl_AddNewNbh" xml:space="preserve">
+    <value>Ajouter un nouveau Voisinage</value>
+  </data>
+  <data name="lbl_AddNewProperty" xml:space="preserve">
+    <value>Ajouter une nouvelle Propriétée</value>
+  </data>
 </root>

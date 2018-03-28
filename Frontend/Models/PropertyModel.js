@@ -14,6 +14,7 @@ const getObject = () => {
             lotSize: types.optional(types.number, 0),
             neighbourhood_Id: types.maybe(types.number, types.null),
             neighbourhood: types.maybe(NeighbourhoodModel, types.null),
+            neighbourhoodRef: types.maybe(types.reference(NeighbourhoodModel), types.null),
             flags: types.optional(types.array(FlagLinkModel), []),
             activeLangCode: types.optional(types.string, '')
         },
@@ -29,9 +30,9 @@ const PropertyModel = types.model(
             receivedInput: false,
             originalValue: types.optional(types.frozen, null),
         },
-        getObject())
-).actions(
-    self => ({
+        getObject()))
+
+    .actions(self => ({
         execAction: func => {
 
             if (func) {
@@ -118,7 +119,9 @@ const PropertyModel = types.model(
                 destroy(subModel);
             }
         }
-    })).views(self => ({
+    }))
+
+    .views(self => ({
         isModified: excludeSubs => {
 
             const modified = BaseModel.isSelfModified(self, self.originalValue);
@@ -130,6 +133,9 @@ const PropertyModel = types.model(
 
             return modified;
         },
+
+        requiresSaving: excludeSubs => self.recordState > 0 || self.isModified(excludeSubs),
+
         getFullName() {
 
             if (self.neighbourhood) {
@@ -138,12 +144,34 @@ const PropertyModel = types.model(
 
             return self.code;
         },
+        getValue: () => {
+
+            const temp = BaseModel.getValueFromSelf(self);
+
+            return Object.assign(
+                temp,
+                {
+                    uid: self.uid,
+                    code: self.code,
+                    lotSize: self.lotSize,
+                    neighbourhood_Id: self.neighbourhood_Id,
+                    neighbourhood: self.neighbourhood ?
+                        self.neighbourhood.getValue()
+                        :
+                        (self.neighbourhoodRef ? self.neighbourhoodRef.getValue() : null),
+                    flags: self.flags ? self.flags.map(f => f.getValue()) : null
+                });
+        },
+        isCodeValid: () => self.receivedInput ? (self.code ? true : false) : true,
         isLotSizeValid: () => self.receivedInput ? (self.lotSize >= 0 ? true : false) : true,
+        isNbhValid: () => self.receivedInput ? (self.neighbourhood_Id > 0 ? true : false) : true,
         isValid: () => {
 
             self.execAction(() => self.receivedInput = true);
 
-            return self.isLotSizeValid();
+            return self.isCodeValid()
+                && self.isLotSizeValid()
+                && self.isNbhValid();
         },
     }));
 
@@ -166,24 +194,22 @@ PropertyModel.init = (value, genId, activeLangCode) => {
     self.initDone = true;
 
 
-    self.getValue = () => {
+    return self;
+};
 
-        const temp = BaseModel.getValueFromSelf(self);
 
-        return Object.assign(
-            temp
-            ,
-            {
-                uid: self.uid,
-                code: self.code,
-                lotSize: self.lotSize,
-                neighbourhood_Id: self.neighbourhood_Id,
-                neighbourhood: self.neighbourhood ? self.neighbourhood.getValue() : null,
-                flags: self.flags ? self.flags.map(f => f.getValue()) : null
-            });
+let _toBeAddedCounter = 0;
+
+PropertyModel.toBeAdded = () => {
+
+    const model = {
+        id: -(++_toBeAddedCounter),
+        recordState: 10
     };
 
-    return self;
+    return PropertyModel.init(
+        model,
+        ++_toBeAddedCounter);
 };
 
 export default PropertyModel;

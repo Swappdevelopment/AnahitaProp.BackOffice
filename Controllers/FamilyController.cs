@@ -21,6 +21,7 @@ namespace AnahitaProp.BackOffice
         }
 
         [HttpPost]
+        [Access]
         public IActionResult Save([FromBody]JObject param = null)
         {
             ProductFamily prodFamily = null;

@@ -8,6 +8,8 @@ const getObject = () => {
 
     return Object.assign(
         {
+            originalValue: types.optional(types.frozen, null),
+            receivedInput: types.optional(types.boolean, false),
             slug: types.optional(types.string, ''),
             latitude: types.optional(types.number, 0),
             longitude: types.optional(types.number, 0),
@@ -27,10 +29,9 @@ const NeighbourhoodModel = types.model(
         getObject())
 ).actions(
     self => ({
-        setPropsValue: value => {
 
-            BaseModel.setPropsValue(self, value);
-        },
+        execAction: func => { if (func) func(self); },
+
         sync: value => {
 
             self.originalValue = value;
@@ -47,6 +48,7 @@ const NeighbourhoodModel = types.model(
                         id: v.id,
                         status: v.status,
                         value: v.value,
+                        language: v.language,
                         language_Id: v.language_Id,
                         language_Code: v.language_Code ? v.language_Code.toLowerCase() : '',
                     });
@@ -61,6 +63,10 @@ const NeighbourhoodModel = types.model(
             self.originalValue = value;
         }
     })).views(self => ({
+
+        isModified: () => BaseModel.isSelfModified(self, self.originalValue),
+
+        requiresSaving: () => self.recordState > 0 || self.isModified(),
 
         getName: () => {
 
@@ -81,6 +87,13 @@ const NeighbourhoodModel = types.model(
 
             return '';
         },
+
+        isValid: () => {
+
+            self.execAction(() => self.receivedInput = true);
+
+            return !self.names.find(n => !n.isValid());
+        }
     }));
 
 
@@ -112,6 +125,33 @@ NeighbourhoodModel.init = (value, genId, activeLangCode) => {
     };
 
     return self;
+};
+
+
+let _toBeAddedCounter = 0;
+
+NeighbourhoodModel.toBeAdded = langStore => {
+
+    const model = {
+        id: -(++_toBeAddedCounter),
+        recordState: 10,
+        names: []
+    };
+
+    for (let [key, value] of Object.entries(langStore.allLanguages)) {
+
+        model.names.push({
+            id: -(++_toBeAddedCounter),
+            language: {
+                code: key.toUpperCase()
+            }
+        });
+    }
+
+    return NeighbourhoodModel.init(
+        model,
+        ++_toBeAddedCounter,
+        langStore && langStore.active ? langStore.active.code : '');
 };
 
 export default NeighbourhoodModel;

@@ -546,4 +546,22 @@
   <data name="lbl_Finish" xml:space="preserve">
     <value>Finish</value>
   </data>
+  <data name="lbl_AddNewProp" xml:space="preserve">
+    <value>Add new Property</value>
+  </data>
+  <data name="lbl_Nbh" xml:space="preserve">
+    <value>Neighbourhood</value>
+  </data>
+  <data name="lbl_SaveNwProp" xml:space="preserve">
+    <value>Save New Property</value>
+  </data>
+  <data name="lbl_SaveNwPropAndNbh" xml:space="preserve">
+    <value>Save New Property &amp; Neighbourhood</value>
+  </data>
+  <data name="lbl_AddNewNbh" xml:space="preserve">
+    <value>Add new Neighbourhood</value>
+  </data>
+  <data name="lbl_AddNewProperty" xml:space="preserve">
+    <value>Add new Property</value>
+  </data>
 </root>

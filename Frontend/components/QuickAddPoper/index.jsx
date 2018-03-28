@@ -52,7 +52,7 @@ export default class QuickAddPoper extends React.Component {
                 }}
                 className="s-btn-small-secondary-empty"
                 disabled={this.props.disabled ? true : false}>
-                <span className="flaticon-add"></span>
+                <span className="la la-plus-square la-2x"></span>
             </Button>
         );
 
@@ -99,6 +99,7 @@ export default class QuickAddPoper extends React.Component {
         const popStyles = {};
 
         if (this.props.width > 0) {
+            popStyles.width = this.props.width;
             popStyles.maxWidth = this.props.width;
         }
 

@@ -1,7 +1,9 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 
-import { Row, Col, Button, Tabs, Tab, Label } from "react-bootstrap";
+import { Row, Col, Button, Tabs, Tab, Label, OverlayTrigger } from "react-bootstrap";
+
+import Helper from '../../../Helper/Helper';
 
 import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
@@ -11,6 +13,9 @@ import WaitBlock from '../../WaitBlock/WaitBlock';
 
 import ProductDetailToolBar from './ProductDetailToolBar';
 import UndoManager from '../../../Helper/UndoManager';
+
+import ProdPropertyQuickAddContainer from '../Properties/QuickAddContainer';
+import PropertyModel from '../../../Models/PropertyModel';
 
 
 class ProductDetail2 extends React.Component {
@@ -25,6 +30,11 @@ class ProductDetail2 extends React.Component {
         this.activeLang = this.props.store.langStore.active;
 
         this.undoManager = new UndoManager();
+
+        this.state = {
+            isPopNewPropOpen: false,
+            isSavingNewProperty: false
+        };
     }
 
     onTabSelect = (prodModel, key) => {
@@ -102,6 +112,47 @@ class ProductDetail2 extends React.Component {
         );
     }
 
+
+    addAndSetProductProperty = (value, prodModel) => {
+
+        if (value && prodModel) {
+
+            this.viewModel.execAction(self => {
+
+                value = PropertyModel.init(value, self.properties.length, this.activeLang.code);
+
+                self.properties.splice(0, 0, value);
+
+                this.setPropertyOnProdModel(prodModel, value);
+            });
+        }
+    };
+
+    setPropertyOnProdModel = (prodModel, value) => {
+
+        this.undoManager.pushToStack([
+            {
+                key: 'property_Id',
+                value: prodModel.property_Id,
+                model: prodModel
+            },
+            {
+                key: 'property',
+                value: prodModel.property_Id > 0 ? prodModel.property_Id : null,
+                model: prodModel
+            }
+        ]);
+
+        prodModel.execAction(() => {
+
+            prodModel.property_Id = value.id;
+            prodModel.property = value.id;
+            prodModel.receivedInput = true;
+        });
+    }
+
+
+
     getPropertyChoiceContent = params => {
 
         if (!params) return null;
@@ -129,51 +180,69 @@ class ProductDetail2 extends React.Component {
                                             :
                                             <div className="s-dropdown-modal">
                                                 <div className="form-group s-form-group">
-                                                    <DropdownEditor
-                                                        id="drpProdProp"
-                                                        className={'form-control s-input' + (prodModel.isPropertyValid() ? '' : '-error') + ' s-ellipsis'}
-                                                        disabled={(this.editViewModel ? this.editViewModel.isStep2ReadOnly : false) || (prodGroup && prodGroup.property ? true : false)}
-                                                        title={
-                                                            prodGroup && prodGroup.property ?
-                                                                prodGroup.property.getFullName()
-                                                                :
-                                                                prodModel.property ? prodModel.property.getFullName() : null
-                                                        }>
-                                                        {
-                                                            this.viewModel.properties.map((v, i) => {
+                                                    <table style={{ width: '100%' }}>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <DropdownEditor
+                                                                        id="drpProdProp"
+                                                                        className={'form-control s-input' + (prodModel.isPropertyValid() ? '' : '-error') + ' s-ellipsis'}
+                                                                        disabled={(this.editViewModel ? this.editViewModel.isStep2ReadOnly : false)
+                                                                            || (prodGroup && prodGroup.property ? true : false)
+                                                                            || this.state.isPopNewPropOpen}
+                                                                        title={
+                                                                            prodGroup && prodGroup.property ?
+                                                                                prodGroup.property.getFullName()
+                                                                                :
+                                                                                prodModel.property ? prodModel.property.getFullName() : null
+                                                                        }>
+                                                                        {
+                                                                            this.viewModel.properties.map((v, i) => {
 
-                                                                return (
-                                                                    <DropdownEditorMenu
-                                                                        active={v.id === prodModel.property_Id}
-                                                                        key={v.id}
-                                                                        onClick={e => {
+                                                                                return (
+                                                                                    <DropdownEditorMenu
+                                                                                        active={v.id === prodModel.property_Id}
+                                                                                        key={v.id}
+                                                                                        onClick={e => {
 
-                                                                            this.undoManager.pushToStack([
-                                                                                {
-                                                                                    key: 'property_Id',
-                                                                                    value: prodModel.property_Id,
-                                                                                    model: prodModel
-                                                                                },
-                                                                                {
-                                                                                    key: 'property',
-                                                                                    value: prodModel.property_Id > 0 ? prodModel.property_Id : null,
-                                                                                    model: prodModel
-                                                                                }
-                                                                            ]);
+                                                                                            this.setPropertyOnProdModel(prodModel, v);
+                                                                                        }}>
+                                                                                        {v.getFullName()}
+                                                                                    </DropdownEditorMenu>
+                                                                                );
+                                                                            })
+                                                                        }
+                                                                    </DropdownEditor>
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        this.state.isSavingNewProperty ?
+                                                                            <span className="spinner"></span>
+                                                                            :
+                                                                            <OverlayTrigger
+                                                                                placement="top"
+                                                                                trigger={['hover', 'focus']}
+                                                                                rootClose
+                                                                                overlay={
+                                                                                    this.state.isPopNewPropOpen ?
+                                                                                        <span />
+                                                                                        :
+                                                                                        Helper.getTooltip(
+                                                                                            'tltp-QuickAdd-ProdProps',
+                                                                                            this.activeLang.labels['lbl_AddNewProperty'])}>
+                                                                                <Button
+                                                                                    disabled={(this.editViewModel ? this.editViewModel.isStep2ReadOnly : false) || (prodGroup && prodGroup.property ? true : false)}
+                                                                                    onClick={e => this.setState({ isPopNewPropOpen: !this.state.isPopNewPropOpen })}
+                                                                                    className="s-btn-small-secondary-empty">
+                                                                                    <span className={`la la-${this.state.isPopNewPropOpen ? 'minus' : 'plus'}-square la-2x`}></span>
+                                                                                </Button>
+                                                                            </OverlayTrigger>
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
 
-                                                                            prodModel.execAction(self => {
-
-                                                                                self.property_Id = v.id;
-                                                                                self.property = v.id;
-                                                                                self.receivedInput = true;
-                                                                            });
-                                                                        }}>
-                                                                        {v.getFullName()}
-                                                                    </DropdownEditorMenu>
-                                                                );
-                                                            })
-                                                        }
-                                                    </DropdownEditor>
                                                 </div>
                                             </div>
                                     }
@@ -185,6 +254,21 @@ class ProductDetail2 extends React.Component {
                                     }
                                 </Col>
                             </div>
+
+                            {
+                                this.state.isPopNewPropOpen && (!this.editViewModel || !this.editViewModel.isStep2ReadOnly) ?
+                                    <div className="s-row-center row">
+                                        <Col mdOffset={1} md={10} style={{ padding: '20px 35px', border: 'gray 1px solid', borderRadius: 8 }}>
+                                            <ProdPropertyQuickAddContainer
+                                                close={() => this.setState({ isPopNewPropOpen: false })}
+                                                onSuccess={value => this.addAndSetProductProperty(value, prodModel)}
+                                                isSaving={value => this.setState({ isSavingNewProperty: value ? true : false })} />
+                                        </Col>
+                                    </div>
+                                    :
+                                    null
+                            }
+
                             <div className="s-row-center row">
                                 <Col md={2}>
                                     <label>{this.activeLang.labels['lbl_LotSize']}</label>

@@ -152,6 +152,33 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ajouter un nouveau Voisinage.
+        /// </summary>
+        public static string lbl_AddNewNbh {
+            get {
+                return ResourceManager.GetString("lbl_AddNewNbh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ajouter une nouvelle Propriétée.
+        /// </summary>
+        public static string lbl_AddNewProp {
+            get {
+                return ResourceManager.GetString("lbl_AddNewProp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ajouter une nouvelle Propriétée.
+        /// </summary>
+        public static string lbl_AddNewProperty {
+            get {
+                return ResourceManager.GetString("lbl_AddNewProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adresse.
         /// </summary>
         public static string lbl_Address {
@@ -818,6 +845,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Voisinage.
+        /// </summary>
+        public static string lbl_Nbh {
+            get {
+                return ResourceManager.GetString("lbl_Nbh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dimension Net.
         /// </summary>
         public static string lbl_NetSize {
@@ -1075,6 +1111,24 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_SaveLater {
             get {
                 return ResourceManager.GetString("lbl_SaveLater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sauvegarder la Propriétée.
+        /// </summary>
+        public static string lbl_SaveNwProp {
+            get {
+                return ResourceManager.GetString("lbl_SaveNwProp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sauvegarder la Propriétée &amp; le Voisinage.
+        /// </summary>
+        public static string lbl_SaveNwPropAndNbh {
+            get {
+                return ResourceManager.GetString("lbl_SaveNwPropAndNbh", resourceCulture);
             }
         }
         

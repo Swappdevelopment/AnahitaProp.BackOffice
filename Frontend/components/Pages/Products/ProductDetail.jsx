@@ -223,7 +223,8 @@ class ProductDetail extends React.Component {
                                         editViewModel={this.editViewModel}
                                         viewModel={this.viewModel}
                                         getSelectedValue={this.getSelectedValue}
-                                        errorHandler={this.errorHandler} />
+                                        errorHandler={this.errorHandler}
+                                        rootContainer={this} />
                                 </div>
                             </LazyLoad>
                             <br />
