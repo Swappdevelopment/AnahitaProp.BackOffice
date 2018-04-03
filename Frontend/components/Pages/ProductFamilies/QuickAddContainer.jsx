@@ -8,6 +8,7 @@ import DropdownEditor from '../../DropdownEditor/DropdownEditor';
 import DropdownEditorMenu from '../../DropdownEditor/DropdownEditorMenu';
 
 import ProductFamiliesViewModel from './ProductFamiliesViewModel';
+import ProdFamilyModel from '../../../Models/ProdFamilyModel';
 
 
 class QuickAddContainer extends React.Component {
@@ -23,10 +24,8 @@ class QuickAddContainer extends React.Component {
 
         this.viewModel.execAction(self => {
 
-            if (props.model) {
-                self.families.push(props.model);
-                self.selectedValue = props.model.id;
-            }
+            self.families.push(ProdFamilyModel.toBeAdded(props.store.langStore));
+            self.selectedValue = self.families[0].id;
 
             if (props.familyTypes && props.familyTypes.length > 0) {
                 self.types.push(...props.familyTypes);

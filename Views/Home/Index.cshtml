@@ -8,6 +8,13 @@
                                      key = (int)k
                                  }).ToArray());
 
+    string projectTypes = Swapp.Data.Helper.JSonCamelSerializeObject(
+                                (from k in Enum.GetValues(typeof(AnahitaProp.Data.ProjectType)).Cast<AnahitaProp.Data.ProjectType>()
+                                 select new
+                                 {
+                                     key = (int)k
+                                 }).ToArray());
+
     bool isInIE = this.GetViewData<bool>("IsInternetExplorer");
 }
 
@@ -67,6 +74,7 @@
             enumValues: {
 
                 genders: @Html.Raw(genders),
+                projectTypes: @Html.Raw(projectTypes)
             },
             versions: {
 

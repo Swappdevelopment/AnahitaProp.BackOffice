@@ -111,7 +111,8 @@ export default class ProductDetailToolBar extends React.Component {
                                     <span className="la la-save"></span>
                                 </Button>
                             </OverlayTrigger>
-                    }</div>
+                    }
+                </div>
             </div>
 
             // <ButtonToolbar style={{ display: 'flex' }}>

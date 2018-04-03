@@ -317,6 +317,12 @@ export default class Helper {
         return GlobalValues.enumValues.genders;
     }
 
+
+    static getProjectTypes() {
+
+        return GlobalValues.enumValues.projectTypes;
+    }
+
     static getLangVersion() {
 
         return Helper.getVersion('langVersion');

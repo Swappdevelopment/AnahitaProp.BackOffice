@@ -26,8 +26,8 @@ const ProjectModel = types.model(
             originalValue: types.optional(types.frozen, null),
         },
         getObject())
-).actions(
-    self => ({
+)
+    .actions(self => ({
         execAction: func => {
 
             if (func) {
@@ -50,13 +50,15 @@ const ProjectModel = types.model(
                         id: v.id,
                         status: v.status,
                         value: v.value,
+                        language: v.language,
                         language_Id: v.language_Id,
                         language_Code: v.language_Code ? v.language_Code.toLowerCase() : '',
                     });
                 }));
             }
         }
-    })).views(self => ({
+    }))
+    .views(self => ({
         isModified: () => excludeSubs => {
 
             const modified = BaseModel.isSelfModified(self, self.originalValue);
@@ -67,6 +69,17 @@ const ProjectModel = types.model(
             }
 
             return modified;
+        },
+        requiresSaving: () => excludeSubs => {
+
+            const reqSave = self.recordState > 0 || self.isModified();
+
+            if (!reqSave && !excludeSubs) {
+
+                return self.names.filter((v, i) => v.requiresSaving()).length > 0;
+            }
+
+            return reqSave;
         },
         getName: () => {
 
@@ -86,6 +99,14 @@ const ProjectModel = types.model(
             }
 
             return '';
+        },
+        isTypeValid: () => self.receivedInput ? (self.type > 0 ? true : false) : true,
+        isValid: () => {
+
+            self.execAction(() => self.receivedInput = true);
+
+            return self.isTypeValid()
+                && !self.names.find(n => !n.isValid());
         }
     }));
 
@@ -119,6 +140,33 @@ ProjectModel.init = (value, genId, activeLangCode) => {
     };
 
     return self;
+};
+
+
+let _toBeAddedCounter = 0;
+
+ProjectModel.toBeAdded = langStore => {
+
+    const model = {
+        id: -(++_toBeAddedCounter),
+        recordState: 10,
+        names: []
+    };
+
+    for (let [key, value] of Object.entries(langStore.allLanguages)) {
+
+        model.names.push({
+            id: -(++_toBeAddedCounter),
+            language: {
+                code: key.toUpperCase()
+            }
+        });
+    }
+
+    return ProjectModel.init(
+        model,
+        -(++_toBeAddedCounter),
+        langStore && langStore.active ? langStore.active.code : '');
 };
 
 export default ProjectModel;

@@ -86,30 +86,6 @@ namespace AnahitaProp.BackOffice
         [HttpGet]
         [Access]
         [MenuRequirement("products>crud")]
-        public IActionResult GetProductProjectsDetails()
-        {
-            Project[] result = null;
-
-            try
-            {
-                result = _dbi.GetProjects(withNames: true);
-
-                return Json(result == null ? new object[0] : result.Select(l => l.Simplify()).ToArray());
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-            finally
-            {
-                result = null;
-            }
-        }
-
-
-        [HttpGet]
-        [Access]
-        [MenuRequirement("products>crud")]
         public IActionResult GetProductFlags(long productID = 0)
         {
             Product product = null;

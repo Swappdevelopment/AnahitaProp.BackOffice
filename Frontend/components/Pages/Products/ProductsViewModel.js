@@ -614,7 +614,7 @@ const ProductsViewModel = types.model(
 
                 Helper.RunPromise(
                     {
-                        promise: Helper.CreateGetPromise('/products/GetProductProjectsDetails'),
+                        promise: Helper.CreateGetPromise('/project/GetProductProjectsDetails'),
                         success: data => {
 
                             if (data && data.length) {

@@ -161,6 +161,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add New Project.
+        /// </summary>
+        public static string lbl_AddNewProject {
+            get {
+                return ResourceManager.GetString("lbl_AddNewProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add new Property.
         /// </summary>
         public static string lbl_AddNewProp {
@@ -1007,6 +1016,33 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string lbl_ProjType_0 {
+            get {
+                return ResourceManager.GetString("lbl_ProjType_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Serviced Land.
+        /// </summary>
+        public static string lbl_ProjType_10 {
+            get {
+                return ResourceManager.GetString("lbl_ProjType_10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off Plan VEFA.
+        /// </summary>
+        public static string lbl_ProjType_20 {
+            get {
+                return ResourceManager.GetString("lbl_ProjType_20", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         public static string lbl_Psswrd {
@@ -1120,6 +1156,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         public static string lbl_SaveLater {
             get {
                 return ResourceManager.GetString("lbl_SaveLater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save new Project.
+        /// </summary>
+        public static string lbl_SaveNwProj {
+            get {
+                return ResourceManager.GetString("lbl_SaveNwProj", resourceCulture);
             }
         }
         

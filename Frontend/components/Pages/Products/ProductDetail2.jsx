@@ -15,7 +15,9 @@ import ProductDetailToolBar from './ProductDetailToolBar';
 import UndoManager from '../../../Helper/UndoManager';
 
 import ProdPropertyQuickAddContainer from '../Properties/QuickAddContainer';
+import ProjPropertyQuickAddContainer from '../Projects/QuickAddContainer';
 import PropertyModel from '../../../Models/PropertyModel';
+import ProjectModel from '../../../Models/ProjectModel';
 
 
 class ProductDetail2 extends React.Component {
@@ -33,7 +35,9 @@ class ProductDetail2 extends React.Component {
 
         this.state = {
             isPopNewPropOpen: false,
-            isSavingNewProperty: false
+            isPopNewProjOpen: false,
+            isSavingNewProperty: false,
+            isSavingNewProject: false
         };
     }
 
@@ -148,6 +152,45 @@ class ProductDetail2 extends React.Component {
             prodModel.property_Id = value.id;
             prodModel.property = value.id;
             prodModel.receivedInput = true;
+        });
+    }
+
+
+    addAndSetProductProject = (value, prodModel) => {
+
+        if (value && prodModel) {
+
+            this.viewModel.execAction(self => {
+
+                value = ProjectModel.init(value, self.projects.length, this.activeLang.code);
+
+                self.projects.splice(0, 0, value);
+
+                this.setProjectOnProdModel(prodModel, value);
+            });
+        }
+    };
+
+    setProjectOnProdModel = (prodModel, value) => {
+
+        this.undoManager.pushToStack([
+            {
+                key: 'project_Id',
+                value: prodModel.project_Id,
+                model: prodModel
+            },
+            {
+                key: 'project',
+                value: prodModel.project_Id,
+                model: prodModel
+            }
+        ]);
+
+        prodModel.execAction(self => {
+
+            self.project_Id = value.id;
+            self.project = value.id;
+            self.receivedInput = true;
         });
     }
 
@@ -315,76 +358,106 @@ class ProductDetail2 extends React.Component {
                     hideProject ?
                         null
                         :
-                        <div className="s-row-center row">
-                            <Col md={2}>
-                                <label>{this.activeLang.labels['lbl_SlctProj']}</label>
-                            </Col>
-                            <Col md={4}>
-                                {
-                                    prodModel.isSaving ?
-                                        <WaitBlock fullWidth height={38} />
-                                        :
-                                        <div className="s-dropdown-modal">
-                                            <div className="form-group s-form-group">
-                                                <DropdownEditor
-                                                    id="drpProdProp"
-                                                    className={'form-control s-input' + (prodModel.isProjectValid() ? '' : '-error') + ' s-ellipsis'}
-                                                    disabled={(this.editViewModel ? this.editViewModel.isStep2ReadOnly : false) || (prodGroup && prodGroup.project ? true : false)}
-                                                    title={
-                                                        prodGroup && prodGroup.project ?
-                                                            prodGroup.project.getName()
-                                                            :
-                                                            prodModel.project ? prodModel.project.getName() : ''
-                                                    }>
-                                                    {
-                                                        (projectsFilter ?
-                                                            this.viewModel.projects.filter(projectsFilter)
-                                                            :
-                                                            this.viewModel.projects).map((v, i) => {
+                        <React.Fragment>
+                            <div className="s-row-center row">
+                                <Col md={2}>
+                                    <label>{this.activeLang.labels['lbl_SlctProj']}</label>
+                                </Col>
+                                <Col md={4}>
+                                    {
+                                        prodModel.isSaving ?
+                                            <WaitBlock fullWidth height={38} />
+                                            :
+                                            <div className="s-dropdown-modal">
+                                                <div className="form-group s-form-group">
+                                                    <table style={{ width: '100%' }}>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <DropdownEditor
+                                                                        id="drpProdProj"
+                                                                        className={'form-control s-input' + (prodModel.isProjectValid() ? '' : '-error') + ' s-ellipsis'}
+                                                                        disabled={(this.editViewModel ? this.editViewModel.isStep2ReadOnly : false)
+                                                                            || (prodGroup && prodGroup.project ? true : false)
+                                                                            || this.state.isPopNewProjOpen}
+                                                                        title={
+                                                                            prodGroup && prodGroup.project ?
+                                                                                prodGroup.project.getName()
+                                                                                :
+                                                                                prodModel.project ? prodModel.project.getName() : ''
+                                                                        }>
+                                                                        {
+                                                                            (projectsFilter ?
+                                                                                this.viewModel.projects.filter(projectsFilter)
+                                                                                :
+                                                                                this.viewModel.projects).map((v, i) => {
 
-                                                                return (
-                                                                    <DropdownEditorMenu
-                                                                        active={v.id === prodModel.project_Id}
-                                                                        key={v.id}
-                                                                        onClick={e => {
+                                                                                    return (
+                                                                                        <DropdownEditorMenu
+                                                                                            active={v.id === prodModel.project_Id}
+                                                                                            key={v.id}
+                                                                                            onClick={e => this.setProjectOnProdModel(prodModel, v)}>
+                                                                                            {v.getName()}
+                                                                                        </DropdownEditorMenu>
+                                                                                    );
+                                                                                })
+                                                                        }
+                                                                    </DropdownEditor>
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        this.state.isSavingNewProject ?
+                                                                            <span className="spinner"></span>
+                                                                            :
+                                                                            <OverlayTrigger
+                                                                                placement="top"
+                                                                                trigger={['hover', 'focus']}
+                                                                                rootClose
+                                                                                overlay={
+                                                                                    this.state.isPopNewProjOpen ?
+                                                                                        <span />
+                                                                                        :
+                                                                                        Helper.getTooltip(
+                                                                                            'tltp-QuickAdd-ProdProjs',
+                                                                                            this.activeLang.labels['lbl_AddNewProject'])}>
+                                                                                <Button
+                                                                                    disabled={(this.editViewModel ? this.editViewModel.isStep2ReadOnly : false) || (prodGroup && prodGroup.project ? true : false)}
+                                                                                    onClick={e => this.setState({ isPopNewProjOpen: !this.state.isPopNewProjOpen })}
+                                                                                    className="s-btn-small-secondary-empty">
+                                                                                    <span className={`la la-${this.state.isPopNewProjOpen ? 'minus' : 'plus'}-square la-2x`}></span>
+                                                                                </Button>
+                                                                            </OverlayTrigger>
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
 
-                                                                            this.undoManager.pushToStack([
-                                                                                {
-                                                                                    key: 'project_Id',
-                                                                                    value: prodModel.project_Id,
-                                                                                    model: prodModel
-                                                                                },
-                                                                                {
-                                                                                    key: 'project',
-                                                                                    value: prodModel.project_Id,
-                                                                                    model: prodModel
-                                                                                }
-                                                                            ]);
-
-                                                                            prodModel.execAction(self => {
-
-                                                                                self.project_Id = v.id;
-                                                                                self.project = v.id;
-                                                                                self.receivedInput = true;
-                                                                            });
-                                                                        }}>
-                                                                        {v.getName()}
-                                                                    </DropdownEditorMenu>
-                                                                );
-                                                            })
-                                                    }
-                                                </DropdownEditor>
+                                                </div>
                                             </div>
-                                        </div>
-                                }
-                                {
-                                    prodModel.isSaving || prodModel.isProjectValid() ?
-                                        null
-                                        :
-                                        <small className="s-label-error">{this.activeLang.msgs['msg_InvldValue']}</small>
-                                }
-                            </Col>
-                        </div>
+                                    }
+                                    {
+                                        prodModel.isSaving || prodModel.isProjectValid() ?
+                                            null
+                                            :
+                                            <small className="s-label-error">{this.activeLang.msgs['msg_InvldValue']}</small>
+                                    }
+                                </Col>
+                            </div>
+                            {
+                                this.state.isPopNewProjOpen && (!this.editViewModel || !this.editViewModel.isStep2ReadOnly) ?
+                                    <div className="s-row-center row">
+                                        <Col mdOffset={1} md={10} style={{ padding: '20px 35px', border: 'gray 1px solid', borderRadius: 8 }}>
+                                            <ProjPropertyQuickAddContainer
+                                                close={() => this.setState({ isPopNewProjOpen: false })}
+                                                onSuccess={value => this.addAndSetProductProject(value, prodModel)}
+                                                isSaving={value => this.setState({ isSavingNewProject: value ? true : false })} />
+                                        </Col>
+                                    </div>
+                                    :
+                                    null
+                            }
+                        </React.Fragment>
                 }
 
             </Row>

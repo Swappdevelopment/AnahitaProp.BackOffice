@@ -564,4 +564,19 @@
   <data name="lbl_AddNewProperty" xml:space="preserve">
     <value>Add new Property</value>
   </data>
+  <data name="lbl_AddNewProject" xml:space="preserve">
+    <value>Add New Project</value>
+  </data>
+  <data name="lbl_ProjType_0" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="lbl_ProjType_10" xml:space="preserve">
+    <value>Serviced Land</value>
+  </data>
+  <data name="lbl_ProjType_20" xml:space="preserve">
+    <value>Off Plan VEFA</value>
+  </data>
+  <data name="lbl_SaveNwProj" xml:space="preserve">
+    <value>Save new Project</value>
+  </data>
 </root>
