@@ -1,6 +1,20 @@
 ﻿
 @{
-    string title = LanguageManager.GetLabel("AppTitle", LanguageManager.DEFAULT_LANGUAGE);
+
+    string preTitle = "";
+
+    switch (this.GetViewData<SessionEnvironment>("Environment"))
+    {
+        case SessionEnvironment.Development:
+            preTitle = "Development: ";
+            break;
+
+        case SessionEnvironment.Staging:
+            preTitle = "Staging: ";
+            break;
+    }
+
+    string title = preTitle + LanguageManager.GetLabel("AppTitle", LanguageManager.DEFAULT_LANGUAGE);
 }
 
 <!DOCTYPE html>
@@ -13,7 +27,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>@(title)</title>
-    
+
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">

@@ -11,23 +11,32 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Swapp.Data;
+using Microsoft.Extensions.Configuration;
 
 namespace AnahitaProp.BackOffice
 {
     public class AccessRequirementHandler : AuthorizationHandler<AccessRequirement>
     {
+        protected IConfigurationRoot _config = null;
         private IHostingEnvironment _env = null;
         private DbContextOptionsWrapper _dbOptnsWrapper = null;
         private InjectorObjectHolder _injHolder = null;
 
         public AccessRequirementHandler(
             IHostingEnvironment env,
+            IConfigurationRoot config,
             DbContextOptionsWrapper dbOptnsWrapper,
             InjectorObjectHolder injHolder)
         {
             _env = env;
+            _config = config;
             _dbOptnsWrapper = dbOptnsWrapper;
             _injHolder = injHolder;
+
+            if (_dbOptnsWrapper != null)
+            {
+                _dbOptnsWrapper.GetConnectionString = () => BaseController.GetConnectionString(_config);
+            }
         }
 
 

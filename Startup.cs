@@ -54,26 +54,7 @@ namespace AnahitaProp.BackOffice
             {
                 var builder = new DbContextOptionsBuilder<AppDbContext>();
 
-                string connStr = null;
-
-
-                switch (BaseController.GetEnvironment(this.Configuration))
-                {
-                    case SessionEnvironment.Development:
-                        connStr = DevSecrets.GetSecretValue("connectionStrings:anahitaProp:local:mysql");
-                        //connStr = Configuration["ConnectionStrings:production:value"];
-                        break;
-
-                    case SessionEnvironment.Staging:
-                        connStr = Configuration["ConnectionStrings:staging:value"];
-                        break;
-
-                    default:
-                        connStr = Configuration["ConnectionStrings:production:value"];
-                        break;
-                }
-
-                return new DbContextOptionsWrapper(builder.Options, connStr);
+                return new DbContextOptionsWrapper(builder.Options, BaseController.GetConnectionString(this.Configuration));
             });
 
 

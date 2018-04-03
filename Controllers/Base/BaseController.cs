@@ -40,7 +40,11 @@ namespace AnahitaProp.BackOffice
 
             _injHolder = injHolder;
 
-            _dbi = dbOptns == null ? null : new AppDbInteractor(new AppDbContext(dbOptns), GetAccessTokenValue);
+            if (dbOptns != null)
+            {
+                dbOptns.GetConnectionString = this.GetConnectionString;
+                _dbi = new AppDbInteractor(new AppDbContext(dbOptns), GetAccessTokenValue);
+            }
 
             if (_injHolder != null && _dbi != null)
             {
@@ -346,6 +350,38 @@ namespace AnahitaProp.BackOffice
             }
 
             return SessionEnvironment.Production;
+        }
+
+
+        public string GetConnectionString()
+        {
+            return GetConnectionString(_config);
+        }
+
+        internal static string GetConnectionString(IConfigurationRoot config)
+        {
+            if (config == null) return "";
+
+
+            string connStr = null;
+
+            switch (GetEnvironment(config))
+            {
+                case SessionEnvironment.Development:
+                    connStr = DevSecrets.GetSecretValue("connectionStrings:anahitaProp:local:mysql");
+                    //connStr = Configuration["ConnectionStrings:production:value"];
+                    break;
+
+                case SessionEnvironment.Staging:
+                    connStr = config["ConnectionStrings:staging:value"];
+                    break;
+
+                default:
+                    connStr = config["ConnectionStrings:production:value"];
+                    break;
+            }
+
+            return connStr;
         }
     }
 }
