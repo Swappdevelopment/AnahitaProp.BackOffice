@@ -1,12 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace AnahitaProp.BackOffice
 {
     public static class VersionCache
     {
         internal const string CURRENT_ATTRIBUTE_NAME = "swp-cache-version";
+
 
         internal static string GetPathContent(string src, IConfigurationRoot configRoot)
         {
@@ -19,23 +21,34 @@ namespace AnahitaProp.BackOffice
 
 
             string path = src;
-            string filePath;
+            string filePath = "";
 
             FileInfo fi = null;
 
             try
             {
-                if (path.StartsWith("~"))
+                if (path.StartsWith("~") || path.StartsWith("."))
                 {
                     path = path.Substring(1, path.Length - 1);
                 }
 
-                path = path.StartsWith("/") ? path : $"/{path}";
 
-                filePath = path.Replace("/", "\\");
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    path = path.StartsWith("/") ? path : $"/{path}";
 
-                filePath = (rootPath.EndsWith("\\") ? rootPath.Substring(0, rootPath.Length - 1) : rootPath) + filePath;
+                    filePath = path;
 
+                    filePath = (rootPath.EndsWith("/") ? rootPath.Substring(0, rootPath.Length - 1) : rootPath) + filePath;
+                }
+                else
+                {
+                    path = path.StartsWith("/") ? path : $"/{path}";
+
+                    filePath = path.Replace("/", "\\");
+
+                    filePath = (rootPath.EndsWith("\\") ? rootPath.Substring(0, rootPath.Length - 1) : rootPath) + filePath;
+                }
 
                 fi = new FileInfo(filePath);
 
