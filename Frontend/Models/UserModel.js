@@ -135,7 +135,7 @@ const UserModel = types.model(
 
         isValid: () => {
 
-            self.receivedInput = true;
+            self.execAction(() => self.receivedInput = true);
 
             return self.isEmailValid();
         },
