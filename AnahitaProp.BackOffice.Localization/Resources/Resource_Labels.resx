@@ -579,4 +579,7 @@
   <data name="lbl_SaveNwProj" xml:space="preserve">
     <value>Save new Project</value>
   </data>
+  <data name="lbl_PriceOnReq" xml:space="preserve">
+    <value>Price on Request</value>
+  </data>
 </root>

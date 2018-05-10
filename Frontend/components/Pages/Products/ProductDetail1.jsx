@@ -399,6 +399,29 @@ class ProductDetail1 extends React.Component {
                                 )
                             })
                         }
+                        {
+                            this.getInputElement({
+                                label: this.activeLang.labels['lbl_PriceOnReq'],
+                                getInnerElement: () => (
+                                    <Button
+                                        disabled={(this.editViewModel && this.editViewModel.isStep1ReadOnly) || prodModel.isSaving}
+                                        onClick={e => {
+
+                                            this.undoManager.pushToStack(
+                                                {
+                                                    key: 'hidePrice',
+                                                    value: prodModel.hidePrice,
+                                                    model: prodModel
+                                                });
+
+                                            prodModel.execAction(() => prodModel.hidePrice = !prodModel.hidePrice);
+                                        }}
+                                        className="s-btn-small-secondary-empty">
+                                        <span className={`la la-${prodModel.hidePrice ? 'check-circle' : 'circle'} la-2x`}></span>
+                                    </Button>
+                                )
+                            })
+                        }
 
                         {
                             <React.Fragment>

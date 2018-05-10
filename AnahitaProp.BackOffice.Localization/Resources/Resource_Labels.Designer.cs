@@ -989,6 +989,15 @@ namespace AnahitaProp.BackOffice.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Price on Request.
+        /// </summary>
+        public static string lbl_PriceOnReq {
+            get {
+                return ResourceManager.GetString("lbl_PriceOnReq", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project.
         /// </summary>
         public static string lbl_Prj {
