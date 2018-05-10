@@ -1,0 +1,2 @@
+DAMIEN
+dotnet publish AnahitaProp.BackOffice.csproj --output C:\Swapp\Development\Anahita\BackOfficeFTPPublish
