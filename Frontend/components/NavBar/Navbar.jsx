@@ -92,6 +92,8 @@ const Navbar =
                         affixStyle.zIndex = '999';
                     }
 
+                    const navBarSearch = this.uiStore.navBarSearch;
+
                     return (
 
                         <div className="s-navbar-wrapper">

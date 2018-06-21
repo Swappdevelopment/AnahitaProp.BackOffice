@@ -61,7 +61,12 @@ namespace AnahitaProp.BackOffice
                     {
                         using (var dbi = new AppDbInteractor(
                                                 new AppDbContext(_dbOptnsWrapper),
-                                                () => context?.User?.FindFirst(BaseController.ACCESS_TOKEN_KEY)?.Value))
+                                                () =>
+                                                {
+                                                    string aToken = context?.User?.FindFirst(BaseController.ACCESS_TOKEN_KEY)?.Value;
+
+                                                    return aToken;
+                                                }))
                         {
                             bool accessTokenGood = true;
 
