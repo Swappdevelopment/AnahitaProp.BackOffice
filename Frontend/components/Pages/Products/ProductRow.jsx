@@ -57,7 +57,7 @@ class ProductRow extends React.Component {
                         <td
                             className="s-td-cell-name"
                             onClick={onRowClick}>
-                            {value.getNameAndCode()}
+                            {value.getNameAndCode(this.props.isSubProduct)}
                         </td>
 
                         {

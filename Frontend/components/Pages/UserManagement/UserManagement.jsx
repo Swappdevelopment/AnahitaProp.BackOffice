@@ -359,7 +359,6 @@ const UserManagement =
 
                     const onRoleCreationContinue = e => {
 
-                        debugger;
                         if (this.viewModel.targetRoleUser
                             && this.viewModel.targetRoleUser.recordState === 10
                             && this.viewModel.targetRoleUser.id < 0

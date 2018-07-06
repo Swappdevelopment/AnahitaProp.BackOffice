@@ -978,7 +978,17 @@ ProductsViewModel.init = (activeLang) => {
 
     self.counterNewProdFile = -1;
 
-    self.syncProduct = value => ProductModel.init(value, ++self.idGenerator, self.activeLang.code);
+    self.syncProduct = value => {
+
+        const result = ProductModel.init(value, ++self.idGenerator, self.activeLang.code);
+
+        if (result && result.property_Id > 0) {
+
+            result.execAction(() => result.property = result.property_Id);
+        }
+
+        return result;
+    }
 
     self.getLazyWaitRecord = () => ProductModel.init({ id: -1, isLazyWait: true }, ++self.genId);
 

@@ -151,7 +151,7 @@ class ProductDetail extends React.Component {
                                         <span className="la la-angle-right" style={{ margin: '0 8px' }}></span>
                                     </span>
 
-                                    <span style={{ color: 'black' }}>{prodModel.getNameAndCode()}</span>
+                                    <span style={{ color: 'black' }}>{prodModel.getNameAndCode(prodModel.group_Id > 0)}</span>
                                 </span>
                                 :
                                 prodModel.getNameAndCode()

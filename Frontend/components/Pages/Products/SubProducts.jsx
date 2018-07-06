@@ -42,23 +42,27 @@ class SubProducts extends React.Component {
     this.viewModel.getProducts(this.limit, this.offset, false, prodGroup.id);
   }
 
-  getProductsRow = (value, index) => (
-    <ProductRow
-      key={value.genId}
-      value={value}
-      index={index}
-      activeLang={this.activeLang}
-      loadLazy={() => {
-        this.offset += this.limit;
-        this.getSubProducts();
-      }}
-      onRowClick={() => {
+  getProductsRow = (value, index) => {
 
-        this.scrollPos = document.documentElement.scrollTop;
-        this.viewModel.execAction(self => self.selectedSubValue = value.id);
-      }}
-      changeBoolean={this.changeBoolean} />
-  )
+    return (
+      <ProductRow
+        key={value.genId}
+        isSubProduct
+        value={value}
+        index={index}
+        activeLang={this.activeLang}
+        loadLazy={() => {
+          this.offset += this.limit;
+          this.getSubProducts();
+        }}
+        onRowClick={() => {
+
+          this.scrollPos = document.documentElement.scrollTop;
+          this.viewModel.execAction(self => self.selectedSubValue = value.id);
+        }}
+        changeBoolean={this.changeBoolean} />
+    );
+  }
 
   render() {
 
@@ -81,6 +85,11 @@ class SubProducts extends React.Component {
           paTitleClick={e => {
             this.viewModel.execAction(self => self.selectedGroup = null);
           }}
+          paRefresh={e => {
+
+            this.offset = 0;
+            this.getSubProducts();
+          }}
 
           getTableHeaders={() => (
             <tr>
@@ -99,7 +108,7 @@ class SubProducts extends React.Component {
 
           hidePage={this.viewModel.selectedSubValue ? true : false}
           hideStatus
-          
+
           getSiblings={() => (
             this.viewModel.selectedSubValue ?
               <ProductDetail key="SubProductDetail" viewModel={this.viewModel} errorHandler={this.errorHandler} isSubProduct />

@@ -18,24 +18,9 @@ const productFamilyReference =
         (identifier, parent) => {
 
             const pp = getParent(getParent(parent));
-            return (pp ? pp.prodFamilies.find(pf => pf.id === identifier) : null) || null;
+
+            return (pp && pp.prodFamilies ? pp.prodFamilies.find(pf => pf.id === identifier) : null) || null;
         });
-
-// const productFamilyReference = types.maybe(
-//     types.reference(ProdFamilyModel, {
-
-//         get(identifier, parent) {
-
-//             const pp = getParent(getParent(parent));
-
-//             return (pp ? pp.prodFamilies.find(pf => pf.id === identifier) : null) || null
-//         },
-//         set(value) {
-
-//             return value
-//         }
-//     })
-// );
 
 
 
@@ -353,11 +338,19 @@ const ProductModel = types.model(
 
             return modified;
         },
-        getNameAndCode: () => {
+        getNameAndCode: showPropertyCode => {
 
-            let tempCode = self.code ? self.code.split('-') : null;
+            let tempCode = null;
 
-            tempCode = tempCode && tempCode.length > 0 ? tempCode[0] : null;
+            if (showPropertyCode && self.property) {
+
+                tempCode = self.property.code;
+            }
+            else {
+
+                tempCode = self.code ? self.code.split('-') : null;
+                tempCode = tempCode && tempCode.length > 0 ? tempCode[0] : null;
+            }
 
             return `${self.getName()}${tempCode ? ' ' + tempCode.toUpperCase() : ''}`;
         },

@@ -273,9 +273,9 @@ class Products extends React.Component {
                     <table>
                         <tbody>
                             <tr>
-                                <td>
+                                {/* <td>
                                     {this.viewModel.products.length}
-                                </td>
+                                </td> */}
                                 <td>
                                     <Button
                                         className={'s-btn-empty' + (this.state.tabKey === 0 ? ' border-bottom-primary' : '')}
