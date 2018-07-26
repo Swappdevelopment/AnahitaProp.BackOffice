@@ -227,7 +227,10 @@ class ProductDetail5 extends React.Component {
 
             fetch('/products/uploadProductImage', {
                 method: 'POST',
-                headers: { 'Accept': 'application/json' },
+                headers: {
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin',
                 body: formData
             })
                 .then(data => data.json())
